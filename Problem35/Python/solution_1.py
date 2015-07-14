@@ -13,6 +13,4 @@ def circPrime(n):
         if not is_prime(int(n1[i:len(str(n))+i])):
             return False
     return True
-            
-            
 print(len([x for x in range(1000000) if circPrime(x)]))
