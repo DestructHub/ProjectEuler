@@ -29,4 +29,4 @@ for k in (range(1, 21)):
 			if (i*j) % k == 0: 
 				i *= j 
 				break 
-print i
+print(i)
