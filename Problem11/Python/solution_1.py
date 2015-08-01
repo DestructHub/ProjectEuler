@@ -4,7 +4,8 @@
 Largest product in a grid
 Problem 11
 
-In the 20×20 grid below, four numbers along a diagonal line have been marked in red.
+In the 20×20 grid below, four numbers along a diagonal
+line have been marked in red.
 
 08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
 49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00
@@ -29,12 +30,13 @@ In the 20×20 grid below, four numbers along a diagonal line have been marked in
 
 The product of these numbers is 26 × 63 × 78 × 14 = 1788696.
 
-What is the greatest product of four adjacent numbers in the same direction (up, down, left, right, or diagonally) in the 20×20 grid?
+What is the greatest product of four adjacent numbers
+in the same direction (up, down, left, right, or diagonally) in the 20×20 grid?
 """
 from time import time
 import sys
 if sys.version_info >= (3, 0):
-	from functools import reduce
+    from functools import reduce
 
 
 grid = """08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
@@ -58,31 +60,37 @@ grid = """08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
 20 73 35 29 78 31 90 01 74 31 49 71 48 86 81 16 23 57 05 54
 01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48"""
 
-def arrowsSearch(matrix, n):
-	x_len, y_len = len(matrix[0]), len(matrix)
-	points = []
-	for y in range(x_len):
-		for x in range(y_len):
-			#arrows in diagonals:
-			#(down-up - left-right)
-			if abs(x - x_len) >= n and abs(y - y_len) >= n: 
-				points.append([(x + diag, y + diag) for diag in range(0, n)])
-			#(up-down - left-right) y > x because i want just the left-right diagonals
-			if abs((x - y) - (x_len - y_len)) + 1 >= n and y > x :
-				points.append([(diag, y - (diag - x)) for diag in range(x, x + n)])
-			#arrows in vertical and horizontal:
-			#left-right
-			if abs(x - x_len) >= n:
-				points.append([(new_x, y) for new_x in range(x, x + n)])
-			#down-up
-			if abs(y - y_len) >= n:
-				points.append([(x, new_y) for new_y in range(y, y + n)])
-	return points
-def solution(grid, arrow_length):
-	grid = [x for x in map(lambda line: [int(num) for num in line], [y.split() for y in [x for x in grid.split('\n')]])]
-	arrows = arrowsSearch(grid, arrow_length)
-	answer = max(map(lambda arrow: reduce(lambda a, b: a*b, [grid[y][x] for x, y in arrow]), arrows))
-	return answer
-t = time()
-print('Solution: %s | Time: %ss' %(solution(grid, 4), time() - t))
 
+def arrowsSearch(matrix, n):
+    x_len, y_len = len(matrix[0]), len(matrix)
+    points = []
+    for y in range(x_len):
+        for x in range(y_len):
+            # arrows in diagonals:
+            # (down-up - left-right)
+            if abs(x - x_len) >= n and abs(y - y_len) >= n:
+                points.append([(x + d, y + d) for d in range(0, n)])
+            # (up-down - left-right)
+            # y > x because i want just the left-right diagonals
+            if abs((x - y) - (x_len - y_len)) + 1 >= n and y > x:
+                points.append([(d, y - (d - x)) for d in range(x, x + n)])
+            # arrows in vertical and horizontal:
+            # left-right
+            if abs(x - x_len) >= n:
+                points.append([(new_x, y) for new_x in range(x, x + n)])
+            # down-up
+            if abs(y - y_len) >= n:
+                points.append([(x, new_y) for new_y in range(y, y + n)])
+    return points
+
+
+def solution(grid, arrow_length):
+    grid = [x for x in map(lambda line: [int(num) for num in line],
+           [y.split() for y in [x for x in grid.split('\n')]])]
+    arrows = arrowsSearch(grid, arrow_length)
+    answer = max(map(lambda arrow:
+        reduce(lambda a, b: a * b, [grid[y][x] for x, y in arrow]), arrows))
+    return answer
+
+t = time()
+print('Solution: %s | Time: %ss' % (solution(grid, 4), time() - t))
