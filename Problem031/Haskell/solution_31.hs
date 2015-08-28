@@ -1,3 +1,6 @@
+-- Solução muito porca, performance bem ruim, preciso refazer D:
+-- Author: G4BB3R
+
 getTupleValue :: (Int, Int, Int, Int, Int, Int, Int, Int) -> Int
 getTupleValue (p1, p2, p5, p10, p20, p50, l1, l2) =
     p1        +
