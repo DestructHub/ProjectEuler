@@ -4,7 +4,7 @@
 primes :: [Int]
 primes = sieve [2..]
   where sieve :: [Int] -> [Int] ;
-  		sieve (p:xs) = p : sieve [x | x <- xs, x `mod` p /= 0] ;
+  		sieve (p:xs) = p : sieve [x | x <- xs, x `rem` p /= 0] ;
   		sieve [] = []
 
 main :: IO ()
