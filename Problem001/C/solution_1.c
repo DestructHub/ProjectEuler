@@ -4,7 +4,7 @@
  *                      Copyright 2015 Manoel Vilela
  *
  *
- *       Filename: solution_1.c >
+ *       Filename: solution_1.c 
  *
  *    Description: Solution for Problem001 of projecteuler
  *
@@ -32,6 +32,15 @@ Find the sum of all the multiples of 3 or 5 below 1000.
 #include <stdlib.h>
 #define MAX 1000
 
+/*===================================================
+ *
+ *      Author: That's it's a very old solution 
+ *      when i've beginning with programming in C.
+ *
+ * ==================================================
+**/
+
+// ?
 int sumlista(int* lista, int lenght){
 	int sum = 0;
 	for(int i = 0; i < lenght; i++){
@@ -40,22 +49,23 @@ int sumlista(int* lista, int lenght){
 	return sum;
 }
 
-void increase(int** data, int* lenght){
+// why so much pointers for this?
+void increase(int **data, int *lenght){
 	int size = *lenght + sizeof(int);
 	*data = (int*) realloc(*data, size * sizeof(int));
 	*lenght += 1;
 }
 
-int exist(int* lista, int lenght, int num){
+//it's really stupid
+int exist(int *lista, int lenght, int num){
 	int exist = 0;
-	for(int i = 0; i <= lenght; i++){
-		if (lista[i] == num){
+	for(int i = 0; i <= lenght; i++)
+		if (lista[i] == num)
 			exist = 1;
-		}
-	}
 	return exist;
 }
 
+// i really doubt my skill for simplify after see my past
 int main(void){
 	int *lista, lenght = 0;
 	int multiples[3] = {3, 5, 0};
@@ -70,13 +80,14 @@ int main(void){
 					lista[lenght] = i;
 					increase(&lista, &lenght);
 				}
-				
 			}
 		}
 	}
 	
 	int sum = sumlista(lista, lenght);
-	printf("Sum: %d\n", sum);
+	
+    //at least works... right?
+    printf("Sum: %d\n", sum);
 	free(lista);
 
 	return 0;
