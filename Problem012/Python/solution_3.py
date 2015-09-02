@@ -38,6 +38,7 @@ def divisors(n):
 	return reduce(lambda x, y: x*y, exps, 1)
 
 for i in trianglenums():
+	print('%d' %i)
 	if divisors(i) > 500:
 		print('%d' %i)
 		quit()
