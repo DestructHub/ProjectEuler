@@ -17,7 +17,6 @@
 **/
 
 #include <stdio.h>
-#define N_COINS 8
 
 int different_ways(int money, int *coins, int n_coins) {
     int max_coin = money / (*coins);
@@ -39,9 +38,10 @@ int different_ways(int money, int *coins, int n_coins) {
 
 
 int main(int argc, char **argv){
-    int coins[N_COINS] = {200, 100, 50, 20, 10, 5, 2, 1};
+    int coins[] = {200, 100, 50, 20, 10, 5, 2, 1};
+    int lenght = sizeof(coins) / sizeof(int);
     int money = 200;
-    int answer = different_ways(money, coins, N_COINS);
+    int answer = different_ways(money, coins, lenght);
 
     printf("%d\n", answer);
     return 0;
