@@ -76,7 +76,6 @@ int main(void){
 			int mult = multiples[j];
 			if (i % mult == 0){
 				if (!exist(lista, lenght, i)){
-					printf("Multiply %d: %d\n", mult, i);
 					lista[lenght] = i;
 					increase(&lista, &lenght);
 				}
