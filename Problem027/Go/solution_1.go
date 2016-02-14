@@ -1,8 +1,8 @@
 // Copyright 2016 the DestructHub Authors. All rights reserved
-// Use of this source code is governed by a BSD-style
+// Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 
-// solution for the problem 27 of project euler
+// solution for the problem 27 of Project Euler
 // concurrent solution: take about 3.5~4 seconds (about 3x faster from python version)
 
 package main
@@ -26,7 +26,7 @@ type result struct {
 
 var (
 	resultchan = make(chan result, nThreads) // used to get results concurrently
-	memory     = make(map[int]bool)          // used for primes numbers
+	memory     = make(map[int]bool)          // memory for primes numbers
 )
 
 // quadratic function generator
@@ -38,6 +38,8 @@ func quadratic(a, b int) func(int) int {
 }
 
 // decorator workaround on Go
+// check if the value was be computed before
+// return if exists, else compute
 func memo(f func(int) bool) func(int) bool {
 	return func(n int) bool {
 		if val, exists := memory[n]; exists {
@@ -64,7 +66,8 @@ func isPrime(n int) bool {
 }
 
 // func evaluation n² + an + b
-// return the n primes generate
+// return the n primes generate without gaps
+// between [0, n]
 func evalFunc(f func(int) int) int {
 	n := 0
 	for {
@@ -78,7 +81,8 @@ func evalFunc(f func(int) int) int {
 }
 
 // make concurrent evaluation
-// of the equation with more nPrimes
+// of the equation whose have
+// generate more primes
 func worker(split int) {
 	limitSplited := split * limit / nThreads
 	a, b, nPrimes := 0, 0, 0
