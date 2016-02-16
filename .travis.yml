@@ -1,6 +1,5 @@
 before_install:
-  - pip install codecov
-  - pip install --user codecov
+  - sudo pip install --user codecov
   - cabal configure --enable-tests --enable-library-coverage && cabal build && cabal test
 
 after_script:
