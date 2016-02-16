@@ -1,0 +1,11 @@
+before_install:
+  - pip install codecov
+  - pip install --user codecov
+  - cabal configure --enable-tests --enable-library-coverage && cabal build && cabal test
+
+after_script:
+  - cabal install codecov-haskell
+  - codecov-haskell [options] [test-suite-names]
+
+after_success:
+  - codecov
