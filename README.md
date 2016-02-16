@@ -1,5 +1,5 @@
-
 [![Coverage](https://codecov.io/github/DestructHub/ProjectEuler/coverage.svg?branch=master)](https://codecov.io/github/DestructHub/ProjectEuler?branch=master)
+[![Build Status](https://travis-ci.org/DestructHub/ProjectEuler.svg?branch=master)](https://travis-ci.org/DestructHub/ProjectEuler)
 
 # ProjectEuler
 Compilation of some solutions of the challenges existent in the website www.projecteuler.net
