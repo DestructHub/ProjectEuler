@@ -14,7 +14,7 @@ def frac_series_generator():
     '''each n after 0.1 from 0.12345678910111213...'''
     for w in count(start=1, step=1):
         for s in str(w):
-            yield int(s)
+            yield s
 
 
 def search_digit_by_index(indexes):
@@ -23,7 +23,7 @@ def search_digit_by_index(indexes):
     digits = {x: 0 for x in indexes}
     for c, n in enumerate(frac_series_generator()):
         if c + 1 in digits:
-            digits[c + 1] = n
+            digits[c + 1] = int(n)
         if c + 1 >= limit:
             break
     return digits.values()
