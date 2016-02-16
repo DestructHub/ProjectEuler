@@ -18,15 +18,15 @@ Compilation of some solutions of the challenges existent in the website www.proj
 ## Next Goals
 
 - [ ] Fix #1
-- [ ] 50 first problems solved
+- [ ] 50 first problems solved (need only the next 10 problems!)
 - [ ] 100 first problems solved
 
 
 ## Guidelines
 
-1. Doesn't write solutions which read something from stdin! That way makes more hard to generate a script for time measurement
+* Doesn't write solutions which read something from stdin! That way makes more hard to generate a script for time measurement
 
-2. For each solution keep ever that architecture example:
+* CamelCase for folders and underscore for files. For each solution keep ever that architecture example:
 
 ```
 Problem00X/
@@ -34,12 +34,10 @@ Problem00X/
 	..	 solution_1.py
 ..	README.md 
 ```
-CamelCase for folders and underscore for files.
 
-The snippet for README.md is (only one-liner):
-
-```
+``` 
+$ cat README.md
 [The original source of problem](https://projecteuler.net/problem=29)
 ```
 
-3. On push if you get  `! [rejected]        master -> master (fetch first)`, PLEASE, don't create a useless fucking merge with `git pull`, instead this execute `git pull --rebase`. The history line of repository will be glad with this.
+*  On push if you get  `! [rejected]        master -> master (fetch first)`, PLEASE, don't create a useless fucking merge with `git pull`, instead this execute `git pull --rebase`. The history line of repository will be glad with this.
