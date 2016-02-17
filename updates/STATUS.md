@@ -1,11 +1,11 @@
 - [ ] [Problem041](https://projecteuler.net/problem=41)
 	- [ ] Swift, In Progress, @luizperes
-- [ ] [Problem042](https://projecteuler.net/problem=42)
-	- [ ] Python, In Progress, @ryukinix
+- [X] [Problem042](https://projecteuler.net/problem=42)
+	- [X] Python, @ryukinix
 - [ ] [Problem043](https://projecteuler.net/problem=43)
 - [ ] [Problem044](https://projecteuler.net/problem=44)
 - [ ] [Problem045](https://projecteuler.net/problem=45)
-- [ ] [Problem046](https://projecteuler.net/problem=46) 
+- [ ] [Problem046](https://projecteuler.net/problem=46)
 - [ ] [Problem047](https://projecteuler.net/problem=47)
 - [X] [Problem048](https://projecteuler.net/problem=48)
 	- [X] Haskell, @tkovs
