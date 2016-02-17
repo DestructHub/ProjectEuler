@@ -4,20 +4,21 @@
 # ProjectEuler
 Compilation of some solutions of the challenges existent in the website www.projecteuler.net
 
+## Status - Next 10 Problems 
 
-## The 10 Next Problems
-
-<<[updates/STATUS.md]
+We are currently solving the problems **Problem041 ~ Problem050** and you can check it in details here: [STATUS.md](updates/STATUS.md)
 
 ## Next Goals
 
-<<[updates/GOALS.md]
+- [ ] Fix #1
+- [ ] 50 first problems solved (need only the next 10 problems!)
+- [ ] 100 first problems solved
 
 ## Guidelines
 
 * Do not write solutions reading from stdin in any ways! That would be harder to generate a script for time measurement.
 
-* Please update the updates/STATUS.md, in order to us know what you are doing. That way we can attack more solutions in parallel. 
+* Please update the [STATUS.md](updates/STATUS.md), in order to us know what you are doing. That way we can attack more solutions in parallel. 
 
 * CamelCase for folders and underscore for files. For each solution keep ever that architecture example:
 

@@ -1,3 +1,0 @@
-- [ ] Fix #1
-- [ ] 50 first problems solved (need only the next 10 problems!)
-- [ ] 100 first problems solved
