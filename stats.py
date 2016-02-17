@@ -12,7 +12,9 @@ from numpy import NAN  # sudo pip install numpy
 from os.path import join
 from os import walk
 from re import compile
+from sys import stdout
 from optparse import OptionParser
+from subprocess import Popen, PIPE
 
 # CLI INTERFACE
 # -l (list languages with solutions)
@@ -27,6 +29,16 @@ from optparse import OptionParser
 # python stats.py --all --path
 # python stats.py --all --count
 # python stats.py -s Python -s Haskell -c
+
+
+class Build(object):
+    def __init__(self, program, path):
+        self.bin = program
+        self.path = path
+
+    def execute(self):
+        program = Popen([self.bin, self.path], stdout=PIPE)
+        return program.communicate()
 
 
 def charge_options():
@@ -53,6 +65,14 @@ def charge_options():
         "-c", "--count",
         help="Print the count of each solution",
         dest='count',
+        action='store_true',
+        default=False,
+    )
+
+    parser.add_option(
+        "-b", "--build",
+        help="Execute the solutions and print each solution",
+        dest='build',
         action='store_true',
         default=False,
     )
@@ -185,7 +205,7 @@ def solutions_paths(df):
         lang = solutions.name
         problems = solutions.index
         for problem in problems:
-            paths.extend(join(problem, lang, s) for s in solutions[problem])
+            paths.extend((lang, join(problem, lang, s)) for s in solutions[problem])
 
     return paths
 
@@ -227,21 +247,31 @@ def main():
             c = count_solutions(df)
             count = [sum(c[lang]) for lang in df.columns]
             table = DataFrame(count, index=df.columns, columns=["Solutions"])
-            print(table.sort_values("Solutions", ascending=False))
+            stdout.write(table.sort_values("Solutions", ascending=False))
 
         elif options.path:
             langs_selected = [x for x in langs.values()]
 
         else:
             for lang in sorted(df):
-                print(lang)
+                stdout.write(lang + "\n")
 
     if options.count and not options.list:
-        print(count_solutions(df[langs_selected]))
+        stdout.write(count_solutions(df[langs_selected]))
+
+    elif options.build:
+        stdout.write("{:<31} | {} \n".format("Path", "Answer"))
+        for lang, path in solutions_paths(df[langs_selected]):
+            if lang == 'Python':
+                b = Build('python2', path)
+                out, err = b.execute()
+                if err:
+                    exit(1)
+                stdout.write("{}: {}\n".format(path, out))
 
     elif options.path:
-        for path in solutions_paths(df[langs_selected]):
-            print(path)
+        for _, path in solutions_paths(df[langs_selected]):
+            stdout.write(path + "\n")
 
     elif not any(options.__dict__.values()):
         parser.print_help()
