@@ -1,5 +1,5 @@
-- [ ] [Problem041](https://projecteuler.net/problem=41)
-	- [ ] Swift, In Progress, @luizperes
+- [X] [Problem041](https://projecteuler.net/problem=41)
+	- [X] Swift, @luizperes
 - [X] [Problem042](https://projecteuler.net/problem=42)
 	- [X] Python, @ryukinix
 - [ ] [Problem043](https://projecteuler.net/problem=43)
