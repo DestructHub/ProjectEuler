@@ -7,27 +7,17 @@ Compilation of some solutions of the challenges existent in the website www.proj
 
 ## The 10 Next Problems
 
-- [ ] [Problem041](https://projecteuler.net/problem=41)
-- [ ] [Problem042](https://projecteuler.net/problem=42)
-- [ ] [Problem043](https://projecteuler.net/problem=43)
-- [ ] [Problem044](https://projecteuler.net/problem=44)
-- [ ] [Problem045](https://projecteuler.net/problem=45)
-- [ ] [Problem046](https://projecteuler.net/problem=46) 
-- [ ] [Problem047](https://projecteuler.net/problem=47)
-- [X] [Problem048](https://projecteuler.net/problem=48)
-- [ ] [Problem049](https://projecteuler.net/problem=49)
-- [ ] [Problem050](https://projecteuler.net/problem=50)
+<<[updates/STATUS.md]
 
 ## Next Goals
 
-- [ ] Fix #1
-- [ ] 50 first problems solved (need only the next 10 problems!)
-- [ ] 100 first problems solved
-
+<<[updates/GOALS.md]
 
 ## Guidelines
 
-* Doesn't write solutions which read something from stdin! That way makes more hard to generate a script for time measurement
+* Do not write solutions reading from stdin in any ways! That would be harder to generate a script for time measurement.
+
+* Please update the updates/STATUS.md, in order to us know what you are doing. That way we can attack more solutions in parallel. 
 
 * CamelCase for folders and underscore for files. For each solution keep ever that architecture example:
 
@@ -44,3 +34,5 @@ $ cat README.md
 ```
 
 *  On push if you get  `! [rejected]        master -> master (fetch first)`, PLEASE, don't create a useless fucking merge with `git pull`, instead this execute `git pull --rebase`. The history line of repository will be glad with this.
+
+
