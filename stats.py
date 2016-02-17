@@ -198,14 +198,14 @@ def count_solutions(df):
         @param (df): pandas.DataFrame
     Returns: InsertHere
     """
-    _df = DataFrame()
+    df_ = DataFrame()
     for column in df.columns:
-        _df[column] = df[column].map(lambda x: len(x) if x is not NAN else 0)
+        df_[column] = df[column].map(lambda x: len(x) if x is not NAN else 0)
 
     if len(df.columns) > 1:
-        _df["Solutions"] = _df[_df.columns].apply(tuple, axis=1).map(sum)
+        df_["Solutions"] = df_[df_.columns].apply(tuple, axis=1).map(sum)
 
-    return _df
+    return df_[df_.Solutions > 0]
 
 
 def filter_nan(df):
