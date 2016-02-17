@@ -36,8 +36,8 @@ def charge_options():
         "-l", "--list",
         help="Print a list of the languages whose have solutions",
         dest="list",
+        action='store_true',
         default=False,
-        nargs=0
     )
 
     parser.add_option(
@@ -53,26 +53,27 @@ def charge_options():
         "-c", "--count",
         help="Print the count of each solution",
         dest='count',
+        action='store_true',
         default=False,
-        nargs=0
     )
 
     parser.add_option(
         "-p", "--path",
         help="Print the path of each solution",
         dest='path',
+        action='store_true',
         default=False,
-        nargs=0
     )
 
     parser.add_option(
         "-a", "--all",
         help="Select all the languages for search",
         dest='all',
+        action='store_true',
         default=False,
-        nargs=0
-
     )
+
+    parser.usage = "%prog [-s language] [-al] [-cp] "
 
     return parser
 
@@ -204,20 +205,9 @@ def count_solutions(df):
 
     if len(df.columns) > 1:
         df_["Solutions"] = df_[df_.columns].apply(tuple, axis=1).map(sum)
+        df_ = df_[df_.Solutions > 0]
 
-    return df_[df_.Solutions > 0]
-
-
-def filter_nan(df):
-    """
-    Function: filter_nan
-    Summary: Filter all rows whose all them are numpy.NaN
-    Examples: not yet
-    Attributes:
-        @param (df): pandas.DataFrame
-    Returns: rows whose all are nan excluded
-    """
-    pass
+    return df_
 
 
 def main():
@@ -227,29 +217,33 @@ def main():
     langs = {x.lower(): x for x in df.columns}
     query = [x.lower() for x in options.search]
 
-    if options.all is not False:
+    if options.all:
         langs_selected = [x for x in langs.values()]
     else:
         langs_selected = [langs[x] for x in search_language(query, langs)]
 
-    if options.list is not False:
-        if options.count is not False:
+    if options.list:
+        if options.count:
             c = count_solutions(df)
             count = [sum(c[lang]) for lang in df.columns]
             table = DataFrame(count, index=df.columns, columns=["Solutions"])
             print(table.sort_values("Solutions", ascending=False))
 
+        elif options.path:
+            langs_selected = [x for x in langs.values()]
+
         else:
             for lang in sorted(df):
                 print(lang)
 
-    elif options.count is not False:
+    if options.count and not options.list:
         print(count_solutions(df[langs_selected]))
 
-    elif options.path is not False:
+    elif options.path:
         for path in solutions_paths(df[langs_selected]):
             print(path)
-    else:
+
+    elif not any(options.__dict__.values()):
         parser.print_help()
 
 if __name__ == '__main__':
