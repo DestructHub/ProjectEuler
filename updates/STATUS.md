@@ -2,8 +2,8 @@
 	- [X] Swift, @luizperes
 - [X] [Problem042](https://projecteuler.net/problem=42)
 	- [X] Python, @ryukinix
-- [ ] [Problem043](https://projecteuler.net/problem=43)
-	- [ ] Swift, In Progress, @luizperes
+- [X] [Problem043](https://projecteuler.net/problem=43)
+	- [X] Swift, @luizperes
 - [ ] [Problem044](https://projecteuler.net/problem=44)
     - [ ] Python, In Progress, @ryukinix 
 - [ ] [Problem045](https://projecteuler.net/problem=45)
