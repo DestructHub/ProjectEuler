@@ -3,6 +3,7 @@
 - [X] [Problem042](https://projecteuler.net/problem=42)
 	- [X] Python, @ryukinix
 - [ ] [Problem043](https://projecteuler.net/problem=43)
+	- [ ] Swift, In Progress, @luizperes
 - [ ] [Problem044](https://projecteuler.net/problem=44)
 - [ ] [Problem045](https://projecteuler.net/problem=45)
 - [ ] [Problem046](https://projecteuler.net/problem=46)
