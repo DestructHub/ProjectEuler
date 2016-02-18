@@ -1,10 +1,13 @@
-GCC = gcc
+CXX = gcc
 LFLAGS = -lm -Wall -o
 TARGET =  solution_1
+EXTENSION_TARGET = c
+EXTENSION_OUT = out
+
 
 all: 
-	$(GCC) $(LFLAGS) $(TARGET).out $(TARGET).c
+	$(CXX) $(LFLAGS) $(TARGET).$(EXTENSION_OUT) $(TARGET).$(EXTENSION_TARGET)
 clean: 
-	rm -v *.out
+	rm -v *.$(EXTENSION_OUT)
 run:
-	./$(TARGET).out
+	./$(TARGET).$(EXTENSION_OUT)

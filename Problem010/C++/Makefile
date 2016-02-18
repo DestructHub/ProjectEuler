@@ -8,6 +8,6 @@ EXTENSION_OUT = out
 all: 
 	$(CXX) $(LFLAGS) $(TARGET).$(EXTENSION_OUT) $(TARGET).$(EXTENSION_TARGET)
 clean: 
-	rm -v *.out
+	rm -v *.$(EXTENSION_OUT)
 run:
-	./$(TARGET).out
+	./$(TARGET).$(EXTENSION_OUT)
