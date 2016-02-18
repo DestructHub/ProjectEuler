@@ -12,7 +12,6 @@ from numpy import NAN  # sudo pip install numpy
 from os.path import join
 from os import walk
 from re import compile
-from sys import stdout
 from optparse import OptionParser
 from subprocess import Popen, PIPE
 from time import time
@@ -30,6 +29,25 @@ from time import time
 # python stats.py --all --path
 # python stats.py --all --count
 # python stats.py -s Python -s Haskell -c
+
+
+def debugorator(fn):
+    """Useful decorator to debugorator functions/methods
+
+    :param fn: function
+    """
+    from functools import wraps
+
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        result = fn(*args, **kwargs)
+        for key, value in kwargs.items():
+            args += ('='.join(map(str, [key, value])),)
+        if len(args) == 1:
+            args = '({})'.format(args[0])
+        print('@{0}{1} -> {2}\n'.format(fn.__name__, args, result))
+        return result
+    return wrapper
 
 
 class Build(object):
@@ -112,7 +130,7 @@ def walk_problems():
     problem = compile("./Problem[0-9]{3}/")
     problems = []
     for x in walk("."):
-        if problem.match(x[0]):
+        if problem.match(x[0]) and "__pycache__" not in x:
             problems.append(x)
     return problems
 
@@ -133,6 +151,7 @@ def search_language(query, languages):
     return set(query) & set(languages)
 
 
+# @debugorator
 def split_problem_language(path):
     """
     Function: split_problem_language
@@ -157,7 +176,7 @@ def parse_solutions(problems):
         @param (problems): os.walk functions output
     Returns: problem:lang -> [solutions] <dict>
     """
-    solution = compile("solution_[0-9]")
+    solution = compile("solution_*")
 
     map_solutions = {}
     for path, dirs, files in problems:
@@ -235,6 +254,21 @@ def count_solutions(df):
     return df_
 
 
+def build_result(df):
+    print("{:<32} | {:<20}| {}\n".format("Path", "Answer", "Time"))
+    for lang, path in solutions_paths(df):
+        if lang == 'Python' and 'slow' not in path:
+            b = Build('python2', path)
+            out, err, t = b.execute()
+            answer = out.decode('utf-8').strip('\n')
+            if err:
+                exit(1)
+            print("{}: {:<20}: {:.2f}s\n".format(path, answer, t))
+        else:
+            print("Don't have support yet!")
+            exit(0)
+
+
 def main():
     parser = charge_options()
     options, _ = parser.parse_args()
@@ -252,32 +286,24 @@ def main():
             c = count_solutions(df)
             count = [sum(c[lang]) for lang in df.columns]
             table = DataFrame(count, index=df.columns, columns=["Solutions"])
-            stdout.write(table.sort_values("Solutions", ascending=False))
+            print(table.sort_values("Solutions", ascending=False))
 
         elif options.path:
             langs_selected = [x for x in langs.values()]
 
         else:
             for lang in sorted(df):
-                stdout.write(lang + "\n")
+                print(lang)
 
     if options.count and not options.list:
-        stdout.write(count_solutions(df[langs_selected]))
+        print(count_solutions(df[langs_selected]))
 
     elif options.build:
-        stdout.write("{:<32} | {:<20}| {}\n".format("Path", "Answer", "Time"))
-        for lang, path in solutions_paths(df[langs_selected]):
-            if lang == 'Python':
-                b = Build('python2', path)
-                out, err, t = b.execute()
-                answer = out.decode('utf-8').strip('\n')
-                if err:
-                    exit(1)
-                stdout.write("{}: {:<20}: {:.2f}s\n".format(path, answer, t))
+        build_result(df[langs_selected])
 
     elif options.path:
         for _, path in solutions_paths(df[langs_selected]):
-            stdout.write(path + "\n")
+            print(path)
 
     elif not any(options.__dict__.values()):
         parser.print_help()

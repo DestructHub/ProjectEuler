@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+# coding=utf-8
 #   Python Script
 #
 #   Copyright © Manoel Vilela
@@ -7,6 +7,7 @@
 #
 
 from functools import wraps
+from os.path import dirname, join
 
 
 def memo(fn):
@@ -24,7 +25,7 @@ def memo(fn):
 
 
 def load_words():
-    with open("p042_words.txt") as f:
+    with open(join(dirname(__file__), "p042_words.txt")) as f:
         words = f.read().strip("\n").split(",")
     return [x.lower().strip("\"") for x in words]
 

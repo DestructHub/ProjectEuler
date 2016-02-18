@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# coding=utf-8
+#   Python Script
+#
+#   Copyleft © Manoel Vilela
+#
+#
+
+
 def is_prime(n):
     if n <= 3:
         return n >= 2
@@ -7,6 +16,8 @@ def is_prime(n):
         if n % i == 0 or n % (i + 2) == 0:
             return False
     return True
+
+
 def circPrime(n):
     n1 = str(n)*2
     for i in range(len(str(n))):

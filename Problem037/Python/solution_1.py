@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+# coding=utf-8
 #   Python Script
 #
 #   Copyright © Manoel Vilela
@@ -83,12 +83,9 @@ def search_truncate(until=11):
     while len(truncate_primes) < until:
         t = TruncatePrime(n)
         if t.is_truncate:
-            print('Found: {}'.format(t))
             truncate_primes.append(t)
         n += 1
-    print('N-found: {}'.format(len(truncate_primes)))
     return sum(truncate_primes)
 
 if __name__ == '__main__':
-   print('Answer: {}'.format(search_truncate()))
-
+    print(search_truncate())
