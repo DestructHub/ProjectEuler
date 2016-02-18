@@ -4,6 +4,7 @@
  
 #include <iostream>
 #include <cstdlib>
+#include <string.h>
  
 bool is_prime(unsigned int number);
  
@@ -11,15 +12,13 @@ int main(int argc, char* argv[])
 {
 	const char *num = "2000000";
 
-	if(argv[1])
-		num = argv[1];
-	else if (argv[1] == "--help")
+	if (strcmp(argv[1],"--help") == 0){
 		std::cerr << "Usage: primes <number_of_primes>" << std::endl;
-
-	
-	
-	std::cerr << "You've choosen the sum of the first " << num
-	          << " prime numbers." << std::endl;
+		exit(0);
+	}
+	else if(argv[1]) {
+		num = argv[1];
+	}
 	
 	// iteration variables.
 	int i = 1;
@@ -32,16 +31,13 @@ int main(int argc, char* argv[])
 	while(j < number_to)
 	{
 		if(is_prime(i))
-		{
-			std::cerr << i << std::endl;		
+		{	
 			sum += i;
 			j++;
 		}
 		i++;
 	}
 
-	std::cerr << "The sum of the numbers between 2 and " << number_to  
-			  << " are: " << sum << std::endl;
 	std::cout << sum << std::endl;
 }
  
