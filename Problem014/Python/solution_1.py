@@ -1,4 +1,11 @@
-# -*- coding:utf-8 -*-
+#!/usr/bin/env python
+# coding=utf-8
+#   Python Script
+#
+#   Copyleft © Manoel Vilela
+#
+#
+
 # problem14.py dumb solution (not efficient)
 """
 Longest Collatz sequence
@@ -33,13 +40,17 @@ def sequence(n):
         terms += 1
     return terms
 
-most = 0
-i = 1
-while i < 10 ** 6:
-    print(i)
-    s = sequence(i)
-    if s > most:
-        most = s
-        value = i
-    i += 1
-print(value, most)
+
+def answer():
+    most = 0
+    i = 1
+    while i < 10 ** 6:
+        s = sequence(i)
+        if s > most:
+            most = s
+            value = i
+        i += 1
+
+    return value
+
+print(answer())
