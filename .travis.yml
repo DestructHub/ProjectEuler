@@ -1,7 +1,5 @@
 before_install:
-  - sudo pip install  codecov
-  - sudo pip install numpy pandas
+  - sudo pip3 install numpy pandas
 
 after_success:
-  - codecov
-  - python3 stats.py --search python --build
+  - python3 stats.py --search python --search go --build
