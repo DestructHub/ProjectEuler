@@ -15,6 +15,7 @@ from re import compile
 from sys import stdout
 from optparse import OptionParser
 from subprocess import Popen, PIPE
+from time import time
 
 # CLI INTERFACE
 # -l (list languages with solutions)
@@ -37,8 +38,11 @@ class Build(object):
         self.path = path
 
     def execute(self):
+        before = time()
         program = Popen([self.bin, self.path], stdout=PIPE)
-        return program.communicate()
+        out, err = program.communicate()
+        time_passed = time() - before
+        return out, err, time_passed
 
 
 def charge_options():
@@ -205,7 +209,8 @@ def solutions_paths(df):
         lang = solutions.name
         problems = solutions.index
         for problem in problems:
-            paths.extend((lang, join(problem, lang, s)) for s in solutions[problem])
+            p = ((lang, join(problem, lang, s)) for s in solutions[problem])
+            paths.extend(p)
 
     return paths
 
@@ -260,14 +265,15 @@ def main():
         stdout.write(count_solutions(df[langs_selected]))
 
     elif options.build:
-        stdout.write("{:<31} | {} \n".format("Path", "Answer"))
+        stdout.write("{:<32} | {:<20}| {}\n".format("Path", "Answer", "Time"))
         for lang, path in solutions_paths(df[langs_selected]):
             if lang == 'Python':
                 b = Build('python2', path)
-                out, err = b.execute()
+                out, err, t = b.execute()
+                answer = out.decode('utf-8').strip('\n')
                 if err:
                     exit(1)
-                stdout.write("{}: {}\n".format(path, out))
+                stdout.write("{}: {:<20}: {:.2f}s\n".format(path, answer, t))
 
     elif options.path:
         for _, path in solutions_paths(df[langs_selected]):
