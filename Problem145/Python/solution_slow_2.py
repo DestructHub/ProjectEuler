@@ -1,5 +1,12 @@
-#!/usr/bin/env python3
-#coding=utf-8
+#!/usr/bin/env python
+# coding=utf-8
+#
+#   Python Script
+#
+#   Copyleft © Manoel Vilela
+#
+#
+
 """
 How many reversible numbers are there below one-billion?
 Problem 145
@@ -13,8 +20,9 @@ How many reversible numbers are there below one-billion (10^9)?
 """
 from functools import reduce
 from itertools import permutations, combinations_with_replacement
-#hahahhahaha!! consegui: answer 608720
-#Demorou pra caramba, tem que melhorar ainda... mas funciona!
+
+# hahahhahaha!! consegui: answer 608720
+# Demorou pra caramba, tem que melhorar ainda... mas funciona!
 
 
 combs = reduce(list.__add__, [[(x, y) for y in range(0, 10) if (x ^ y) & 1 or (x + y) < 10] for x in range(0, 10)])
@@ -24,11 +32,11 @@ def sumreverse(num):
 def reversible(num):
 	return bool(reduce(lambda a, b: a*b, [int(y) for y in sumreverse(num)]) & 1)
 
-def gen_filtred(n, start = 1): #n - potencia de 10
+def gen_filtred(n, start = 1): # n - potencia de 10
 	exp = start
 	while exp < n:
 		tamanho = (exp + 1)//2
-		#expoente impar na base 10 -> tamanho par
+		# expoente impar na base 10 -> tamanho par
 		for comb in combinations_with_replacement(combs, tamanho):
 			for perm in sorted(set(permutations(comb))):
 				head, tail = perm[0]
@@ -55,12 +63,10 @@ def gen_filtred(n, start = 1): #n - potencia de 10
 range_x = lambda x: gen_filtred(len(str(x)) - 1)
 
 test = 100000000
-print('Testando até: %s ' %test)
 total = 0
 for i in range_x(test):
-	print(i)
 	if reversible(i):
 		total += 1
 
-print('Total: %d' %total)
+print(total)
 
