@@ -86,7 +86,7 @@ int main(void){
 	int sum = sumlista(lista, lenght);
 	
     //at least works... right?
-    printf("Sum: %d\n", sum);
+    printf("%d\n", sum);
 	free(lista);
 
 	return 0;

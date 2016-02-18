@@ -81,7 +81,5 @@ void getresult(Result *r) {
 int main(int argc, char *argv[]) {
     Result r;
     getresult(&r);
-    printf("Equation: n² + %dn + %d\n", r.a, r.b);
-    printf("Number of primes: [0, %d]\n", r.primes);
-    printf("Answer: %d\n", r.a * r.b);
+    printf("%d\n", r.a * r.b);
 }
