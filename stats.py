@@ -16,6 +16,14 @@ from optparse import OptionParser
 from subprocess import Popen, PIPE
 from time import time
 
+
+BUILD_SUPPORT = [
+    "Python",
+    "Go",
+    # "C",
+    # "C++"
+]
+
 # CLI INTERFACE
 # -l (list languages with solutions)
 # -c (do count solutions)
@@ -51,13 +59,13 @@ def debugorator(fn):
 
 
 class Build(object):
-    def __init__(self, program, path):
-        self.bin = program
+    def __init__(self, args, path):
+        self.bin = args
         self.path = path
 
     def execute(self):
         before = time()
-        program = Popen([self.bin, self.path], stdout=PIPE)
+        program = Popen(self.bin + [self.path], stdout=PIPE)
         out, err = program.communicate()
         time_passed = time() - before
         return out, err, time_passed
@@ -255,17 +263,26 @@ def count_solutions(df):
 
 
 def build_result(df):
-    print("{:<32} | {:<20}| {}\n".format("Path", "Answer", "Time"))
     for lang, path in solutions_paths(df):
-        if lang == 'Python' and 'slow' not in path:
-            b = Build('python2', path)
+        if lang in BUILD_SUPPORT and 'slow' not in path:
+            if lang == "Python":
+                b = Build(['python2'], path)
+            elif lang == "Go":
+                b = Build(['go', 'run'], path)
+
+            else:
+                print("Some weird happens. {!r} problems".format(lang))
+                exit(1)
+
             out, err, t = b.execute()
             answer = out.decode('utf-8').strip('\n')
             if err:
                 exit(1)
-            print("{}: {:<20}: {:.2f}s\n".format(path, answer, t))
+            print("{!r}: {}: {:.2f}s".format(path, answer, t))
+        elif 'slow' in path:
+            print("{!r}: bad solution, we don't compute that.".format(path))
         else:
-            print("Don't have support yet!")
+            print("Don't have support yet for {!r}!".format(lang))
             exit(0)
 
 
