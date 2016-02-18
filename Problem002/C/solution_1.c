@@ -32,7 +32,7 @@ int main(void) {
       sum_even += numbers.sequence[i];
   }
 
-  printf ("%d", sum_even);
+  printf ("%d\n", sum_even);
 
   return 0;
 }
