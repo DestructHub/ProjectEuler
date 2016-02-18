@@ -39,7 +39,6 @@ let primes = [2, 3, 5, 7, 11, 13, 17]
 let numbers = Array("0123456789".characters).map{Int(String($0))!}
 var arr = permute(numbers)
 var sum:UInt64 = 0
-var count = 0
 
 while !arr.isEmpty  
 {
@@ -63,7 +62,6 @@ while !arr.isEmpty
   {
     var str = arr.map { String($0) }.joinWithSeparator("")
     sum += UInt64(str)!
-    count += 1
   }
 
   arr = permute(arr)
