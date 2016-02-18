@@ -1,4 +1,13 @@
-#coding=utf-8
+#!/usr/bin/env python
+# coding=utf-8
+#   Python Script
+#
+#   Copyleft © Manoel Vilela
+#
+#
+
+from functools import reduce
+
 """
 Amicable numbers
 Problem 21
@@ -11,7 +20,10 @@ The proper divisors of 284 are 1, 2, 4, 71 and 142; so d(284) = 220.
 
 Evaluate the sum of all the amicable numbers under 10000.
 
-""" 
+"""
+
+# FUCK D: ? i WROTE THIS? MY LEVEL OF OBSCURITY IS MORE HIGHER WHOSE I THOUGH...
 def d(n):
 	return sum(sorted(set(reduce(list.__add__, ([i, n//i] for i in range(1, int(n**0.5) + 1) if n % i == 0))))[:-1])
-print (sum((x for x in range(1, 10000) if d(x) > 0 and x != d(x) and x == d(d(x)))))
+
+print(sum(x for x in range(1, 10000) if d(x) > 0 and x != d(x) and x == d(d(x))))

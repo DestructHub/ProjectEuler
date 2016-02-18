@@ -1,4 +1,18 @@
-#coding=utf-8
+#!/usr/bin/env python
+# coding=utf-8
+#   Python Script
+#
+#   Copyleft © Manoel Vilela
+#
+#
+
+from functools import reduce
+import sys
+
+if sys.version_info > (3, 0):
+    xrange = range
+    long = int
+
 """
 Factorial digit sum
 Problem 20
@@ -12,4 +26,4 @@ Find the sum of the digits in the number 100!
 
 """
 
-print(reduce(lambda x, y: int(x) + int(y), str(reduce(lambda x, y: x*y, xrange(1, 100)))))
+print(reduce(long.__add__, map(long, str(reduce(long.__mul__, map(long, xrange(1, 100)))))))

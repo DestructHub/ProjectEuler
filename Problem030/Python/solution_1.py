@@ -1,4 +1,13 @@
-#coding=utf-8
+#!/usr/bin/env python
+# coding=utf-8
+#   Python Script
+#
+#   Copyleft © Manoel Vilela
+#
+#
+
+from functools import reduce
+
 """
 Digit fifth powers
 Problem 30
@@ -15,6 +24,7 @@ The sum of these numbers is 1634 + 8208 + 9474 = 19316.
 
 Find the sum of all the numbers that can be written as the sum of fifth powers of their digits.
 """
+
 """ Prova de um cara lá no fórum do PE sobre apenas ser necessário considerar números de 6 dígitos ou menos.
 Proof that one need only consider numbers 6 digits or less:  
 If N has n digits, then 10^{n-1} <= N.  
@@ -32,10 +42,10 @@ It follows that if n>=7, then
 Hence the only way we can have 10^{n-1} <= n*9^5 is for n<=6.  
 """
 
-#Aqui foi pura sorte.
-#Inicialmente tentei pensar num limite para testes, seria o tamanho*9**5, mas não consegui deduzir o maior tamanho possível
-#Desse jeito, fiz alguns testes e descobri que a ocorrência de números que poderiam ser escritos como a soma de potência(5)
-#Era no tamanho intervalo de [4, 7)
+# Aqui foi pura sorte.
+# Inicialmente tentei pensar num limite para testes, seria o tamanho*9**5, mas não consegui deduzir o maior tamanho possível
+# Desse jeito, fiz alguns testes e descobri que a ocorrência de números que poderiam ser escritos como a soma de potência(5)
+# Era no tamanho intervalo de [4, 7)
 from itertools import combinations_with_replacement as c; from string import digits as d
 n = lambda num, digits: sorted(str(num)) == sorted(digits)
 p = lambda comb: sum([int(n) ** 5 for n in comb])

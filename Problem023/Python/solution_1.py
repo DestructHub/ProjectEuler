@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# coding=utf-8
+#   Python Script
+#
+#   Copyleft © Manoel Vilela
+#
+#
+
 """
 
 A perfect number is a number for which the sum of its proper divisors is exactly equal to the number. 
@@ -16,15 +24,15 @@ from functools import reduce
 from itertools import combinations_with_replacement as combinations
 max_num = 28123
 
+
 def divisors(num):
-	return set(reduce(list.__add__, [[div, num//div] for div in range(2, int(num**0.5) + 1) if num % div == 0] + [[1]]))
+    return set(reduce(list.__add__, [[div, num//div] for div in range(2, int(num**0.5) + 1) if num % div == 0] + [[1]]))
+
 
 def abundant(num):
-	return sum(divisors(num)) > num
+    return sum(divisors(num)) > num
 
 abundant_nums = (n for n in range(1, max_num) if abundant(n))
 sum_of_two_abundants = set(a + b for a, b in combinations(abundant_nums, 2))
 not_abundant_nums = (x for x in range(max_num) if x not in sum_of_two_abundants)
 print(sum(not_abundant_nums))
-
-
