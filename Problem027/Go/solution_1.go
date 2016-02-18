@@ -10,7 +10,6 @@ package main
 import (
 	"fmt"
 	"math"
-	"time"
 )
 
 const (
@@ -113,15 +112,10 @@ func receiver() (a int, b int, nPrimes int) {
 }
 
 func main() {
-	start := time.Now()
 	for part := 1; part <= nThreads; part++ {
 		go worker(part)
 	}
 
-	a, b, nPrimes := receiver()
-	elapsed := time.Since(start)
-	fmt.Printf("Equation: n² + %vn + %v\n", a, b)
-	fmt.Printf("Generate: primes on range [0, %v]\n", nPrimes)
-	fmt.Printf("Answer: %v * %v => %v\n", a, b, a*b)
-	fmt.Printf("Time execution: %v\n", elapsed)
+	a, b, _ := receiver()
+	fmt.Printf("%v\n", a*b)
 }
