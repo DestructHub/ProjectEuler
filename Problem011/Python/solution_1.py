@@ -92,5 +92,4 @@ def solution(grid, arrow_length):
         reduce(lambda a, b: a * b, [grid[y][x] for x, y in arrow]), arrows))
     return answer
 
-t = time()
-print('Solution: %s | Time: %ss' % (solution(grid, 4), time() - t))
+print(solution(grid, 4))
