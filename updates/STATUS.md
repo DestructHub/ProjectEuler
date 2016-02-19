@@ -5,14 +5,15 @@
 - [X] [Problem043](https://projecteuler.net/problem=43)
 	- [X] Swift, @luizperes
 - [X] [Problem044](https://projecteuler.net/problem=44)
-	- [X] Python, In Progress, @ryukinix
+	- [X] Python, @ryukinix
 - [X] [Problem045](https://projecteuler.net/problem=45)
 	- [X] Swift, @luizperes
 	- [X] Python, @ryukinix
-	- [ ] C, @ryukinix
+	- [X] C, @ryukinix and @luizperes
 	- [X] Go, @ryukinix
 	- [ ] CommonLisp, @ryukinix
 - [ ] [Problem046](https://projecteuler.net/problem=46)
+	- [ ] Python, In Progress, @ryukinix
 - [ ] [Problem047](https://projecteuler.net/problem=47)
 - [X] [Problem048](https://projecteuler.net/problem=48)
 	- [X] Haskell, @tkovs
