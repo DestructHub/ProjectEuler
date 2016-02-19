@@ -10,7 +10,7 @@
 	- [X] Swift, @luizperes
 	- [X] Python, @ryukinix
 	- [ ] C, @ryukinix
-	- [ ] Go, @ryukinix
+	- [X] Go, @ryukinix
 	- [ ] CommonLisp, @ryukinix
 - [ ] [Problem046](https://projecteuler.net/problem=46)
 - [ ] [Problem047](https://projecteuler.net/problem=47)
