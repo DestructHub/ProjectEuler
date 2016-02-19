@@ -6,7 +6,7 @@
 	- [X] Swift, @luizperes
 - [X] [Problem044](https://projecteuler.net/problem=44)
 	- [X] Python, In Progress, @ryukinix
-- [ ] [Problem045](https://projecteuler.net/problem=45)
+- [X] [Problem045](https://projecteuler.net/problem=45)
 	- [X] Swift, @luizperes
 	- [X] Python, @ryukinix
 	- [ ] C, @ryukinix
