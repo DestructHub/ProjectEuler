@@ -18,38 +18,30 @@
 // created by Manoel Vilela
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
-#include <stdbool.h>
-#define F_ISINTEGER(_float) (!fmod(_float, 1.0f))
+#define BModule 1
 
 typedef struct {
-	int a;
-	int b;
-	int c;
+	double a;
+	double c;
 } Polynom;
 
-
-float quadratic(int a, int b, int c) {
-	return (-b + sqrt(b*b-4*a*c)) / (2 * a);
-}
-
 int main(int argc, char *argv[]) {
+	Polynom P = {3, 2};
+	Polynom H = {2, 1};
 
-	Polynom P = {3, -1, -2};
-	Polynom H = {2, -1, -1};
+	double last_triangle = 285;
 
-	float last_triangle = 285;
-
-	while (true) {
+	while (1) {
 		last_triangle += 1;
-		int t = (pow(last_triangle, 2) + last_triangle) / 2;
-		float p = quadratic(P.a, P.b, t * P.c);
-		float h = quadratic(H.a, H.b, t * H.c);
+		double t = (pow(last_triangle, 2) + last_triangle) / 2;
+		double Pn = (BModule + sqrt(BModule + 4 * P.a * P.c * t)) / (2 * P.a);	
+ 		double Hn = (BModule + sqrt(BModule + 4 * H.a * H.c * t)) / (2 * H.a);	
 
-		if (F_ISINTEGER(p) && F_ISINTEGER(h)) {
-			printf("%d\n", t);
+		if (floor(Pn) == Pn && floor(Hn) == Hn) {
+			printf("%.0f\n", t);
 			break;
 		}
 	}
+	return 0;
 }
