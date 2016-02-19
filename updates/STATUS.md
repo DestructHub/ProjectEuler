@@ -16,6 +16,7 @@
 	- [ ] Python, In Progress, @ryukinix
 - [X] [Problem047](https://projecteuler.net/problem=47)
 	- [X] Swift, @luizperes
+	- [X] Python, @ryukinix
 - [X] [Problem048](https://projecteuler.net/problem=48)
 	- [X] Haskell, @tkovs
 - [ ] [Problem049](https://projecteuler.net/problem=49)
