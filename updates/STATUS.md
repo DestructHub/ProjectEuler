@@ -12,8 +12,8 @@
 	- [X] C, @ryukinix and @luizperes
 	- [X] Go, @ryukinix
 	- [ ] CommonLisp, @ryukinix
-- [ ] [Problem046](https://projecteuler.net/problem=46)
-	- [ ] Python, In Progress, @ryukinix
+- [X] [Problem046](https://projecteuler.net/problem=46)
+	- [X] Python, @ryukinix
 - [X] [Problem047](https://projecteuler.net/problem=47)
 	- [X] Swift, @luizperes
 	- [X] Python, @ryukinix
