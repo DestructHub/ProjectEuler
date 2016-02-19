@@ -14,8 +14,8 @@
 	- [ ] CommonLisp, @ryukinix
 - [ ] [Problem046](https://projecteuler.net/problem=46)
 	- [ ] Python, In Progress, @ryukinix
-- [ ] [Problem047](https://projecteuler.net/problem=47)
-	- [ ] Swift, In Progress, @luizperes
+- [X] [Problem047](https://projecteuler.net/problem=47)
+	- [X] Swift, @luizperes
 - [X] [Problem048](https://projecteuler.net/problem=48)
 	- [X] Haskell, @tkovs
 - [ ] [Problem049](https://projecteuler.net/problem=49)
