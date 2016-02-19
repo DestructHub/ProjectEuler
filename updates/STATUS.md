@@ -7,7 +7,7 @@
 - [ ] [Problem044](https://projecteuler.net/problem=44)
 	- [ ] Python, In Progress, @ryukinix 
 - [ ] [Problem045](https://projecteuler.net/problem=45)
-	- [ ] Swift, In Progress, @luizperes
+	- [X] Swift, @luizperes
 - [ ] [Problem046](https://projecteuler.net/problem=46)
 - [ ] [Problem047](https://projecteuler.net/problem=47)
 - [X] [Problem048](https://projecteuler.net/problem=48)
