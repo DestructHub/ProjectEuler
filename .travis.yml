@@ -1,5 +1,16 @@
+rvm:
+  - 1.9.3
+  - 2.0
+  - 2.1
+  - 2.2
+ 
 before_install:
+  - gem install rspec
   - sudo pip3 install numpy pandas
+  - sudo apt-get install golang
+  - echo '{:user {:plugins [[lein-exec "0.3.3"]]}}'' > ~/.lein/profiles.clj
+  - sudo wget https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > /usr/bin/lein
+
 
 after_success:
   - python3 stats.py --search python --search go --build
