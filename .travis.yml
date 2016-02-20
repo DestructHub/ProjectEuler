@@ -6,13 +6,6 @@ python:
   - "3.3"
   - "3.4"
   - "3.5"
-
-language: go
-go:
-  - '1.4'
-  - '1.5'
-  - '1.6'
-
 # useless for while...
 #
 # command to install dependencies
@@ -22,16 +15,20 @@ go:
 # command to run tests
 # script: nosetests
 
-
-
-
 before_install:
   - gem install rspec
-  - sudo apt-get install python-numpy python-scipy python-pandas golang python3-pip python-pip python-sympy -y
+  - sudo apt-get install python-numpy -y
+  - sudo apt-get install python-scipy -y
+  - sudo apt-get install python-pandas -y
+  - sudo apt-get install golang -y
+  - sudo apt-get install python3-pip -y
+  - sudo apt-get install python-pip -y
+  - sudo apt-get install python-sympy -y
   - sudo pip install numpy pandas cython
   - echo '{:user {:plugins [[lein-exec "0.3.3"]]}}'' > ~/.lein/profiles.clj
   - sudo wget https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > /usr/bin/lein
-
+  - pip install codecov
 
 after_success:
-  - python3 stats.py --search python --search go --build
+  - python stats.py --search python --search go --build
+  - codecov
