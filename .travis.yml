@@ -27,8 +27,8 @@ go:
 
 before_install:
   - gem install rspec
-  - sudo apt-get install python-numpy python-scipy python-pandas golang python3-pip python-pip python-sympy
-  - sudo pip3 install numpy pandas cython
+  - sudo apt-get install python-numpy python-scipy python-pandas golang python3-pip python-pip python-sympy -y
+  - sudo pip install numpy pandas cython
   - echo '{:user {:plugins [[lein-exec "0.3.3"]]}}'' > ~/.lein/profiles.clj
   - sudo wget https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > /usr/bin/lein
 
