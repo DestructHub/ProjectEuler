@@ -4,4 +4,4 @@
                :when (= "123456789" (apply str(sort (str x y xy))))
              ] xy))
            
-(reduce + (distinct xs))
+(println (reduce + (distinct xs)))
