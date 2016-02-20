@@ -24,6 +24,7 @@ before_install:
   - sudo apt-get install python-pip -y
   - sudo apt-get install python-sympy -y
   - sudo pip install numpy pandas cython
+  - mkdir -p ~/.lein
   - echo "{:user {:plugins [[lein-exec "0.3.3"]]}}" > ~/.lein/profiles.clj
   - sudo wget https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > /usr/bin/lein
   - pip install codecov
