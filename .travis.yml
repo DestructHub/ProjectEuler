@@ -22,7 +22,7 @@ rvm:
  
 before_install:
   - gem install rspec
-  - sudo apt-get install python-numpy python-scipy python-pandas golang python-pip python-pip
+  - sudo apt-get install python-numpy python-scipy python-pandas golang python3-pip python-pip
   - sudo pip3 install numpy pandas cython
   - echo '{:user {:plugins [[lein-exec "0.3.3"]]}}'' > ~/.lein/profiles.clj
   - sudo wget https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > /usr/bin/lein
