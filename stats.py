@@ -11,11 +11,15 @@ from pandas import DataFrame  # sudo pip install pandas
 from numpy import NAN  # sudo pip install numpy
 
 from os.path import join
-from os import walk
+from os import walk, _exit
 from re import compile
 from optparse import OptionParser
 from subprocess import Popen, PIPE
 from time import time
+import threading
+from itertools import cycle
+from sys import stdout
+from time import sleep
 
 
 BUILD_SUPPORT = [
@@ -263,28 +267,59 @@ def count_solutions(df):
     return df_
 
 
+class signal:
+    run = False
+
+
+def spinner(signal):
+    for c in cycle(r'|/\-'):
+        if signal.run:
+            stdout.write(c)
+            sleep(0.1)
+            stdout.write('\010')
+            stdout.flush()
+
+
 def build_result(df):
+    columns = ['Problem', 'Language', 'Time', 'Answer']
+    data = []
+    spin_run = signal()
+    spin_thread = threading.Thread(target=spinner, args=[spin_run])
+    spin_thread.start()
     for lang, path in solutions_paths(df):
         if lang in BUILD_SUPPORT and 'slow' not in path:
             if lang == "Python":
                 b = Build(['python2'], path)
             elif lang == "Go":
                 b = Build(['go', 'run'], path)
-
             else:
                 print("Some weird happens. {!r} problems".format(lang))
                 exit(1)
 
+            building = '\rBuilding: {}: Answer: '.format(path)
+            stdout.write(building)
+            spin_run.run = True
             out, err, t = b.execute()
+            spin_run.run = False
             answer = out.decode('utf-8').strip('\n')
             if err:
                 exit(1)
-            print("{!r}: {}: {:.2f}s".format(path, answer, t))
+            output = "{}: {:.2f}s".format(answer, t)
+            stdout.write(output)
+            stdout.write('\010' * len(building + output))
+            stdout.flush()
+            problem, *_ = split_problem_language(path)
+            data.append([problem, lang, t, answer])
         elif 'slow' in path:
-            print("{!r}: bad solution, we don't compute that.".format(path))
+            print("\rIgnored: {}: bad solution (slow).".format(path))
         else:
-            print("Don't have support yet for {!r}!".format(lang))
+            stdout.write("\rDon't have support yet for {!r}!".format(lang))
             exit(0)
+    stdout.write("\r\n")
+    stdout.flush()
+    final_df = DataFrame(data, columns=columns)
+    print(final_df.sort_values('Time'))
+    _exit(0)
 
 
 def main():
@@ -317,7 +352,10 @@ def main():
         print(count_solutions(df[langs_selected]))
 
     elif options.build:
-        build_result(df[langs_selected])
+        try:
+            build_result(df[langs_selected])
+        except(SystemExit, KeyboardInterrupt):
+            _exit(1)
 
     elif options.path:
         for _, path in solutions_paths(df[langs_selected]):
