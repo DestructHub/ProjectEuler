@@ -21,7 +21,6 @@ before_install:
   - sudo apt-get install python-scipy -y
   - sudo apt-get install python-pandas -y
   - sudo apt-get install golang -y
-  - sudo apt-get install python3-pip -y
   - sudo apt-get install python-pip -y
   - sudo apt-get install python-sympy -y
   - sudo pip install numpy pandas cython
