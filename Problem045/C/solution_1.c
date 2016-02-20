@@ -1,7 +1,7 @@
 /*
  * ===========================================================
  *
- *                      Copyright 2016 Manoel Vilela
+ *                      Copyleft 2016 Manoel Vilela
  *
  *
  *       Filename: solution_1.c

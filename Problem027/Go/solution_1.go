@@ -1,4 +1,4 @@
-// Copyright 2016 the DestructHub Authors. All rights reserved
+// Copyleft 2016 the DestructHub Authors. All rights reserved
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 
