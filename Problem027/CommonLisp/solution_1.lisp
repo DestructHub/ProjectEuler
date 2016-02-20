@@ -1,4 +1,4 @@
-;; Common Lisp version
+q;; Common Lisp version
 ;; Manoel Vilela
 
 (defun nums(start stop)
@@ -32,7 +32,7 @@
     (loop for i from -limit to limit
         do (loop for j from -limit to limit
                 do (setf n (evalfunc i j))
-                    
+
                     ; (when (> primes n)
                     ;     (setf primes n)
                     ;     (setf a i)
@@ -45,4 +45,4 @@
     (* a b)
 )
 
-(format T "~d" (eval (solution)))
+(format t "~d" (eval (solution)))
