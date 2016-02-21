@@ -7,7 +7,7 @@
 #
 
 from functools import wraps
-from itertools import combinations_with_replacement as comb
+from itertools import combinations as comb
 
 LIMIT = 1000
 
@@ -59,7 +59,7 @@ def eval_func(func):
 def search(limit):
     """search for the best a, b coefficients for a quadratic func prime gen"""
     coffs = {}
-    for t in comb(range(-limit + 1, limit + 1), 2):
+    for t in comb(range(-limit, limit + 1), 2):
         coffs[t] = max([eval_func(quadratic(a, b)) for a, b in [t, t[::-1]]])
 
     return max(coffs, key=lambda x: coffs[x])
@@ -67,7 +67,7 @@ def search(limit):
 
 def main():
     from functools import reduce
-    print(reduce(lambda x, y: x * y, search(LIMIT)))
+    print(reduce(int.__mul__, search(LIMIT)))
 
 if __name__ == '__main__':
     main()

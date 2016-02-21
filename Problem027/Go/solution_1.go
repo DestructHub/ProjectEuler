@@ -55,7 +55,7 @@ func isPrime(n int) bool {
 	if n < 2 {
 		return false
 	}
-	for q := 2; float64(q) < math.Floor(math.Sqrt(float64(n)))+1; q++ {
+	for q := 2; float64(q) <= math.Floor(math.Sqrt(float64(n))); q++ {
 		if n%q == 0 {
 			return false
 		}
