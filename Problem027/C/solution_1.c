@@ -29,7 +29,7 @@ int quadratic(int n, int a, int b) {
 
 // simple function
 // to check if is a prime
-int isPrime(int n) {
+int is_prime(int n) {
     if (n < 2) {
         return false;
     }
@@ -45,10 +45,10 @@ int isPrime(int n) {
 // func evaluation n² + an + b
 // return the n primes generate without gaps
 // between [0, n]
-int evalFunc(int a, int b){
+int eval_func(int a, int b){
     int n = 0;
     while (true) {
-        if (isPrime(quadratic(n, a, b))){
+        if (is_prime(quadratic(n, a, b))){
             n += 1;
         } else {
             break;
@@ -62,11 +62,11 @@ int evalFunc(int a, int b){
 // equation f(n) = n² + an + b
 // whose  f(n) -> [0, N]
 // and N is MAX for LIMIT
-void getresult(Result *r) {
+void get_result(Result *r) {
     r->a = 0; r->b = 0; r->primes=0;
     for (int i = -LIMIT; i < LIMIT; i++) {
         for (int j = -LIMIT; j < LIMIT; j++ ) {
-            int n = evalFunc(i, j);
+            int n = eval_func(i, j);
             if (n > r->primes) {
                 r->a = i;
                 r->b = j;
@@ -80,6 +80,6 @@ void getresult(Result *r) {
 
 int main(int argc, char *argv[]) {
     Result r;
-    getresult(&r);
+    get_result(&r);
     printf("%d\n", r.a * r.b);
 }
