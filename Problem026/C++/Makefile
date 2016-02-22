@@ -10,4 +10,4 @@ all:
 clean: 
 	rm -v *.$(EXTENSION_OUT)
 run:
-	./$(TARGET).$(EXTENSION_OUT
+	./$(TARGET).$(EXTENSION_OUT)
