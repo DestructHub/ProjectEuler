@@ -42,3 +42,6 @@ We wants good solutions for the problems. A good solution can be relative, but u
 
 If your solution breaks the one-minute rule of project euler, the file solution can be pushed with one condition: use the suffix `slow` like  `solution_slow_1.xy`. That way the `stats.py` don't will execute that.
 
+### Authors and Contributors
+
+Check the ProjectEuler badges and tables by nickname: (SOLVERS.md)[SOLVERS.md]
