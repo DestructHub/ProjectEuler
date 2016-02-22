@@ -19,5 +19,6 @@
 	- [X] Python, @ryukinix
 - [X] [Problem048](https://projecteuler.net/problem=48)
 	- [X] Haskell, @tkovs
-- [ ] [Problem049](https://projecteuler.net/problem=49)
+- [X] [Problem049](https://projecteuler.net/problem=49)
+	- [X] Python, @ryukinix
 - [ ] [Problem050](https://projecteuler.net/problem=50)
