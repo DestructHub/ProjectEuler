@@ -7,8 +7,8 @@
 #
 #
 
-from pandas import DataFrame  # sudo pip install pandas
-from numpy import NAN  # sudo pip install numpy
+import pandas as pd  # sudo pip install pandas
+import numpy as np  # sudo pip install numpy
 
 from os.path import join
 from os import walk, _exit
@@ -22,9 +22,13 @@ from sys import stdout
 from time import sleep
 
 
+ERASE_LINE = '\x1b[2K'
 BUILD_SUPPORT = [
-    "Python",
-    "Go",
+    "Python",  # you need the python interpreter | pacman -Su python
+    "Go",  # you need the golang compiler | pacman -Su golang
+    "Clojure",  # you need lein && clojure | pacman -Su clojure
+    "CommonLisp",  # you need clisp | pacman -Su clisp
+    "Haskell",  # you need ghc | pacman -Su ghc
     # "C",
     # "C++"
 ]
@@ -143,7 +147,7 @@ def walk_problems():
     problem = compile("./Problem[0-9]{3}/")
     problems = []
     for x in walk("."):
-        if problem.match(x[0]) and "__pycache__" not in x:
+        if problem.match(x[0]) and "pycache" not in x[0]:
             problems.append(x)
     return problems
 
@@ -216,15 +220,15 @@ def load_dataframe():
             Problem004                      [solution_1.py]
 
         If you observe: (index + column_name) <- list_solutions -> filepaths!
-    Returns: pandas.DataFrame
+    Returns: pd.DataFrame
     """
-    return DataFrame.from_dict(parse_solutions(walk_problems()), orient='index')
+    return pd.DataFrame.from_dict(parse_solutions(walk_problems()), 'index')
 
 
 def solutions_paths(df):
     """
     Function: load_filepaths
-    Summary: Get each filepath of solutions based on DataFrame
+    Summary: Get each filepath of solutions based on pd.DataFrame
     Examples:
         >>> df = load_dataframe()
         >>> py = df[["CommonLisp"]]
@@ -232,7 +236,7 @@ def solutions_paths(df):
         ["]
 
     Attributes:
-        @param (df): pandas.DataFrame
+        @param (df): pd.DataFrame
     Returns: list of file paths
     """
     paths = []
@@ -253,12 +257,12 @@ def count_solutions(df):
     Summary: Count the number of solutions of each problem and language
     Examples: I'm tired...
     Attributes:
-        @param (df): pandas.DataFrame
+        @param (df): pandas.pd.DataFrame
     Returns: InsertHere
     """
-    df_ = DataFrame()
+    df_ = pd.DataFrame()
     for column in df.columns:
-        df_[column] = df[column].map(lambda x: len(x) if x is not NAN else 0)
+        df_[column] = df[column].map(lambda x: len(x) if x is not np.NAN else 0)
 
     if len(df.columns) > 1:
         df_["Solutions"] = df_[df_.columns].apply(tuple, axis=1).map(sum)
@@ -267,58 +271,79 @@ def count_solutions(df):
     return df_
 
 
-class signal:
-    run = False
-
-
 def spinner(signal):
-    for c in cycle(r'|/\-'):
+    animation = r'|/\-'
+    stdout.write(3 * ' ')
+    t = time()
+    for c in cycle(animation):
         if signal.run:
-            stdout.write(c)
+            message = '(' + c + ')' + ' t: {:.2f}'.format(time() - t)
+            stdout.write(message)
             sleep(0.1)
-            stdout.write('\010')
+            stdout.write(len(message) * '\010')
             stdout.flush()
+        else:
+            t = time()
 
 
-def build_result(df):
+def choose_builder(lang, path):
+    if lang == "Python":
+        b = Build(['python'], path)
+    elif lang == "Go":
+        b = Build(['go', 'run'], path)
+    elif lang == "Clojure":
+        b = Build(['clojure'], path)
+    elif lang == "CommonLisp":
+        b = Build(["clisp"], path)
+    elif lang == "Haskell":
+        b = Build(["runhaskell"], path)
+    else:
+        raise Exception("Some weird happens. {!r} problems. U have the compilers?".format(lang))
+        exit(1)
+    return b
+
+
+def execute_builder(b, signal):
+    signal.run = True
+    out, err, t = b.execute()
+    signal.run = False
+    answer = out.decode('utf-8').strip('\n')
+    if err:
+        exit(1)
+    stdout.write(ERASE_LINE)
+    building = '\rBuilded {}: Answer: '.format(b.path)
+    stdout.write(building)
+    output = "{}: {:.2f}s @Loading next:     ".format(answer, t)
+    stdout.write(output)
+    stdout.flush()
+
+    return answer, t
+
+
+def build_result(df, ignore_errors=False):
+    class signal:
+        run = False
+
     columns = ['Problem', 'Language', 'Time', 'Answer']
     data = []
-    spin_run = signal()
-    spin_thread = threading.Thread(target=spinner, args=[spin_run])
+    spin_thread = threading.Thread(target=spinner, args=[signal])
     spin_thread.start()
     for lang, path in solutions_paths(df):
         if lang in BUILD_SUPPORT and 'slow' not in path:
-            if lang == "Python":
-                b = Build(['python2'], path)
-            elif lang == "Go":
-                b = Build(['go', 'run'], path)
-            else:
-                print("Some weird happens. {!r} problems".format(lang))
-                exit(1)
-
-            building = '\rBuilding: {}: Answer: '.format(path)
-            stdout.write(building)
-            spin_run.run = True
-            out, err, t = b.execute()
-            spin_run.run = False
-            answer = out.decode('utf-8').strip('\n')
-            if err:
-                exit(1)
-            output = "{}: {:.2f}s".format(answer, t)
-            stdout.write(output)
-            stdout.write('\010' * len(building + output))
-            stdout.flush()
+            b = choose_builder(lang, path)
+            answer, t = execute_builder(b, signal)
             problem, *_ = split_problem_language(path)
             data.append([problem, lang, t, answer])
         elif 'slow' in path:
-            print("\rIgnored: {}: bad solution (slow).".format(path))
-        else:
-            stdout.write("\rDon't have support yet for {!r}!".format(lang))
-            exit(0)
+            stdout.write("\rIgnored: {}: bad solution (slow).".format(path))
+        elif not ignore_errors:
+            stdout.write("\rDon't have support yet for {!r}!\n".format(lang))
     stdout.write("\r\n")
     stdout.flush()
-    final_df = DataFrame(data, columns=columns)
+    final_df = pd.DataFrame(data, columns=columns)
+    pd.set_option('display.max_rows', len(df))
     print(final_df.sort_values('Time'))
+    pd.reset_option('display.max_rows')
     _exit(0)
 
 
@@ -338,7 +363,7 @@ def main():
         if options.count:
             c = count_solutions(df)
             count = [sum(c[lang]) for lang in df.columns]
-            table = DataFrame(count, index=df.columns, columns=["Solutions"])
+            table = pd.DataFrame(count, index=df.columns, columns=["Solutions"])
             print(table.sort_values("Solutions", ascending=False))
 
         elif options.path:
@@ -353,7 +378,7 @@ def main():
 
     elif options.build:
         try:
-            build_result(df[langs_selected])
+            build_result(df[langs_selected], options.all)
         except(SystemExit, KeyboardInterrupt):
             _exit(1)
 
