@@ -128,3 +128,6 @@ luac.out
 *.src.rock
 *.zip
 *.tar.gz
+
+# My draft folder (ryukinix)
+draft
