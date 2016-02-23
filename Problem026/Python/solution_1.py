@@ -80,7 +80,7 @@ def get_rec_cycle(n):
 
 
 def get_max_rec(limit):
-    return max((get_rec_cycle(x) for x in range(3, limit, 2)))
+    return max([x for x in range(3, limit, 2)], key=get_rec_cycle)
 
 test = get_rec_cycle(7)
 assert test == 6, "Some wrong; got {},  expected 6.".format(test)
