@@ -44,4 +44,4 @@ If your solution breaks the one-minute rule of project euler, the file solution 
 
 ### Authors and Contributors
 
-Check the ProjectEuler badges and tables by nickname: (SOLVERS.md)[SOLVERS.md]
+Check the ProjectEuler badges and tables by nickname: [SOLVERS.md](SOLVERS.md)
