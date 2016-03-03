@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <string.h>
 
 bool is_prime(unsigned int number);
  
@@ -12,22 +11,19 @@ int main(int argc, char* argv[])
 {
     const char *num = "2000000";
     
-    if (argv[1])
+    if (argv[1]) {
 	num = argv[1];
-    else if (argv[1] == "--help")
-	std::cout << "Usage: primes <number_of_primes>" << std::endl;
+    }
     
     // iteration variables.
     int i = 1;
     // the number to reach.
-    int number_to = atoi(num);
+    int number_to = std::atoi(num);
     
     long long int sum = 0;
     
-    while (i < number_to)
-    {
-	if (is_prime(i))
-	{
+    while (i < number_to) {
+	if (is_prime(i)) {
 	    std::cerr << i << std::endl;		
 	    sum += i;
 	}
@@ -39,21 +35,19 @@ int main(int argc, char* argv[])
  
 bool is_prime(unsigned int number) 
 { 
-  if (number <= 1) 
+  if (number <= 1) { 
       return false;
+  }
  
   unsigned int i;
-  for (i=2; i*i<=number; i++) 
-  {
-      if (number % i == 0) 
-      {
+  for (i=2; i*i<=number; i++) {
+      if (number % i == 0) {
 	  return false;
       }
   }
 
   // naive solution
-  /*for (i = 2; i < 10; i++)
-  {
+  /*for (i = 2; i < 10; i++) {
       if (number % i == 0)
 	  return false;
   }*/
