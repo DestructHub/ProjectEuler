@@ -40,6 +40,9 @@
 # Debug files
 *.dSYM/
 
+# tmp files
+*.*~
+
 ## Python garbage ignore ##
 
 # Byte-compiled / optimized / DLL files
