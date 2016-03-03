@@ -32,4 +32,6 @@ int main(int argc, char* argv[])
     }
     
     std::cout << sum << std::endl;
+
+    return 0;
 }
