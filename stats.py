@@ -68,6 +68,7 @@ def debugorator(fn):
 
 
 class Build(object):
+
     def __init__(self, args, path):
         self.bin = args
         self.path = path
@@ -262,7 +263,8 @@ def count_solutions(df):
     """
     df_ = pd.DataFrame()
     for column in df.columns:
-        df_[column] = df[column].map(lambda x: len(x) if x is not np.NAN else 0)
+        df_[column] = df[column].map(
+            lambda x: len(x) if x is not np.NAN else 0)
 
     if len(df.columns) > 1:
         df_["Solutions"] = df_[df_.columns].apply(tuple, axis=1).map(sum)
@@ -286,6 +288,7 @@ def spinner(signal):
             t = time()
 
 
+# need docs
 def choose_builder(lang, path):
     if lang == "Python":
         b = Build(['python'], path)
@@ -298,11 +301,12 @@ def choose_builder(lang, path):
     elif lang == "Haskell":
         b = Build(["runhaskell"], path)
     else:
-        raise Exception("Some weird happens. {!r} problems. U have the compilers?".format(lang))
+        raise Exception("Error; U have the {!r} compilers?".format(lang))
         exit(1)
     return b
 
 
+# need docs
 def execute_builder(b, signal):
     signal.run = True
     out, err, t = b.execute()
@@ -320,6 +324,7 @@ def execute_builder(b, signal):
     return answer, t
 
 
+# need docs
 def build_result(df, ignore_errors=False):
     class signal:
         run = False
@@ -332,7 +337,7 @@ def build_result(df, ignore_errors=False):
         if lang in BUILD_SUPPORT and 'slow' not in path:
             b = choose_builder(lang, path)
             answer, t = execute_builder(b, signal)
-            problem, *_ = split_problem_language(path)
+            problem = split_problem_language(path)[0]
             data.append([problem, lang, t, answer])
         elif 'slow' in path:
             stdout.write("\rIgnored: {}: bad solution (slow).".format(path))
@@ -347,9 +352,15 @@ def build_result(df, ignore_errors=False):
     _exit(0)
 
 
-def main():
-    parser = charge_options()
-    options, _ = parser.parse_args()
+def list_by_count(df):
+    c = count_solutions(df)
+    count = [sum(c[lang]) for lang in df.columns]
+    table = pd.DataFrame(count, index=df.columns,
+                         columns=["Solutions"])
+    print(table.sort_values("Solutions", ascending=False))
+
+
+def handle_options(options):
     df = load_dataframe()
     langs = {x.lower(): x for x in df.columns}
     query = [x.lower() for x in options.search]
@@ -358,13 +369,10 @@ def main():
         langs_selected = [x for x in langs.values()]
     else:
         langs_selected = [langs[x] for x in search_language(query, langs)]
-
+    
     if options.list:
         if options.count:
-            c = count_solutions(df)
-            count = [sum(c[lang]) for lang in df.columns]
-            table = pd.DataFrame(count, index=df.columns, columns=["Solutions"])
-            print(table.sort_values("Solutions", ascending=False))
+            list_by_count(df)
 
         elif options.path:
             langs_selected = [x for x in langs.values()]
@@ -388,6 +396,12 @@ def main():
 
     elif not any(options.__dict__.values()):
         parser.print_help()
+
+
+def main():
+    parser = charge_options()
+    options, _ = parser.parse_args()
+    handle_options(options)
 
 if __name__ == '__main__':
     main()
