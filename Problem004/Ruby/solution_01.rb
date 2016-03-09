@@ -1,3 +1,5 @@
+# Author: tkovs
+
 def palindrome(n)
     return (n.to_s().eql?(n.to_s().reverse()))
 end
