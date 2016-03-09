@@ -1,14 +1,13 @@
 def fib(n)
     a = 0
     b = 1
-    sequence = [a] # initialize [a, b]
+    sequence = [a] # initialize
 
     while (b < n)
         sequence.push(b)
 
-        temp = a
-        a = b
-        b = temp + a
+        temp, a = a, b
+        b = a + temp
     end
 
     return(sequence)
