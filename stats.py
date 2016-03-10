@@ -29,6 +29,8 @@ BUILD_SUPPORT = [
     "Clojure",  # you need lein && clojure | pacman -Su clojure
     "CommonLisp",  # you need clisp | pacman -Su clisp
     "Haskell",  # you need ghc | pacman -Su ghc
+    "Lua",
+    "Ruby",
     "C",
     "C++"
 ]
@@ -333,6 +335,10 @@ def choose_builder(lang, path):
         b = SpecialBuild(["gcc", "-lm"], path)
     elif lang == "C++":
         b = SpecialBuild(["g++", "-lm"], path)
+    elif lang == "Lua":
+        b = Build(["lua"], path)
+    elif lang == "Ruby":
+        b = Build(["ruby"], path)
     else:
         raise Exception("Error; U have the {!r} compilers?".format(lang))
         exit(1)
