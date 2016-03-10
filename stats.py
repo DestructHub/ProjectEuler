@@ -22,7 +22,7 @@ from sys import stdout
 from time import sleep
 
 
-ERASE_LINE = '\x1b[2K'
+ERASE_LINE = "\x1b[2K"
 BUILD_SUPPORT = [
     "Python",  # you need the python interpreter | pacman -Su python
     "Go",  # you need the golang compiler | pacman -Su golang
@@ -58,15 +58,15 @@ parser.add_option(
     "-l", "--list",
     help="Print a list of the languages whose have solutions",
     dest="list",
-    action='store_true',
+    action="store_true",
     default=False,
 )
 
 parser.add_option(
     "-s", "--search",
     help="Choose the languages for print information",
-    dest='search',
-    action='append',
+    dest="search",
+    action="append",
     default=[],
     nargs=1
 )
@@ -74,32 +74,32 @@ parser.add_option(
 parser.add_option(
     "-c", "--count",
     help="Print the count of each solution",
-    dest='count',
-    action='store_true',
+    dest="count",
+    action="store_true",
     default=False,
 )
 
 parser.add_option(
     "-b", "--build",
     help="Execute the solutions and print each solution",
-    dest='build',
-    action='store_true',
+    dest="build",
+    action="store_true",
     default=False,
 )
 
 parser.add_option(
     "-p", "--path",
     help="Print the path of each solution",
-    dest='path',
-    action='store_true',
+    dest="path",
+    action="store_true",
     default=False,
 )
 
 parser.add_option(
     "-a", "--all",
     help="Select all the languages for search",
-    dest='all',
-    action='store_true',
+    dest="all",
+    action="store_true",
     default=False,
 )
 
@@ -117,10 +117,10 @@ def debugorator(fn):
     def wrapper(*args, **kwargs):
         result = fn(*args, **kwargs)
         for key, value in kwargs.items():
-            args += ('='.join(map(str, [key, value])),)
+            args += ("=".join(map(str, [key, value])),)
         if len(args) == 1:
-            args = '({})'.format(args[0])
-        print('@{0}{1} -> {2}\n'.format(fn.__name__, args, result))
+            args = "({})".format(args[0])
+        print("@{0}{1} -> {2}\n".format(fn.__name__, args, result))
         return result
     return wrapper
 
@@ -130,7 +130,7 @@ class Build(object):
     """Interactive languages building"""
 
     def __init__(self, args, path):
-        self.bin = args
+        self.bin = args.split()
         self.path = path
 
     def execute(self):
@@ -147,10 +147,10 @@ class SpecialBuild(object):
     C++, C at example
     """
 
-    fout = 'compiled.out'
+    fout = "compiled.out"
 
     def __init__(self, compiler, path):
-        self.compiler = compiler
+        self.compiler = compile.split()
         self.path = path
         self.output = join(dirname(self.path), self.fout)
 
@@ -161,7 +161,7 @@ class SpecialBuild(object):
     def execute(self):
         if self.compile():
             compiled = abspath(self.output)
-            program = Build(["bash", "-c"], '{!r}'.format(compiled))
+            program = Build("bash -c", "{!r}".format(compiled))
             output = program.execute()
             remove(compiled)
             return output
@@ -173,7 +173,7 @@ def walk_problems():
     Function: walk_problems
     Summary: Walking for repository to get each content of ProblemXXX
     Examples: Uniq behavior
-    Returns: list of 3-uples of strings <list ('1', '2', '3'), ...>
+    Returns: list of 3-uples of strings <list ("1", "2", "3"), ...>
     """
     problem = compile("./Problem[0-9]{3}/")
     problems = []
@@ -212,7 +212,7 @@ def split_problem_language(path):
         @param (path): path like ./Folder/Language
     Returns: [Problem, Language] <(string, string)>
     """
-    return path.strip('./').split('/')
+    return path.strip("./").split("/")
 
 
 def parse_solutions(problems):
@@ -253,7 +253,7 @@ def load_dataframe():
         If you observe: (index + column_name) <- list_solutions -> filepaths!
     Returns: pd.DataFrame
     """
-    return pd.DataFrame.from_dict(parse_solutions(walk_problems()), 'index')
+    return pd.DataFrame.from_dict(parse_solutions(walk_problems()), "index")
 
 
 def solutions_paths(df):
@@ -286,7 +286,7 @@ def count_solutions(df):
     """
     Function: count_solutions
     Summary: Count the number of solutions of each problem and language
-    Examples: I'm tired...
+    Examples: I"m tired...
     Attributes:
         @param (df): pandas.pd.DataFrame
     Returns: InsertHere
@@ -304,41 +304,37 @@ def count_solutions(df):
 
 
 # docs?
-def spinner(signal):
-    animation = r'|/\-'
-    stdout.write(3 * ' ')
-    t = time()
+def spinner(timer):
+    animation = r"|/\-"
+    stdout.write(3 * " ")
     for c in cycle(animation):
-        if signal.run:
-            message = '(' + c + ')' + ' t: {:.2f}'.format(time() - t)
-            stdout.write(message)
-            sleep(0.1)
-            stdout.write(len(message) * '\010')
-            stdout.flush()
-        else:
-            t = time()
+        message = "(" + c + ")" + " t: {:.2f}".format(time() - timer.time)
+        stdout.write(message)
+        sleep(0.1)
+        stdout.write(len(message) * "\010")
+        stdout.flush()
 
 
 # need docs
 def choose_builder(lang, path):
     if lang == "Python":
-        b = Build(['python'], path)
+        b = Build("python", path)
     elif lang == "Go":
-        b = Build(['go', 'run'], path)
+        b = Build("go run", path)
     elif lang == "Clojure":
-        b = Build(['clojure'], path)
+        b = Build("clojure", path)
     elif lang == "CommonLisp":
-        b = Build(["clisp"], path)
+        b = Build("clisp", path)
     elif lang == "Haskell":
-        b = Build(["runhaskell"], path)
+        b = Build("runhaskell", path)
     elif lang == "C":
-        b = SpecialBuild(["gcc", "-lm"], path)
+        b = SpecialBuild("gcc -lm", path)
     elif lang == "C++":
-        b = SpecialBuild(["g++", "-lm"], path)
+        b = SpecialBuild("g++ -lm", path)
     elif lang == "Lua":
-        b = Build(["lua"], path)
+        b = Build("lua", path)
     elif lang == "Ruby":
-        b = Build(["ruby"], path)
+        b = Build("ruby", path)
     else:
         raise Exception("Error; U have the {!r} compilers?".format(lang))
         exit(1)
@@ -346,18 +342,14 @@ def choose_builder(lang, path):
 
 
 # need docs
-def execute_builder(b, signal):
-    signal.run = True
+def execute_builder(b):
     out, err, t = b.execute()
-    signal.run = False
-    answer = out.decode('utf-8').strip('\n')
+    answer = out.decode("utf-8").strip("\n")
     if err:
         _exit(1)
     stdout.write(ERASE_LINE)
-    building = '\rBuilded {}: Answer: '.format(b.path)
+    building = "\rBuilded {}: Answer: {}: {:.2f}s\n".format(b.path, answer, t)
     stdout.write(building)
-    output = "{}: {:.2f}s @Loading next:     ".format(answer, t)
-    stdout.write(output)
     stdout.flush()
 
     return answer, t
@@ -365,30 +357,32 @@ def execute_builder(b, signal):
 
 # need docs
 def build_result(df, ignore_errors=False):
-    class Signal:
-        run = False
+    class Timer: # to handle the spinner time at each solution
+        time = time()
 
-    signal = Signal()
-    columns = ['Problem', 'Language', 'Time', 'Answer']
+    counter = Timer()
+    columns = ["Problem", "Language", "Time", "Answer"]
     data = []
-    spin_thread = threading.Thread(target=spinner, args=(signal,))
+    spin_thread = threading.Thread(target=spinner, args=(counter,))
     spin_thread.start()
     for lang, path in solutions_paths(df):
-        if lang in BUILD_SUPPORT and 'slow' not in path:
+        if lang in BUILD_SUPPORT and "slow" not in path:
+            stdout.write("@Loading next {}:            ".format(path))
             b = choose_builder(lang, path)
-            answer, t = execute_builder(b, signal)
+            counter.time = time()
+            answer, t = execute_builder(b)
             problem = split_problem_language(path)[0]
             data.append([problem, lang, t, answer])
-        elif 'slow' in path:
-            stdout.write("\rIgnored: {}: bad solution (slow).".format(path))
+        elif "slow" in path:
+            stdout.write("\rIgnored: {}: bad solution (slow).\n".format(path))
         elif not ignore_errors:
             stdout.write("\rDon't have support yet for {!r}!\n".format(lang))
     stdout.write("\r\n")
     stdout.flush()
     final_df = pd.DataFrame(data, columns=columns)
-    pd.set_option('display.max_rows', len(df))
-    print(final_df.sort_values('Problem'))
-    pd.reset_option('display.max_rows')
+    pd.set_option("display.max_rows", len(df))
+    print(final_df.sort_values("Problem"))
+    pd.reset_option("display.max_rows")
     _exit(0)
 
 
@@ -442,5 +436,5 @@ def main():
     options, _ = parser.parse_args()
     handle_options(options)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
