@@ -10,8 +10,8 @@
 import pandas as pd  # sudo pip install pandas
 import numpy as np  # sudo pip install numpy
 
-from os.path import join
-from os import walk, _exit
+from os import walk, remove, _exit
+from os.path import join, dirname, abspath
 from re import compile
 from optparse import OptionParser
 from subprocess import Popen, PIPE
@@ -29,8 +29,8 @@ BUILD_SUPPORT = [
     "Clojure",  # you need lein && clojure | pacman -Su clojure
     "CommonLisp",  # you need clisp | pacman -Su clisp
     "Haskell",  # you need ghc | pacman -Su ghc
-    # "C",
-    # "C++"
+    "C",
+    "C++"
 ]
 
 # CLI INTERFACE
@@ -125,6 +125,8 @@ def debugorator(fn):
 
 class Build(object):
 
+    """Interactive languages building"""
+
     def __init__(self, args, path):
         self.bin = args
         self.path = path
@@ -135,6 +137,33 @@ class Build(object):
         out, err = program.communicate()
         time_passed = time() - before
         return out, err, time_passed
+
+
+class SpecialBuild(object):
+
+    """For compiled languages
+    C++, C at example
+    """
+
+    fout = 'compiled.out'
+
+    def __init__(self, compiler, path):
+        self.compiler = compiler
+        self.path = path
+        self.output = join(dirname(self.path), self.fout)
+
+    def compile(self):
+        program = Popen(self.compiler + [self.path, "-o", self.output], stdout=PIPE)
+        return program.wait() == 0
+
+    def execute(self):
+        if self.compile():
+            compiled = abspath(self.output)
+            program = Build(["bash", "-c"], '{!r}'.format(compiled))
+            output = program.execute()
+            remove(compiled)
+            return output
+        return b"compiles fails", None, 0
 
 
 def walk_problems():
@@ -193,7 +222,7 @@ def parse_solutions(problems):
         @param (problems): os.walk functions output
     Returns: problem:lang -> [solutions] <dict>
     """
-    solution = compile("solution_*")
+    solution = compile("solution_+(?!out)")
 
     map_solutions = {}
     for path, dirs, files in problems:
@@ -272,6 +301,7 @@ def count_solutions(df):
     return df_
 
 
+# docs?
 def spinner(signal):
     animation = r'|/\-'
     stdout.write(3 * ' ')
@@ -299,6 +329,10 @@ def choose_builder(lang, path):
         b = Build(["clisp"], path)
     elif lang == "Haskell":
         b = Build(["runhaskell"], path)
+    elif lang == "C":
+        b = SpecialBuild(["gcc", "-lm"], path)
+    elif lang == "C++":
+        b = SpecialBuild(["g++", "-lm"], path)
     else:
         raise Exception("Error; U have the {!r} compilers?".format(lang))
         exit(1)
@@ -312,7 +346,7 @@ def execute_builder(b, signal):
     signal.run = False
     answer = out.decode('utf-8').strip('\n')
     if err:
-        exit(1)
+        _exit(1)
     stdout.write(ERASE_LINE)
     building = '\rBuilded {}: Answer: '.format(b.path)
     stdout.write(building)
@@ -325,12 +359,13 @@ def execute_builder(b, signal):
 
 # need docs
 def build_result(df, ignore_errors=False):
-    class signal:
+    class Signal:
         run = False
 
+    signal = Signal()
     columns = ['Problem', 'Language', 'Time', 'Answer']
     data = []
-    spin_thread = threading.Thread(target=spinner, args=[signal])
+    spin_thread = threading.Thread(target=spinner, args=(signal,))
     spin_thread.start()
     for lang, path in solutions_paths(df):
         if lang in BUILD_SUPPORT and 'slow' not in path:
