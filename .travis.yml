@@ -1,30 +1,26 @@
 language: python
 python:
-  - "2.6"
   - "2.7"
-  - "3.2"
-  - "3.3"
-  - "3.4"
   - "3.5"
+
+sudo: true
 
 install:
   - pip install -r requirements.txt
 
-script: nosetests
+script: python stats.py --all --build
 
 before_install:
   - gem install rspec
-  - sudo apt-get install python-numpy -y
-  - sudo apt-get install python-scipy -y
-  - sudo apt-get install python-pandas -y
-  - sudo apt-get install golang -y
-  - sudo apt-get install python-pip -y
-  - sudo apt-get install python-sympy -y
-  - sudo pip install numpy pandas cython
-  - mkdir -p ~/.lein
-  - echo "{:user {:plugins [[lein-exec "0.3.3"]]}}" > ~/.lein/profiles.clj
-  - pip install codecov
-
-after_success:
-  - python stats.py --search python --search go --build
-  - codecov
+  - apt-get install python-numpy -y
+  - apt-get install python-scipy -y
+  - apt-get install python-pandas -y
+  - apt-get install golang -y
+  - apt-get install python-pip -y
+  - apt-get install python-sympy -y
+  - apt-get install clojure -y
+  - apt-get install haskell -y
+  - apt-get install g++ gcc -y
+  - apt-get install lua -y
+  - apt-get install ruby-full -y
+  - pip install numpy pandas cython

@@ -32,7 +32,8 @@ BUILD_SUPPORT = [
     "Lua",
     "Ruby",
     "C",
-    "C++"
+    "C++",
+    "Bash"
 ]
 
 # CLI INTERFACE
@@ -50,7 +51,9 @@ BUILD_SUPPORT = [
 # python stats.py -s Python -s Haskell -c
 
 
-# Global Variables about cmdline parsing
+# #
+# Cmdline parsing definitions
+# #
 
 parser = OptionParser()
 
@@ -106,23 +109,9 @@ parser.add_option(
 parser.usage = "%prog [-s language] [-al] [-cp] "
 
 
-def debugorator(fn):
-    """Useful decorator to debugorator functions/methods
-
-    :param fn: function
-    """
-    from functools import wraps
-
-    @wraps(fn)
-    def wrapper(*args, **kwargs):
-        result = fn(*args, **kwargs)
-        for key, value in kwargs.items():
-            args += ("=".join(map(str, [key, value])),)
-        if len(args) == 1:
-            args = "({})".format(args[0])
-        print("@{0}{1} -> {2}\n".format(fn.__name__, args, result))
-        return result
-    return wrapper
+# #
+# Bulding class
+# #
 
 
 class Build(object):
@@ -136,9 +125,9 @@ class Build(object):
     def execute(self):
         before = time()
         program = Popen(self.bin + [self.path], stdout=PIPE)
-        out, err = program.communicate()
+        out, _ = program.communicate()
         time_passed = time() - before
-        return out, err, time_passed
+        return out, program.returncode, time_passed
 
 
 class SpecialBuild(object):
@@ -150,12 +139,13 @@ class SpecialBuild(object):
     fout = "compiled.out"
 
     def __init__(self, compiler, path):
-        self.compiler = compile.split()
+        self.compiler = compiler.split()
         self.path = path
         self.output = join(dirname(self.path), self.fout)
 
     def compile(self):
-        program = Popen(self.compiler + [self.path, "-o", self.output], stdout=PIPE)
+        args =self.compiler + [self.path, "-o", self.output]
+        program = Popen(args, stdout=PIPE)
         return program.wait() == 0
 
     def execute(self):
@@ -165,7 +155,7 @@ class SpecialBuild(object):
             output = program.execute()
             remove(compiled)
             return output
-        return b"compiles fails", None, 0
+        return b"compiles fails", EnvironmentError, 0
 
 
 def walk_problems():
@@ -335,6 +325,8 @@ def choose_builder(lang, path):
         b = Build("lua", path)
     elif lang == "Ruby":
         b = Build("ruby", path)
+    elif lang == "Bash":
+        b = Build("bash -c", path)
     else:
         raise Exception("Error; U have the {!r} compilers?".format(lang))
         exit(1)
@@ -357,7 +349,7 @@ def execute_builder(b):
 
 # need docs
 def build_result(df, ignore_errors=False):
-    class Timer: # to handle the spinner time at each solution
+    class Timer:  # to handle the spinner time at each solution
         time = time()
 
     counter = Timer()
@@ -367,7 +359,8 @@ def build_result(df, ignore_errors=False):
     spin_thread.start()
     for lang, path in solutions_paths(df):
         if lang in BUILD_SUPPORT and "slow" not in path:
-            stdout.write("@Loading next {}:            ".format(path))
+            # WHY THESE spaces woRKS?
+            stdout.write("@Loading next {}: {}".format(path, 12 * ' '))
             b = choose_builder(lang, path)
             counter.time = time()
             answer, t = execute_builder(b)
@@ -380,7 +373,7 @@ def build_result(df, ignore_errors=False):
     stdout.write("\r\n")
     stdout.flush()
     final_df = pd.DataFrame(data, columns=columns)
-    pd.set_option("display.max_rows", len(df))
+    pd.set_option("display.max_rows", len(final_df))
     print(final_df.sort_values("Problem"))
     pd.reset_option("display.max_rows")
     _exit(0)
