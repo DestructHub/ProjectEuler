@@ -18,7 +18,7 @@ before_install:
   - sudo apt-get install python-pip -y
   - sudo apt-get install python-sympy -y
   - sudo apt-get install clojure -y
-  - sudo apt-get install haskell -y
+  - sudo apt-get install ghc -y
   - sudo apt-get install g++ gcc -y
   - sudo apt-get install lua -y
   - sudo apt-get install ruby-full -y
