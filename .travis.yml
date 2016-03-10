@@ -11,17 +11,17 @@ install:
 script: python stats.py --all --build
 
 before_install:
-  - gem install rspec
-  - apt-get install python-numpy -y
-  - apt-get install python-scipy -y
-  - apt-get install python-pandas -y
-  - apt-get install golang -y
-  - apt-get install python-pip -y
-  - apt-get install python-sympy -y
-  - apt-get install clojure -y
-  - apt-get install haskell -y
-  - apt-get install g++ gcc -y
-  - apt-get install lua -y
-  - apt-get install ruby-full -y
-  - apt-get install clisp -y
-  - pip install numpy pandas cython
+  - sudo gem install rspec
+  - sudo apt-get install python-numpy -y
+  - sudo apt-get install python-scipy -y
+  - sudo apt-get install python-pandas -y
+  - sudo apt-get install golang -y
+  - sudo apt-get install python-pip -y
+  - sudo apt-get install python-sympy -y
+  - sudo apt-get install clojure -y
+  - sudo apt-get install haskell -y
+  - sudo apt-get install g++ gcc -y
+  - sudo apt-get install lua -y
+  - sudo apt-get install ruby-full -y
+  - sudo apt-get install clisp -y
+  - sudo pip install numpy pandas cython
