@@ -41,12 +41,9 @@ char* slice(char *array, long long s, long long e) {
 int main(int argc, char *argv[]) {
     long long num = 0;
     for (int i = 1; i <= 1000; i++){
-        printf("%li\n", num);
         num += fmod(pow(i, i), 1e10);
     }
 
-    sprintf(num, "%li", num);
-    
+    printf("incomplete solution\n");
     return 0;
-
 }
