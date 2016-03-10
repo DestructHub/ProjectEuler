@@ -6,4 +6,4 @@ How many such routes are there through a 20×20 grid?
 
 main :: IO ()
 main = print $ div (fat 40) ((fat 20)^2)
-	     where fat = (\x -> product [1..x])
+         where fat = (\x -> product [1..x])
