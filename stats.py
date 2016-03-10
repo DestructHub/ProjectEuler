@@ -144,7 +144,7 @@ class SpecialBuild(object):
         self.output = join(dirname(self.path), self.fout)
 
     def compile(self):
-        args =self.compiler + [self.path, "-o", self.output]
+        args = self.compiler + [self.path, "-o", self.output]
         program = Popen(args, stdout=PIPE)
         return program.wait() == 0
 
@@ -276,10 +276,10 @@ def count_solutions(df):
     """
     Function: count_solutions
     Summary: Count the number of solutions of each problem and language
-    Examples: I"m tired...
+    Examples: Iam tired...
     Attributes:
-        @param (df): pandas.pd.DataFrame
-    Returns: InsertHere
+        @param (df): pd.DataFrame
+    Returns: pd.DataFrame
     """
     df_ = pd.DataFrame()
     for column in df.columns:
@@ -294,15 +294,17 @@ def count_solutions(df):
 
 
 # docs?
-def spinner(timer):
+def spinner(control):
     animation = r"|/\-"
     stdout.write(3 * " ")
     for c in cycle(animation):
-        message = "(" + c + ")" + " t: {:.2f}".format(time() - timer.time)
+        message = "(" + c + ")" + " t: {:.2f}".format(time() - control.time)
         stdout.write(message)
         sleep(0.1)
         stdout.write(len(message) * "\010")
         stdout.flush()
+        if control.done:
+            break
 
 
 # need docs
@@ -349,20 +351,21 @@ def execute_builder(b):
 
 # need docs
 def build_result(df, ignore_errors=False):
-    class Timer:  # to handle the spinner time at each solution
+    class Control:  # to handle the spinner time at each solution
         time = time()
+        done = False
 
-    counter = Timer()
+    control = Control()
     columns = ["Problem", "Language", "Time", "Answer"]
     data = []
-    spin_thread = threading.Thread(target=spinner, args=(counter,))
+    spin_thread = threading.Thread(target=spinner, args=(control,))
     spin_thread.start()
     for lang, path in solutions_paths(df):
         if lang in BUILD_SUPPORT and "slow" not in path:
             # WHY THESE spaces woRKS?
             stdout.write("@Loading next {}: {}".format(path, 12 * ' '))
             b = choose_builder(lang, path)
-            counter.time = time()
+            control.time = time()
             answer, t = execute_builder(b)
             problem = split_problem_language(path)[0]
             data.append([problem, lang, t, answer])
@@ -372,11 +375,11 @@ def build_result(df, ignore_errors=False):
             stdout.write("\rDon't have support yet for {!r}!\n".format(lang))
     stdout.write("\r\n")
     stdout.flush()
+    control.done = True
+    spin_thread.join()
+
     final_df = pd.DataFrame(data, columns=columns)
-    pd.set_option("display.max_rows", len(final_df))
-    print(final_df.sort_values("Problem"))
-    pd.reset_option("display.max_rows")
-    _exit(0)
+    return final_df.sort_values("Problem")
 
 
 def list_by_count(df):
@@ -384,7 +387,7 @@ def list_by_count(df):
     count = [sum(c[lang]) for lang in df.columns]
     table = pd.DataFrame(count, index=df.columns,
                          columns=["Solutions"])
-    print(table.sort_values("Solutions", ascending=False))
+    return table.sort_values("Solutions", ascending=False)
 
 
 def handle_options(options):
@@ -392,37 +395,39 @@ def handle_options(options):
     langs = {x.lower(): x for x in df.columns}
     query = [x.lower() for x in options.search]
 
+    langs_selected = [langs[x] for x in search_language(query, langs)]
     if options.all:
         langs_selected = [x for x in langs.values()]
-    else:
-        langs_selected = [langs[x] for x in search_language(query, langs)]
 
     if options.list:
         if options.count:
-            list_by_count(df)
+            df = list_by_count(df)
 
         elif options.path:
             langs_selected = [x for x in langs.values()]
 
         else:
-            for lang in sorted(df):
-                print(lang)
+            df = '\n'.join(sorted(langs.values()))
+    else:
+        df = df[langs_selected]
 
     if options.count and not options.list:
-        print(count_solutions(df[langs_selected]))
+        df = count_solutions(df[langs_selected])
 
     elif options.build:
         try:
-            build_result(df[langs_selected], options.all)
+            df = build_result(df[langs_selected], options.all)
         except(SystemExit, KeyboardInterrupt):
             _exit(1)
 
     elif options.path:
-        for _, path in solutions_paths(df[langs_selected]):
-            print(path)
+        df = '\n'.join(path for _, path in solutions_paths(df[langs_selected]))
 
     elif not any(options.__dict__.values()):
         parser.print_help()
+
+    pd.set_option("display.max_rows", len(df))
+    print(df)
 
 
 def main():
