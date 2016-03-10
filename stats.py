@@ -48,6 +48,62 @@ BUILD_SUPPORT = [
 # python stats.py -s Python -s Haskell -c
 
 
+# Global Variables about cmdline parsing
+
+parser = OptionParser()
+
+parser.add_option(
+    "-l", "--list",
+    help="Print a list of the languages whose have solutions",
+    dest="list",
+    action='store_true',
+    default=False,
+)
+
+parser.add_option(
+    "-s", "--search",
+    help="Choose the languages for print information",
+    dest='search',
+    action='append',
+    default=[],
+    nargs=1
+)
+
+parser.add_option(
+    "-c", "--count",
+    help="Print the count of each solution",
+    dest='count',
+    action='store_true',
+    default=False,
+)
+
+parser.add_option(
+    "-b", "--build",
+    help="Execute the solutions and print each solution",
+    dest='build',
+    action='store_true',
+    default=False,
+)
+
+parser.add_option(
+    "-p", "--path",
+    help="Print the path of each solution",
+    dest='path',
+    action='store_true',
+    default=False,
+)
+
+parser.add_option(
+    "-a", "--all",
+    help="Select all the languages for search",
+    dest='all',
+    action='store_true',
+    default=False,
+)
+
+parser.usage = "%prog [-s language] [-al] [-cp] "
+
+
 def debugorator(fn):
     """Useful decorator to debugorator functions/methods
 
@@ -79,63 +135,6 @@ class Build(object):
         out, err = program.communicate()
         time_passed = time() - before
         return out, err, time_passed
-
-
-def charge_options():
-    parser = OptionParser()
-
-    parser.add_option(
-        "-l", "--list",
-        help="Print a list of the languages whose have solutions",
-        dest="list",
-        action='store_true',
-        default=False,
-    )
-
-    parser.add_option(
-        "-s", "--search",
-        help="Choose the languages for print information",
-        dest='search',
-        action='append',
-        default=[],
-        nargs=1
-    )
-
-    parser.add_option(
-        "-c", "--count",
-        help="Print the count of each solution",
-        dest='count',
-        action='store_true',
-        default=False,
-    )
-
-    parser.add_option(
-        "-b", "--build",
-        help="Execute the solutions and print each solution",
-        dest='build',
-        action='store_true',
-        default=False,
-    )
-
-    parser.add_option(
-        "-p", "--path",
-        help="Print the path of each solution",
-        dest='path',
-        action='store_true',
-        default=False,
-    )
-
-    parser.add_option(
-        "-a", "--all",
-        help="Select all the languages for search",
-        dest='all',
-        action='store_true',
-        default=False,
-    )
-
-    parser.usage = "%prog [-s language] [-al] [-cp] "
-
-    return parser
 
 
 def walk_problems():
@@ -347,7 +346,7 @@ def build_result(df, ignore_errors=False):
     stdout.flush()
     final_df = pd.DataFrame(data, columns=columns)
     pd.set_option('display.max_rows', len(df))
-    print(final_df.sort_values('Time'))
+    print(final_df.sort_values('Problem'))
     pd.reset_option('display.max_rows')
     _exit(0)
 
@@ -369,7 +368,7 @@ def handle_options(options):
         langs_selected = [x for x in langs.values()]
     else:
         langs_selected = [langs[x] for x in search_language(query, langs)]
-    
+
     if options.list:
         if options.count:
             list_by_count(df)
@@ -399,7 +398,6 @@ def handle_options(options):
 
 
 def main():
-    parser = charge_options()
     options, _ = parser.parse_args()
     handle_options(options)
 
