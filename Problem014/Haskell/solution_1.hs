@@ -16,5 +16,5 @@ getHighestCollatz = getHighestCollatz' 1 (0, 0) where
 
 
 main :: IO ()
-main = print getHighestCollatz
+main = print $ fst getHighestCollatz
 
