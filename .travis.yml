@@ -23,4 +23,5 @@ before_install:
   - apt-get install g++ gcc -y
   - apt-get install lua -y
   - apt-get install ruby-full -y
+  - apt-get install clisp -y
   - pip install numpy pandas cython
