@@ -35,8 +35,8 @@ BUILD_SUPPORT = [
     "C++",         # you need | pacman -Su g++
     "Elixir",      # you need elixir | pacman -Su elixir
     "PHP",         # you need php | pacman -Su php
-    "Swift",       # you need swift | yaourt -Su swift
-    "Objective-C"  # you need gcc-objc | pacman -Su gcc-objc
+    #"Swift",       # you need swift | yaourt -Su swift
+    #"Objective-C",  # you need gcc-objc | pacman -Su gcc-objc
     "Bash",        # hmm, i think you already have this
 ]
 

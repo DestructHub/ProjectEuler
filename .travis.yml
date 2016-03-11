@@ -25,5 +25,4 @@ before_install:
   - sudo apt-get install clisp -y
   - sudo apt-get install elixir -y
   - sudo apt-get install php -y
-  - sudo apt-get install gobjc -y
   - sudo pip install numpy pandas cython
