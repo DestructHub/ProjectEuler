@@ -10,4 +10,4 @@ foreach(range(1, 999) as $i)
 
 echo $sum;
 
-<?
+?>
