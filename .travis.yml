@@ -23,4 +23,5 @@ before_install:
   - sudo apt-get install lua5.3 -y
   - sudo apt-get install ruby-full -y
   - sudo apt-get install clisp -y
+  - sudo apt-get install elixir -y
   - sudo pip install numpy pandas cython

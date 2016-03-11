@@ -33,7 +33,8 @@ BUILD_SUPPORT = [
     "Ruby",
     "C",
     "C++",
-    "Bash"
+    "Bash",
+    "Elixir"
 ]
 
 # CLI INTERFACE
@@ -329,6 +330,8 @@ def choose_builder(lang, path):
         b = Build("ruby", path)
     elif lang == "Bash":
         b = Build("bash -c", path)
+    elif lang == "Elixir":
+        b = Build("elixir", path)
     else:
         raise Exception("Error; U have the {!r} compilers?".format(lang))
         exit(1)
