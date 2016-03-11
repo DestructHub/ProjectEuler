@@ -14,9 +14,9 @@ before_install:
   - sudo apt-get install python-numpy -y
   - sudo apt-get install python-scipy -y
   - sudo apt-get install python-pandas -y
-  - sudo apt-get install golang -y
   - sudo apt-get install python-pip -y
   - sudo apt-get install python-sympy -y
+  - sudo apt-get install golang -y
   - sudo apt-get install clojure -y
   - sudo apt-get install ghc -y
   - sudo apt-get install g++ gcc -y
@@ -24,4 +24,6 @@ before_install:
   - sudo apt-get install ruby-full -y
   - sudo apt-get install clisp -y
   - sudo apt-get install elixir -y
+  - sudo apt-get install php -y
+  - sudo apt-get install gobjc -y
   - sudo pip install numpy pandas cython

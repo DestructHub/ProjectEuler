@@ -24,17 +24,20 @@ from time import sleep
 
 ERASE_LINE = "\x1b[2K"
 BUILD_SUPPORT = [
-    "Python",  # you need the python interpreter | pacman -Su python
-    "Go",  # you need the golang compiler | pacman -Su golang
-    "Clojure",  # you need lein && clojure | pacman -Su clojure
+    "Python",      # you need python | pacman -Su python
+    "Go",          # you need golang | pacman -Su golang
+    "Clojure",     # you need clojure | pacman -Su clojure
     "CommonLisp",  # you need clisp | pacman -Su clisp
-    "Haskell",  # you need ghc | pacman -Su ghc
-    "Lua",
-    "Ruby",
-    "C",
-    "C++",
-    "Bash",
-    "Elixir"
+    "Haskell",     # you need ghc | pacman -Su ghc
+    "Lua",         # you need lua | pacman -Su lua5.3
+    "Ruby",        # you need ruby | pacman -Su ruby
+    "C",           # you need gcc | pacman -Su gcc
+    "C++",         # you need | pacman -Su g++
+    "Elixir",      # you need elixir | pacman -Su elixir
+    "PHP",         # you need php | pacman -Su php
+    "Swift",       # you need swift | yaourt -Su swift
+    "Objective-C"  # you need gcc-objc | pacman -Su gcc-objc
+    "Bash",        # hmm, i think you already have this
 ]
 
 # CLI INTERFACE
@@ -43,6 +46,7 @@ BUILD_SUPPORT = [
 # -p (print the path)
 # -a all languages selected
 # -s language (search)
+# -b (build)
 
 # Examples of usage:
 # python stats.py --list
@@ -107,6 +111,17 @@ parser.add_option(
     default=False,
 )
 
+# #
+# not implemented yet
+# #
+parser.add_option(
+    "-m", "--blame",
+    help="Show the slowest solutions whose needs help",
+    dest="blame",
+    action="store_true",
+    default=False,
+)
+
 parser.usage = "%prog [-s language] [-al] [-cp] "
 
 
@@ -115,23 +130,34 @@ parser.usage = "%prog [-s language] [-al] [-cp] "
 # #
 
 
-class Build(object):
+class Checker(object):
+
+    checked = {}
+
+    def __init__(self, compiler, path):
+        self.compiler = compiler.split()
+        self.path = path
+        self.check()
+
+    def check(self):
+        from os.path import exists
+        if not exists(self.compiler[0]):
+            return NotImplemented
+
+
+class Build(Checker):
 
     """Interactive languages building"""
 
-    def __init__(self, args, path):
-        self.bin = args.split()
-        self.path = path
-
     def execute(self):
         before = time()
-        program = Popen(self.bin + [self.path], stdout=PIPE)
+        program = Popen(self.compiler + [self.path], stdout=PIPE)
         out, _ = program.communicate()
         time_passed = time() - before
         return out, program.returncode, time_passed
 
 
-class SpecialBuild(object):
+class SpecialBuild(Checker):
 
     """For compiled languages
     C++, C at example
@@ -139,17 +165,13 @@ class SpecialBuild(object):
 
     fout = "compiled.out"
 
-    def __init__(self, compiler, path):
-        self.compiler = compiler.split()
-        self.path = path
-        self.output = join(dirname(self.path), self.fout)
-
     def compile(self):
         args = self.compiler + [self.path, "-o", self.output]
         program = Popen(args, stdout=PIPE)
         return program.wait() == 0
 
     def execute(self):
+        self.output = join(dirname(self.path), self.fout)
         if self.compile():
             compiled = abspath(self.output)
             program = Build("bash -c", "{!r}".format(compiled))
@@ -332,9 +354,13 @@ def choose_builder(lang, path):
         b = Build("bash -c", path)
     elif lang == "Elixir":
         b = Build("elixir", path)
+    elif lang == "Objective-C":
+        b = SpecialBuild("gcc -Wall -lm -lobjc", path)
+    elif lang == "PHP":
+        b = Build("php", path)
     else:
         raise Exception("Error; U have the {!r} compilers?".format(lang))
-        exit(1)
+        _exit(1)
     return b
 
 
@@ -393,6 +419,10 @@ def list_by_count(df):
     return table.sort_values("Solutions", ascending=False)
 
 
+def blame_solutions(df):
+    pass
+
+
 def handle_options(options):
     df = load_dataframe()
     langs = {x.lower(): x for x in df.columns}
@@ -425,6 +455,9 @@ def handle_options(options):
 
     elif options.path:
         df = '\n'.join(path for _, path in solutions_paths(df[langs_selected]))
+
+    elif options.blame:
+        df = "not implemented! you can see blame code in soon."
 
     elif not any(options.__dict__.values()):
         parser.print_help()
