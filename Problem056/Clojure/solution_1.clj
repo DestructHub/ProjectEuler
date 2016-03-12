@@ -1,6 +1,6 @@
 ;Author: tkovs
 
-(defn exp [x n]
+(defn pow [x n]
    (reduce *' (repeat n x)))
 
 (defn sum [x]
@@ -8,7 +8,7 @@
 
 (defn solve []
     (let [list (range 1 100)
-          numbers (mapcat (fn [x] (map (fn [y] (exp x y)) list)) list)
+          numbers (mapcat (fn [x] (map (fn [y] (pow x y)) list)) list)
           sumDigits (map sum numbers)]
             (apply max sumDigits) ))
 
