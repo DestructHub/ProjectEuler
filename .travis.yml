@@ -4,11 +4,6 @@ python:
 
 sudo: true
 
-install:
-  - pip install -r requirements.txt
-
-script: python stats.py --all --build
-
 before_install:
   - wget -O - http://binaries.erlang-solutions.com/debian/erlang_solutions.asc | sudo apt-key add -
   - sudo add-apt-repository ppa:eugenesan/ppa -y
@@ -22,4 +17,22 @@ before_install:
   - sudo apt-get install lua5.2 -y
   - sudo apt-get install ruby-full -y
   - sudo apt-get install clisp -y
-  - sudo pip install cython sympy numpy pandas 
+  - sudo pip install cython
+
+install:
+  - pip install -r requirements.txt
+
+script: 
+  - python stats.py --search python --build \
+                    --search commonlisp \
+                    --search ruby \
+                    --search haskell \
+                    --search clojure \
+                    --search go \ 
+                    --search php \ 
+                    --search python \
+                    --search elixir \
+                    --search lua \
+                    --search bash
+  
+  

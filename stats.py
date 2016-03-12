@@ -451,7 +451,7 @@ def build_result(df, ignore_errors=False, blame=False):
     spin_thread.start()
     for lang, path in solutions_paths(df):
         if "slow" in path and not blame:
-            stdout.write("\rIgnored: {}: bad solution (slow).\n".format(path))
+            stdout.write("\rIgnored {}: bad solution (slow).\n".format(path))
             continue
 
         if lang in BUILD_SUPPORT:
