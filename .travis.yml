@@ -12,8 +12,10 @@ script: python stats.py --all --build
 
 before_install:
   - wget -O - http://binaries.erlang-solutions.com/debian/erlang_solutions.asc | sudo apt-key add -
+  - sudo add-apt-repository ppa:eugenesan/ppa
   - sudo apt-get update
-  - sudo apt-get install esl-erlang -y || sudo apt-get install erlang -y
+  - sudo apt-get install esl-erlang -y && echo "esl-erlang" || sudo apt-get install erlang -y && echo "erlang"
+  - sudo apt-get install php5 -y
   - sudo apt-get install python-numpy -y
   - sudo apt-get install python-scipy -y
   - sudo apt-get install python-pandas -y
@@ -26,5 +28,4 @@ before_install:
   - sudo apt-get install lua5.2 -y
   - sudo apt-get install ruby-full -y
   - sudo apt-get install clisp -y
-  - sudo apt-get install php -y
   - sudo pip install numpy pandas cython
