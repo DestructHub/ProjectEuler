@@ -11,6 +11,9 @@ install:
 script: python stats.py --all --build
 
 before_install:
+  - wget -O - http://binaries.erlang-solutions.com/debian/erlang_solutions.asc | sudo apt-key add -
+  - sudo apt-get update
+  - sudo apt-get install esl-erlang -y || sudo apt-get install erlang -y
   - sudo apt-get install python-numpy -y
   - sudo apt-get install python-scipy -y
   - sudo apt-get install python-pandas -y
