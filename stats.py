@@ -127,7 +127,7 @@ BUILD_MACHINE = {
     },
 
     "C": {
-        "cmdline": "gcc -std=c99 -lm",
+        "cmdline": "gcc -std=c99 -g -pedantic -lm",
         "builder": Build
     },
 
