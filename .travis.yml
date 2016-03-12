@@ -1,6 +1,5 @@
 language: python
 python:
-  - "2.7"
   - "3.5"
 
 sudo: true
@@ -14,13 +13,9 @@ before_install:
   - wget -O - http://binaries.erlang-solutions.com/debian/erlang_solutions.asc | sudo apt-key add -
   - sudo add-apt-repository ppa:eugenesan/ppa -y
   - sudo apt-get update
-  - sudo apt-get install esl-erlang -y && echo "esl-erlang" || sudo apt-get install erlang -y && echo "erlang"
+  - sudo apt-get install erlang -y
   - sudo apt-get install php5 -y
-  - sudo apt-get install python-numpy -y
-  - sudo apt-get install python-scipy -y
-  - sudo apt-get install python-pandas -y
-  - sudo apt-get install python-pip -y
-  - sudo apt-get install python-sympy -y
+  - sudo apt-get install python3-scipy -y
   - sudo apt-get install golang -y
   - sudo apt-get install clojure -y
   - sudo apt-get install ghc -y
@@ -28,4 +23,4 @@ before_install:
   - sudo apt-get install lua5.2 -y
   - sudo apt-get install ruby-full -y
   - sudo apt-get install clisp -y
-  - sudo pip install numpy pandas cython
+  - sudo pip install cython scipy sympy numpy pandas 
