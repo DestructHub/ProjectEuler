@@ -20,6 +20,65 @@ import threading
 from itertools import cycle
 from sys import stdout
 from time import sleep
+from distutils.spawn import find_executable
+
+
+# #
+# Bulding classes
+# #
+
+
+class Checker(object):
+
+    checked = []
+
+    def __init__(self, compiler, path):
+        self.compiler = compiler.split()
+        self.path = path
+        self.check()
+
+    def check(self):
+        binary = self.compiler[0]
+        if binary not in self.checked and not find_executable(binary):
+            raise EnvironmentError("{!r} not found. You have the compilers?".format(binary))  # noqa
+        elif binary not in self.checked:
+            self.checked += binary
+
+
+class Execute(Checker):
+
+    """Interactive languages building"""
+
+    def execute(self):
+        before = time()
+        program = Popen(self.compiler + [self.path], stdout=PIPE)
+        out, _ = program.communicate()
+        time_passed = time() - before
+        return out, program.returncode, time_passed
+
+
+class Build(Checker):
+
+    """For compiled languages
+    C++, C at example
+    """
+
+    fout = "compiled.out"
+
+    def compile(self):
+        args = self.compiler + [self.path, "-o", self.output]
+        program = Popen(args, stdout=PIPE)
+        return program.wait() == 0
+
+    def execute(self):
+        self.output = join(dirname(self.path), self.fout)
+        if self.compile():
+            compiled = abspath(self.output)
+            program = Execute("bash -c", "{!r}".format(compiled))
+            output = program.execute()
+            remove(compiled)
+            return output
+        return b"compiles fails", EnvironmentError, 0
 
 
 ERASE_LINE = "\x1b[2K"
@@ -35,10 +94,85 @@ BUILD_SUPPORT = [
     "C++",         # you need | pacman -Su g++
     "Elixir",      # you need elixir | pacman -Su elixir
     "PHP",         # you need php | pacman -Su php
-    #"Swift",       # you need swift | yaourt -Su swift
-    #"Objective-C",  # you need gcc-objc | pacman -Su gcc-objc
+    # "Swift",       # you need swift | yaourt -Su swift
+    # "Objective-C",  # you need gcc-objc | pacman -Su gcc-objc
     "Bash",        # hmm, i think you already have this
 ]
+
+BUILD_MACHINE = {
+
+    "Python": {
+        "cmdline": "python",
+        "builder": Execute
+    },
+
+    "Go": {
+        "cmdline": "go run",
+        "builder": Execute
+    },
+
+    "Clojure": {
+        "cmdline": "clojure",
+        "builder": Execute
+    },
+
+    "CommonLisp": {
+        "cmdline": "clisp",
+        "builder": Execute
+    },
+
+    "Haskell": {
+        "cmdline": "runhaskell",
+        "builder": Execute
+    },
+
+    "C": {
+        "cmdline": "gcc -lm -std=c99",
+        "builder": Build
+    },
+
+    "C++": {
+        "cmdline": "g++ -lm",
+        "builder": Build
+    },
+
+    "Lua": {
+        "cmdline": "lua",
+        "builder": Execute
+    },
+
+    "Ruby": {
+        "cmdline": "ruby",
+        "builder": Execute
+    },
+
+    "Bash": {
+        "cmdline": "bash -c",
+        "builder": Execute
+    },
+
+    "Elixir": {
+        "cmdline": "elixir",
+        "builder": Execute
+    },
+
+    "Objective-C": {
+        "cmdline": "gcc -Wall -lm -lobjc",
+        "builder": Build
+    },
+
+    "PHP": {
+        "cmdline": "php",
+        "builder": Execute
+    },
+
+    "Swift": {
+        "cmdline": "swift",
+        "builder": Execute
+    }
+
+}
+
 
 # CLI INTERFACE
 # -l (list languages with solutions)
@@ -123,62 +257,6 @@ parser.add_option(
 )
 
 parser.usage = "%prog [-s language] [-al] [-cp] "
-
-
-# #
-# Bulding class
-# #
-
-
-class Checker(object):
-
-    checked = {}
-
-    def __init__(self, compiler, path):
-        self.compiler = compiler.split()
-        self.path = path
-        self.check()
-
-    def check(self):
-        from os.path import exists
-        if not exists(self.compiler[0]):
-            return NotImplemented
-
-
-class Build(Checker):
-
-    """Interactive languages building"""
-
-    def execute(self):
-        before = time()
-        program = Popen(self.compiler + [self.path], stdout=PIPE)
-        out, _ = program.communicate()
-        time_passed = time() - before
-        return out, program.returncode, time_passed
-
-
-class SpecialBuild(Checker):
-
-    """For compiled languages
-    C++, C at example
-    """
-
-    fout = "compiled.out"
-
-    def compile(self):
-        args = self.compiler + [self.path, "-o", self.output]
-        program = Popen(args, stdout=PIPE)
-        return program.wait() == 0
-
-    def execute(self):
-        self.output = join(dirname(self.path), self.fout)
-        if self.compile():
-            compiled = abspath(self.output)
-            program = Build("bash -c", "{!r}".format(compiled))
-            output = program.execute()
-            remove(compiled)
-            return output
-        return b"compiles fails", EnvironmentError, 0
 
 
 def walk_problems():
@@ -318,7 +396,7 @@ def count_solutions(df):
 
 # docs?
 def spinner(control):
-    animation = r"|/\-"
+    animation = r"⣾⣽⣻⢿⡿⣟⣯"
     stdout.write(3 * " ")
     for c in cycle(animation):
         message = "(" + c + ")" + " t: {:.2f}".format(time() - control.time)
@@ -332,36 +410,18 @@ def spinner(control):
 
 # need docs
 def choose_builder(lang, path):
-    if lang == "Python":
-        b = Build("python", path)
-    elif lang == "Go":
-        b = Build("go run", path)
-    elif lang == "Clojure":
-        b = Build("clojure", path)
-    elif lang == "CommonLisp":
-        b = Build("clisp", path)
-    elif lang == "Haskell":
-        b = Build("runhaskell", path)
-    elif lang == "C":
-        b = SpecialBuild("gcc -lm", path)
-    elif lang == "C++":
-        b = SpecialBuild("g++ -lm", path)
-    elif lang == "Lua":
-        b = Build("lua", path)
-    elif lang == "Ruby":
-        b = Build("ruby", path)
-    elif lang == "Bash":
-        b = Build("bash -c", path)
-    elif lang == "Elixir":
-        b = Build("elixir", path)
-    elif lang == "Objective-C":
-        b = SpecialBuild("gcc -Wall -lm -lobjc", path)
-    elif lang == "PHP":
-        b = Build("php", path)
-    else:
-        raise Exception("Error; U have the {!r} compilers?".format(lang))
+    try:
+        if lang in BUILD_MACHINE:
+            builder = BUILD_MACHINE[lang]['builder']
+            cmdline = BUILD_MACHINE[lang]['cmdline']
+            b = builder(cmdline, path)
+        else:
+            raise Exception("Builder not configured for {!r}! Call the developer".format(lang))  # noqa
+    except Exception as e:
+        print("\n", e)
         _exit(1)
-    return b
+    finally:
+        return b
 
 
 # need docs
@@ -391,8 +451,8 @@ def build_result(df, ignore_errors=False):
     spin_thread.start()
     for lang, path in solutions_paths(df):
         if lang in BUILD_SUPPORT and "slow" not in path:
-            # WHY THESE spaces woRKS?
-            stdout.write("@Loading next {}: {}".format(path, 12 * ' '))
+            # WHY THESE spaces woRKS?   so muuch lol                ↓
+            stdout.write("@Building next {}: {}".format(path, 12 * ' '))
             b = choose_builder(lang, path)
             control.time = time()
             answer, t = execute_builder(b)
@@ -401,7 +461,8 @@ def build_result(df, ignore_errors=False):
         elif "slow" in path:
             stdout.write("\rIgnored: {}: bad solution (slow).\n".format(path))
         elif not ignore_errors:
-            stdout.write("\rDon't have support yet for {!r}!\n".format(lang))
+            stdout.write("\r{}: Don't have support yet for {!r}!\n".format(path, lang))  # noqa
+
     stdout.write("\r\n")
     stdout.flush()
     control.done = True
