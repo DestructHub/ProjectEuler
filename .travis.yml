@@ -8,7 +8,7 @@ before_install:
   - wget -O - http://binaries.erlang-solutions.com/debian/erlang_solutions.asc | sudo apt-key add -
   - sudo add-apt-repository ppa:eugenesan/ppa -y
   - sudo apt-get update
-  - sudo apt-get install erlang -y
+  - sudo apt-get install erlang elixir -y || echo 'Error ignored'
   - sudo apt-get install php5 -y
   - sudo apt-get install golang -y
   - sudo apt-get install clojure -y
