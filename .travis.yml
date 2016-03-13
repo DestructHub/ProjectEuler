@@ -5,10 +5,11 @@ python:
 sudo: true
 
 before_install:
-  - wget -O - http://binaries.erlang-solutions.com/debian/erlang_solutions.asc | sudo apt-key add -
+  - wget http://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+  - sudo dpkg -i erlang-solutions_1.0_all.deb
   - sudo add-apt-repository ppa:eugenesan/ppa -y
   - sudo apt-get update
-  - sudo apt-get install erlang elixir -y || echo 'Error ignored'
+  - sudo apt-get install elixir
   - sudo apt-get install php5 -y
   - sudo apt-get install golang -y
   - sudo apt-get install clojure -y
