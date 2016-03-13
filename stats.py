@@ -15,12 +15,11 @@ from os.path import join, dirname, abspath
 from re import compile
 from optparse import OptionParser
 from subprocess import Popen, PIPE
-from time import time
-import threading
+from time import time, sleep
 from itertools import cycle
 from sys import stdout
-from time import sleep
 from distutils.spawn import find_executable
+import threading
 
 
 # #
@@ -245,9 +244,7 @@ parser.add_option(
     default=False,
 )
 
-# #
-# not implemented yet
-# #
+
 parser.add_option(
     "-m", "--blame",
     help="Show the slowest solutions whose needs help",
@@ -256,7 +253,7 @@ parser.add_option(
     default=False,
 )
 
-parser.usage = "%prog [-s language] [-al] [-cp] [--blame] "
+parser.usage = "%prog [-s language] [-al] [-cpb] [--blame]"
 
 
 def walk_problems():
@@ -429,6 +426,7 @@ def execute_builder(b):
     out, err, t = b.execute()
     answer = out.decode("utf-8").strip("\n")
     if err:
+        print(err)
         _exit(1)
     stdout.write(ERASE_LINE)
     building = "\rBuilded {}: Answer: {}: {:.2f}s\n".format(b.path, answer, t)
@@ -533,17 +531,18 @@ def handle_options(options):
     elif options.path:
         df = '\n'.join(path for _, path in solutions_paths(df[langs_selected]))
 
-    elif not any(options.__dict__.values()):
-        parser.print_help()
-
     pd.set_option("display.max_rows", len(df))
     print(df)
 
 
 def main():
     options, _ = parser.parse_args()
-    print(header(options.__dict__))
-    handle_options(options)
+    
+    if not any(options.__dict__.values()):
+        parser.print_help()
+    else:
+        print(header(options.__dict__))
+        handle_options(options)
 
 if __name__ == "__main__":
     main()
