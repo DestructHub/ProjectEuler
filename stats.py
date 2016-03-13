@@ -253,6 +253,15 @@ parser.add_option(
     default=False,
 )
 
+parser.add_option(
+    "-g", "--graph",
+    help="Make a cool graph with the final DataFrame data",
+    dest="graph",
+    action="store_true",
+    default=False,
+
+)
+
 parser.usage = "%prog [-s language] [-al] [-cpb] [--blame]"
 
 
@@ -370,7 +379,7 @@ def solutions_paths(df):
     return paths
 
 
-def count_solutions(df):
+def count_solutions(df, solutions=True):
     """
     Function: count_solutions
     Summary: Count the number of solutions of each problem and language
@@ -384,7 +393,7 @@ def count_solutions(df):
     df_ = pd.DataFrame()
     df_ = df.applymap(lambda x: len(x) if x is not np.NAN else 0)
 
-    if len(df.columns) > 1:
+    if len(df.columns) > 1 and solutions:
         df_["Solutions"] = df_[df_.columns].apply(tuple, axis=1).map(sum)
         df_ = df_[df_.Solutions > 0]
 
@@ -474,7 +483,7 @@ def build_result(df, ignore_errors=False, blame=False):
 
 
 def list_by_count(df):
-    df_ = count_solutions(df)
+    df_ = count_solutions(df, solutions=False)
     count = [sum(df_[lang]) for lang in df_.columns]
     table = pd.DataFrame(count, index=df_.columns,
                          columns=["Solutions"])
@@ -491,8 +500,45 @@ def blame_solutions(df):
     return df_
 
 
+# Problem015 -> 15
+def remove_problem(df):
+    df_ = df
+    df_.Problem = df.Problem.map(lambda x: x.replace("Problem", "").strip('0'))
+    return df_
+
+
+def build_per_language(df):
+    index = df.Problem.map(int).max()
+    languages = set(df.Language)
+
+    data = {lang: np.full(index, np.nan) for lang in languages}
+    for _, row in df.iterrows():
+        data[row['Language']][int(row['Problem']) - 1] = row['Time']
+
+    df_ = pd.DataFrame(data, index=range(1, index + 1)).dropna(how='all')
+    df_.index.name = 'Problems'
+
+    return df_
+
+
 def header(opts):
     return "Command: " + ' '.join([x.capitalize() for x in opts if opts[x]])
+
+
+def handle_graph(df, options):
+    import matplotlib.pyplot as plt
+    import matplotlib
+    from itertools import islice, cycle
+    my_colors = list(islice(cycle(['b', 'r', 'g', 'y', 'k']), None, len(df)))
+    matplotlib.style.use('ggplot')
+    if options.build:
+        df = build_per_language(remove_problem(df))
+        df.plot()
+    elif options.list and options.count:
+        # Make a list by cycling through the colors you care about
+        # to match the length of your data.
+        df.plot(kind='barh', stacked=True, color=my_colors)
+    plt.show()
 
 
 def handle_options(options):
@@ -533,16 +579,20 @@ def handle_options(options):
 
     pd.set_option("display.max_rows", len(df))
     print(df)
+    if options.graph:
+        handle_graph(df, options)
+        
 
 
 def main():
     options, _ = parser.parse_args()
-    
+
     if not any(options.__dict__.values()):
         parser.print_help()
-    else:
-        print(header(options.__dict__))
-        handle_options(options)
+        exit(0)
+
+    print(header(options.__dict__))
+    handle_options(options)
 
 if __name__ == "__main__":
     main()
