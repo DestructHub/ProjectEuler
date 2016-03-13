@@ -146,7 +146,7 @@ BUILD_MACHINE = {
     },
 
     "Bash": {
-        "cmdline": "bash -c",
+        "cmdline": "bash",
         "builder": Execute
     },
 
