@@ -9,7 +9,7 @@ before_install:
   - sudo dpkg -i erlang-solutions_1.0_all.deb
   - sudo add-apt-repository ppa:eugenesan/ppa -y
   - sudo apt-get update
-  - sudo apt-get install elixir
+  - sudo apt-get install elixir -y
   - sudo apt-get install php5 -y
   - sudo apt-get install golang -y
   - sudo apt-get install clojure -y
