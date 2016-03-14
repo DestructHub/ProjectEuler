@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 #
 #   Python Script
@@ -15,12 +15,11 @@ from os.path import join, dirname, abspath
 from re import compile
 from optparse import OptionParser
 from subprocess import Popen, PIPE
-from time import time
-import threading
+from time import time, sleep
 from itertools import cycle
 from sys import stdout
-from time import sleep
 from distutils.spawn import find_executable
+import threading
 
 
 # #
@@ -127,7 +126,7 @@ BUILD_MACHINE = {
     },
 
     "C": {
-        "cmdline": "gcc -lm -std=c99",
+        "cmdline": "gcc -std=c99 -g -pedantic -lm",
         "builder": Build
     },
 
@@ -147,7 +146,7 @@ BUILD_MACHINE = {
     },
 
     "Bash": {
-        "cmdline": "bash -c",
+        "cmdline": "bash",
         "builder": Execute
     },
 
@@ -245,9 +244,7 @@ parser.add_option(
     default=False,
 )
 
-# #
-# not implemented yet
-# #
+
 parser.add_option(
     "-m", "--blame",
     help="Show the slowest solutions whose needs help",
@@ -256,7 +253,16 @@ parser.add_option(
     default=False,
 )
 
-parser.usage = "%prog [-s language] [-al] [-cp] "
+parser.add_option(
+    "-g", "--graph",
+    help="Make a cool graph with the final DataFrame data",
+    dest="graph",
+    action="store_true",
+    default=False,
+
+)
+
+parser.usage = "%prog [-s language] [-al] [-cpb] [--blame]"
 
 
 def walk_problems():
@@ -373,7 +379,7 @@ def solutions_paths(df):
     return paths
 
 
-def count_solutions(df):
+def count_solutions(df, solutions=True):
     """
     Function: count_solutions
     Summary: Count the number of solutions of each problem and language
@@ -382,12 +388,12 @@ def count_solutions(df):
         @param (df): pd.DataFrame
     Returns: pd.DataFrame
     """
+    df = df.dropna(axis=1, how='all')  # columns all nan
+    df = df.dropna(how='all')  # rows all nan
     df_ = pd.DataFrame()
-    for column in df.columns:
-        df_[column] = df[column].map(
-            lambda x: len(x) if x is not np.NAN else 0)
+    df_ = df.applymap(lambda x: len(x) if x is not np.NAN else 0)
 
-    if len(df.columns) > 1:
+    if len(df.columns) > 1 and solutions:
         df_["Solutions"] = df_[df_.columns].apply(tuple, axis=1).map(sum)
         df_ = df_[df_.Solutions > 0]
 
@@ -429,6 +435,7 @@ def execute_builder(b):
     out, err, t = b.execute()
     answer = out.decode("utf-8").strip("\n")
     if err:
+        print(err)
         _exit(1)
     stdout.write(ERASE_LINE)
     building = "\rBuilded {}: Answer: {}: {:.2f}s\n".format(b.path, answer, t)
@@ -439,7 +446,7 @@ def execute_builder(b):
 
 
 # need docs
-def build_result(df, ignore_errors=False):
+def build_result(df, ignore_errors=False, blame=False):
     class Control:  # to handle the spinner time at each solution
         time = time()
         done = False
@@ -450,7 +457,11 @@ def build_result(df, ignore_errors=False):
     spin_thread = threading.Thread(target=spinner, args=(control,))
     spin_thread.start()
     for lang, path in solutions_paths(df):
-        if lang in BUILD_SUPPORT and "slow" not in path:
+        if "slow" in path and not blame:
+            stdout.write("\rIgnored {}: bad solution (slow).\n".format(path))
+            continue
+
+        if lang in BUILD_SUPPORT:
             # WHY THESE spaces woRKS?   so muuch lol                ↓
             stdout.write("@Building next {}: {}".format(path, 12 * ' '))
             b = choose_builder(lang, path)
@@ -458,8 +469,7 @@ def build_result(df, ignore_errors=False):
             answer, t = execute_builder(b)
             problem = split_problem_language(path)[0]
             data.append([problem, lang, t, answer])
-        elif "slow" in path:
-            stdout.write("\rIgnored: {}: bad solution (slow).\n".format(path))
+
         elif not ignore_errors:
             stdout.write("\r{}: Don't have support yet for {!r}!\n".format(path, lang))  # noqa
 
@@ -473,15 +483,62 @@ def build_result(df, ignore_errors=False):
 
 
 def list_by_count(df):
-    c = count_solutions(df)
-    count = [sum(c[lang]) for lang in df.columns]
-    table = pd.DataFrame(count, index=df.columns,
+    df_ = count_solutions(df, solutions=False)
+    count = [sum(df_[lang]) for lang in df_.columns]
+    table = pd.DataFrame(count, index=df_.columns,
                          columns=["Solutions"])
     return table.sort_values("Solutions", ascending=False)
 
 
 def blame_solutions(df):
-    pass
+    df_ = df.applymap(
+        lambda solutions:
+        [x for x in solutions if 'slow' in x] or np.NAN
+        if solutions is not np.NAN else np.NAN
+    )
+
+    return df_
+
+
+# Problem015 -> 15
+def remove_problem(df):
+    df_ = df
+    df_.Problem = df.Problem.map(lambda x: x.replace("Problem", "").strip('0'))
+    return df_
+
+
+def build_per_language(df):
+    index = df.Problem.map(int).max()
+    languages = set(df.Language)
+
+    data = {lang: np.full(index, np.nan) for lang in languages}
+    for _, row in df.iterrows():
+        data[row['Language']][int(row['Problem']) - 1] = row['Time']
+
+    df_ = pd.DataFrame(data, index=range(1, index + 1)).dropna(how='all')
+    df_.index.name = 'Problems'
+
+    return df_
+
+
+def header(opts):
+    return "Command: " + ' '.join([x.capitalize() for x in opts if opts[x]])
+
+
+def handle_graph(df, options):
+    import matplotlib.pyplot as plt
+    import matplotlib
+    from itertools import islice, cycle
+    my_colors = list(islice(cycle(['b', 'r', 'g', 'y', 'k']), None, len(df)))
+    matplotlib.style.use('ggplot')
+    if options.build:
+        df = build_per_language(remove_problem(df))
+        df.plot()
+    elif options.list and options.count:
+        # Make a list by cycling through the colors you care about
+        # to match the length of your data.
+        df.plot(kind='barh', stacked=True, color=my_colors)
+    plt.show()
 
 
 def handle_options(options):
@@ -493,6 +550,9 @@ def handle_options(options):
     if options.all:
         langs_selected = [x for x in langs.values()]
 
+    if options.blame:
+        df = blame_solutions(df)
+
     if options.list:
         if options.count:
             df = list_by_count(df)
@@ -501,34 +561,37 @@ def handle_options(options):
             langs_selected = [x for x in langs.values()]
 
         else:
-            df = '\n'.join(sorted(langs.values()))
+            df = '\n'.join(sorted(df.dropna(axis=1, how='all').columns))
     else:
         df = df[langs_selected]
 
     if options.count and not options.list:
-        df = count_solutions(df[langs_selected])
+        df = count_solutions(df)
 
     elif options.build:
         try:
-            df = build_result(df[langs_selected], options.all)
+            df = build_result(df[langs_selected], options.all, options.blame)
         except(SystemExit, KeyboardInterrupt):
             _exit(1)
 
     elif options.path:
         df = '\n'.join(path for _, path in solutions_paths(df[langs_selected]))
 
-    elif options.blame:
-        df = "not implemented! you can see blame code in soon."
-
-    elif not any(options.__dict__.values()):
-        parser.print_help()
-
     pd.set_option("display.max_rows", len(df))
     print(df)
+    if options.graph:
+        handle_graph(df, options)
+        
 
 
 def main():
     options, _ = parser.parse_args()
+
+    if not any(options.__dict__.values()):
+        parser.print_help()
+        exit(0)
+
+    print(header(options.__dict__))
     handle_options(options)
 
 if __name__ == "__main__":
