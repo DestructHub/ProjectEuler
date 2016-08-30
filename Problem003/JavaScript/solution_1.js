@@ -2,6 +2,10 @@
 
 const prime = num => {
 
+	if(num == 1) {
+		return 1;
+	}
+
 	let i;
 
 	for(i = 2; i < num; i++) {
