@@ -1,13 +1,12 @@
 CXX = g++
-LFLAGS = -lm -Wall -std=c++0x -o
-TARGET =  solution_01
-EXTENSION_TARGET = cpp
-EXTENSION_OUT = out
+LFLAGS = -Wall -std=c++0x
+RFLAGS = -lm
+TARGET = solution_1
 
 
 all:
-	$(CXX) $(LFLAGS) $(TARGET).$(EXTENSION_OUT) $(TARGET).$(EXTENSION_TARGET)
+	$(CXX) $(LFLAGS) $(TARGET).c -o $(TARGET).out $(RFLAGS)
 clean:
-	rm -v *.$(EXTENSION_OUT)
+	rm -v *.out
 run:
-	./$(TARGET).$(EXTENSION_OUT)
+	./$(TARGET).out
