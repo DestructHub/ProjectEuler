@@ -16,8 +16,8 @@ defmodule Euler17 do
   # When we've parsed all digits, make the word
   defp num_to_str([], acc) do
     case acc do
-      # "a" is something like "twenty", "fourty", "ninety"
-      # and "b" is empty because of a 0 unit
+      # "ten_name" is something like "twenty", "fourty", "ninety"
+      # and "unit_name" is empty because of a 0 unit
       ["", ten_name] -> ten_name
       [unit_name, ten_name] -> ten_name <> "and" <> unit_name
       _ -> acc |> Enum.reduce(&(&1 <> &2))
@@ -25,7 +25,7 @@ defmodule Euler17 do
   end
   # Parse a digit
   # It's important to you know that whenever we have 2 digits,
-  # we parse both togheter using ten_text/1
+  # we parse both together using ten_text/1
   # units are only parsed alone for 1 digit sized numbers (1..9)
   defp num_to_str([x | xs] = digits, acc) do
     digits_length = length(digits)
