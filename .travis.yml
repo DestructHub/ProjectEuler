@@ -13,7 +13,6 @@ addons:
       - golang
       - php5
       - clojure
-      - elixir
       - ghc
       - gcc
       - g++
@@ -25,6 +24,7 @@ before_install:
   - sudo add-apt-repository ppa:eugenesan/ppa -y
   - sudo apt-get update
   - sudo apt-get install gcc-multilib -y
+  - sudo apt-get install elixir -y
   - sudo pip install cython
 
 install:
