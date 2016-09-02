@@ -7,15 +7,12 @@ sudo: true
 addons:
   apt:
     packages:
-      - lua5.2
-      - ruby-full
       - clisp
-      - golang
-      - php
       - clojure
       - ghc
       - gcc
       - g++
+      - golang
       - gcc-multilib
 
 before_install:
@@ -25,6 +22,9 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install gcc-multilib -y
   - sudo apt-get install elixir -y
+  - sudo apt-get install php5 -y
+  - sudo apt-get install ruby-full -y
+  - sudo apt-get install lua5.2 -y
   - sudo pip install cython
 
 install:
