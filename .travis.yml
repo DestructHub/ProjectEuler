@@ -11,7 +11,7 @@ addons:
       - ruby-full
       - clisp
       - golang
-      - php5
+      - php
       - clojure
       - ghc
       - gcc
