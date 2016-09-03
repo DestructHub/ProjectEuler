@@ -5,4 +5,5 @@
        (str)
        (seq)
        (map #(Character/getNumericValue %))
-       (reduce +)))
+       (reduce +)
+       (println))
