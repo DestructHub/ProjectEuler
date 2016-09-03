@@ -25,14 +25,13 @@ install:
 
 script: python stats.py --build
                         --search python
-                        --search commonlisp  
-                        --search ruby 
+                        --search commonlisp
+                        --search ruby
                         --search haskell
                         --search go
-                        --search php 
+                        --search php
                         --search python
                         --search elixir
                         --search lua
                         --search bash
-  
-  
+                        --search c++
