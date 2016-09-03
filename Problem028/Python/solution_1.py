@@ -25,7 +25,7 @@ What is the sum of the numbers on the diagonals in a
 """
 
 # 1 +3 + 5 + 7 + 9 = 25
-# 24 + 25 + 13 + 17 + 21 = 101
+# (25) + 25 + 13 + 17 + 21 = 101
 # 669171001
 
 # LOOOOOOOOOOOOOOOOOOOOL, try understand this! I don't believe I wrote that...
