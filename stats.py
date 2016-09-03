@@ -39,7 +39,7 @@ class Checker(object):
     def check(self):
         binary = self.compiler[0]
         if binary not in self.checked and not find_executable(binary):
-            raise EnvironmentError("{!r} not found. You have the compilers?".format(binary))  # noqa
+            raise EnvironmentError("{!r} not found. Do you have the compilers?".format(binary))  # noqa
         elif binary not in self.checked:
             self.checked += binary
 
@@ -58,9 +58,7 @@ class Execute(Checker):
 
 class Build(Checker):
 
-    """For compiled languages
-    C++, C at example
-    """
+    """For compiled languages: C++, C for example"""
 
     fout = "compiled.out"
 
@@ -126,12 +124,12 @@ BUILD_MACHINE = {
     },
 
     "C": {
-        "cmdline": "gcc -std=c99 -g -pedantic -lm",
+        "cmdline": "gcc -std=c99 -lm",
         "builder": Build
     },
 
     "C++": {
-        "cmdline": "g++ -lm",
+        "cmdline": "g++ -std=c++0x",
         "builder": Build
     },
 
@@ -247,7 +245,7 @@ parser.add_option(
 
 parser.add_option(
     "-m", "--blame",
-    help="Show the slowest solutions whose needs help",
+    help="Show the slowest solutions that needs help",
     dest="blame",
     action="store_true",
     default=False,
@@ -581,7 +579,6 @@ def handle_options(options):
     print(df)
     if options.graph:
         handle_graph(df, options)
-        
 
 
 def main():
