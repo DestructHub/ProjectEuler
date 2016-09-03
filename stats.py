@@ -46,7 +46,7 @@ class Checker(object):
 
 class Execute(Checker):
 
-    """Interactive languages building"""
+    """ Interactive languages building. """
 
     def execute(self):
         before = time()
@@ -58,9 +58,7 @@ class Execute(Checker):
 
 class Build(Checker):
 
-    """For compiled languages
-    C++, C at example
-    """
+    """ For compiled languages; C++, C for example. """
 
     fout = "compiled.out"
 
@@ -126,12 +124,12 @@ BUILD_MACHINE = {
     },
 
     "C": {
-        "cmdline": "gcc -std=c99 -g -pedantic -lm",
+        "cmdline": "gcc -std=c99 -g -lm",
         "builder": Build
     },
 
     "C++": {
-        "cmdline": "g++ -lm",
+        "cmdline": "g++ -std=c++0x -lm",
         "builder": Build
     },
 

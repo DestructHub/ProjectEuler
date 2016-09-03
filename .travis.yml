@@ -4,20 +4,27 @@ python:
 
 sudo: true
 
+addons:
+  apt:
+    packages:
+      - clisp
+      - clojure
+      - ghc
+      - gcc
+      - g++
+      - golang
+      - gcc-multilib
+
 before_install:
   - wget http://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
   - sudo dpkg -i erlang-solutions_1.0_all.deb
   - sudo add-apt-repository ppa:eugenesan/ppa -y
   - sudo apt-get update
+  - sudo apt-get install gcc-multilib -y
   - sudo apt-get install elixir -y
   - sudo apt-get install php5 -y
-  - sudo apt-get install golang -y
-  - sudo apt-get install clojure -y
-  - sudo apt-get install ghc -y
-  - sudo apt-get install g++ gcc -y
-  - sudo apt-get install lua5.2 -y
   - sudo apt-get install ruby-full -y
-  - sudo apt-get install clisp -y
+  - sudo apt-get install lua5.2 -y
   - sudo pip install cython
 
 install:
@@ -25,14 +32,14 @@ install:
 
 script: python stats.py --build
                         --search python
-                        --search commonlisp  
-                        --search ruby 
+                        --search commonlisp
+                        --search ruby
                         --search haskell
                         --search go
-                        --search php 
+                        --search php
                         --search python
                         --search elixir
                         --search lua
                         --search bash
-  
-  
+                        --search C
+                        --search C++
