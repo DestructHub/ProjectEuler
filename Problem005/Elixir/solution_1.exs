@@ -13,4 +13,4 @@ defmodule Solution do
   end
 end
 
-Solution.solve(20)
+Solution.solve(20) |> IO.puts
