@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+#
+#	 Copyright @ DestructHub Authors
+#
+#
+
+# usage: add <problem-num> <answer>
+
+num=$(expr $1 + 0)
+dir="Problem"$(printf "%03d" $num)
+readme="[The original source of problem](https://projecteuler.net/problem=$num)"
+hash=$(echo $2 | md5sum)
+mkdir -p $dir
+echo "Created folder $dir."
+echo $hash > $dir/.hash
+echo "$dir/.hash => $hash"
+echo $readme > $dir/README.md
+echo "Created file $dir/README.md"
+echo "Added solution template for problem $num of ProjectEuler"
