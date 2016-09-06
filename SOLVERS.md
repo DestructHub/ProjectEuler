@@ -2,8 +2,10 @@
 
 ![[lerax](www.github.com/ryukinix)](https://projecteuler.net/profile/lerax.png)
 ![[lubien](www.github.com/lubien)](https://projecteuler.net/profile/lubien.png)
+![[leorog](www.github.com/leorog)](https://projecteuler.net/profile/leorog.png)
 
-| Solver Name    | ProjectEuler NickName |
-| :------------- | :-------------------- |
-| Manoel Vilela  | lerax                 |
-| João Ferreira  | lubien                |
+| Solver Name         | ProjectEuler NickName |
+| :-------------------| :-------------------- |
+| Manoel Vilela       | lerax                 |
+| João Ferreira       | lubien                |
+| Leonardo Rogerio    | leorog                |
