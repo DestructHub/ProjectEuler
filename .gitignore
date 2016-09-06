@@ -122,6 +122,9 @@ cabal.sandbox.config
 *.aux
 *.hp
 
+## Alchemist (Elixir) ignore ##
+*.beam
+
 ## Custom ##
 
 # Compiled Lua sources
