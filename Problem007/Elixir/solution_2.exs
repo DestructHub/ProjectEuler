@@ -17,6 +17,7 @@ defmodule Solution do
     |> Stream.reject(&is_nil/1)
   end
 
+  def prime?(x) when x == 2, do: true
   def prime?(x) when x in [1, 4], do: false
   def prime?(x) do
     2..round(:math.sqrt(x))
