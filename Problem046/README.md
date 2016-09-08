@@ -1,1 +1,1 @@
-[The original source of problem](https://projecteuler.net/problem=<problem>)
+[The original source of problem](https://projecteuler.net/problem=46)
