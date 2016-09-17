@@ -1,7 +1,7 @@
-CXX = g++
+CXX = gcc
 LFLAGS = -lm -Wall -o
 TARGET =  solution_1
-EXTENSION_TARGET = cpp
+EXTENSION_TARGET = c
 EXTENSION_OUT = out
 
 
