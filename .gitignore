@@ -43,6 +43,11 @@
 # tmp files
 *.*~
 
+## Vim ignore ##
+
+# Temp files
+*.swp
+
 ## Python garbage ignore ##
 
 # Byte-compiled / optimized / DLL files
