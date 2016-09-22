@@ -4,6 +4,7 @@
 ![[lubien](www.github.com/lubien)](https://projecteuler.net/profile/lubien.png)
 ![[leorog](www.github.com/leorog)](https://projecteuler.net/profile/leorog.png)
 ![[tkovs](www.github.com/tkovs)](https://projecteuler.net/profile/tkovs.png)
+![[mateusjatenee](www.github.com/mateusjatenee)](https://projecteuler.net/profile/mateusjatenee.png)
 
 | Solver Name          | ProjectEuler NickName |
 | :--------------------| :-------------------- |
@@ -11,3 +12,4 @@
 | João Ferreira        | lubien                |
 | Leonardo Rogerio     | leorog                |
 | Vitor Rodrigues      | tkovs                 |
+| Mateus Guimarães     | mateusjatenee         |
