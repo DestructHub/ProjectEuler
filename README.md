@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/DestructHub/ProjectEuler.svg?branch=master)](https://travis-ci.org/DestructHub/ProjectEuler)
 
+[![Telegram Chat](https://patrolavia.github.io/telegram-badge/chat.png)](https://telegram.me/destructhub)
+
 
 # ProjectEuler
 Compilation of some solutions of the challenges existent in the website www.projecteuler.net
