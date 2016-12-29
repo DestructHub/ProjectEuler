@@ -1,6 +1,6 @@
 <?php
 
-    $fibonacci = [1, 2];
+    $fibonacci = array( 1, 2);
 
     array_walk( $fibonacci, function($num) use (&$fibonacci)
     {
