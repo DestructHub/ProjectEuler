@@ -15,9 +15,10 @@
 
 (defun solution()
   (loop for x from 100 to 999
-        maximize (loop for y from 100 to 999
-                       for p = (* x y)
-                       when (palindromep p) maximize p)))
+        for m = (loop for y from 100 to 999
+                      for p = (* x y)
+                      when (palindromep p) maximize p)
+        when (numberp m) maximize m))
 
 (format t "~a ~%"(solution))
 
