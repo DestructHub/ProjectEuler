@@ -14,11 +14,11 @@
   (= n (reverse-digits n)))
 
 (defun solution()
-  (loop for x from 100 to 999
-        for m = (loop for y from 100 to 999
-                      for p = (* x y)
-                      when (palindromep p) maximize p)
-        when (numberp m) maximize m))
+  (let ((nums (loop for x from 100 to 999
+                    appending (loop for y from 100 to 999
+                                    collect (* x y)))))
+    (loop for x in (sort nums #'>)
+          when (palindromep x) return x)))
 
 (format t "~a ~%"(solution))
 
