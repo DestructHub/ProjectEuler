@@ -17,7 +17,7 @@ before_install:
   - sudo apt-get install g++ gcc -y
   - sudo apt-get install lua5.2 -y
   - sudo apt-get install ruby-full -y
-  - sudo apt-get install clisp -y
+  - sudo apt-get install sbcl -y
   - sudo pip install cython
 
 install:

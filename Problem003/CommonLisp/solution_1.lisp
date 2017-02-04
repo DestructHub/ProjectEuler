@@ -16,4 +16,4 @@
 (defun solution ()
   (loop for (p f) in (factors 600851475143) maximize p))
 
-(format t "~a ~%"(solution))
+(format t "~a~%"(solution))
