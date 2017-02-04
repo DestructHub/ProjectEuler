@@ -114,7 +114,7 @@ BUILD_MACHINE = {
     },
 
     "CommonLisp": {
-        "cmdline": "clisp",
+        "cmdline": "sbcl --script",
         "builder": Execute
     },
 
