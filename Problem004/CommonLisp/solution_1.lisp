@@ -20,5 +20,5 @@
     (loop for x in (sort nums #'>)
           when (palindromep x) return x)))
 
-(format t "~a ~%"(solution))
+(format t "~a~%"(solution))
 
