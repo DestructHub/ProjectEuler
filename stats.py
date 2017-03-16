@@ -10,16 +10,17 @@
 import pandas as pd  # sudo pip install pandas
 import numpy as np  # sudo pip install numpy
 
-from os import walk, remove, _exit
-from os.path import join, dirname, abspath
-from re import compile
-from optparse import OptionParser
-from subprocess import Popen, PIPE
-from time import time, sleep
-from itertools import cycle
-from sys import stdout
 from distutils.spawn import find_executable
+from optparse import OptionParser
+from os import path
+import os
+import time
+import itertools
 import threading
+import subprocess
+import re
+import sys
+import hashlib
 
 
 # #
@@ -49,10 +50,11 @@ class Execute(Checker):
     """Interactive languages building"""
 
     def execute(self):
-        before = time()
-        program = Popen(self.compiler + [self.path], stdout=PIPE)
+        before = time.time()
+        args = self.compiler + [self.path]
+        program = subprocess.Popen(args, stdout=subprocess.PIPE)
         out, _ = program.communicate()
-        time_passed = time() - before
+        time_passed = time.time() - before
         return out, program.returncode, time_passed
 
 
@@ -64,16 +66,16 @@ class Build(Checker):
 
     def compile(self):
         args = self.compiler + [self.path, "-o", self.output]
-        program = Popen(args, stdout=PIPE)
+        program = subprocess.Popen(args, stdout=subprocess.PIPE)
         return program.wait() == 0
 
     def execute(self):
-        self.output = join(dirname(self.path), self.fout)
+        self.output = path.join(path.dirname(self.path), self.fout)
         if self.compile():
-            compiled = abspath(self.output)
+            compiled = path.abspath(self.output)
             program = Execute("bash -c", "{!r}".format(compiled))
             output = program.execute()
-            remove(compiled)
+            os.remove(compiled)
             return output
         return b"compiles fails", EnvironmentError, 0
 
@@ -191,6 +193,7 @@ BUILD_MACHINE = {
 # Cmdline parsing definitions
 # #
 
+
 parser = OptionParser()
 
 parser.add_option(
@@ -260,7 +263,7 @@ parser.add_option(
 
 )
 
-parser.usage = "%prog [-s language] [-al] [-cpb] [--blame]"
+parser.usage = "%prog [-s language] [-al] [-cpb] [--blame] [-g]"
 
 
 def walk_problems():
@@ -270,12 +273,51 @@ def walk_problems():
     Examples: Uniq behavior
     Returns: list of 3-uples of strings <list ("1", "2", "3"), ...>
     """
-    problem = compile("./Problem[0-9]{3}/")
+    problem = re.compile("./Problem[0-9]{3}/")
     problems = []
-    for x in walk("."):
+    for x in os.walk("."):
         if problem.match(x[0]) and "pycache" not in x[0]:
             problems.append(x)
     return problems
+
+
+def read_hashfile(fpath):
+    """Read .hash based on fpath and clean the weird chars"""
+    return open(fpath).read().strip(' -\n')
+
+
+def get_problem_hashes():
+    """
+    Function: get_problem_hashes
+    Summary: Walking from each problem and return a tuple
+            (problem_name, hash_content)
+    Returns: list of tuples <problem_name: string, hash_content: string>
+    """
+    hash_pattern = re.compile("./Problem[0-9]{3}")
+    hashes = {}
+    for file_tuple in os.walk("."):
+        if hash_pattern.match(file_tuple[0]) and ".hash" in file_tuple[-1]:
+            problem = file_tuple[0]
+            hash_path = path.join(problem, '.hash')
+            hash_content = read_hashfile(hash_path)
+            hashes[problem.strip('./')] = hash_content
+
+    return hashes
+
+
+def digest_answer(answer):
+    clean_answer = answer.strip(' \n')
+    # Sorry for this... Unfortunatelly all hashes
+    # on this repository was be created using the `add` script
+    # at which generates the hashes using `echo $ANSWER | md5sum`
+    # that means: all generated hashes was appended with a newline
+    # because the usage of ECHO!
+    # SAD SAD SAAAAAAD
+    # This would be can fixed using `printf` instead `echo`.
+    # But things need be rebuild from start. YES. Recreate all the hashes.
+    # SO NO NO NO NOO NOOOOOOOOO
+    hacky = clean_answer + '\n'  # the hacky works
+    return hashlib.md5(hacky.encode('utf-8')).hexdigest()
 
 
 def search_language(query, languages):
@@ -294,7 +336,6 @@ def search_language(query, languages):
     return set(query) & set(languages)
 
 
-# @debugorator
 def split_problem_language(path):
     """
     Function: split_problem_language
@@ -319,11 +360,11 @@ def parse_solutions(problems):
         @param (problems): os.walk functions output
     Returns: problem:lang -> [solutions] <dict>
     """
-    solution = compile("solution_+(?!out)")
+    solution = re.compile("solution_+(?!out)")
 
     map_solutions = {}
-    for path, dirs, files in problems:
-        problem, lang = split_problem_language(path)
+    for problem_path, dirs, files in problems:
+        problem, lang = split_problem_language(problem_path)
         map_solutions.setdefault(problem, {}).setdefault(lang, [])
         for file in files:
             if solution.match(file):
@@ -359,7 +400,7 @@ def solutions_paths(df):
         >>> df = load_dataframe()
         >>> py = df[["CommonLisp"]]
         >>> load_filepaths(py)
-        ["]
+        ["..."]
 
     Attributes:
         @param (df): pd.DataFrame
@@ -371,7 +412,8 @@ def solutions_paths(df):
         lang = solutions.name
         problems = solutions.index
         for problem in problems:
-            p = ((lang, join(problem, lang, s)) for s in solutions[problem])
+            p = ((lang, path.join(problem, lang, s))
+                 for s in solutions[problem])
             paths.extend(p)
 
     return paths
@@ -401,29 +443,30 @@ def count_solutions(df, solutions=True):
 # docs?
 def spinner(control):
     animation = r"⣾⣽⣻⢿⡿⣟⣯"
-    stdout.write(3 * " ")
-    for c in cycle(animation):
-        message = "(" + c + ")" + " t: {:.2f}".format(time() - control.time)
-        stdout.write(message)
-        sleep(0.1)
-        stdout.write(len(message) * "\010")
-        stdout.flush()
+    sys.stdout.write(3 * " ")
+    for c in itertools.cycle(animation):
+        current_time = time.time() - control.time
+        message = "(" + c + ")" + " t: {:.2f}".format(current_time)
+        sys.stdout.write(message)
+        time.sleep(0.1)
+        sys.stdout.write(len(message) * "\010")
+        sys.stdout.flush()
         if control.done:
             break
 
 
 # need docs
-def choose_builder(lang, path):
+def choose_builder(lang, fpath):
     try:
         if lang in BUILD_MACHINE:
             builder = BUILD_MACHINE[lang]['builder']
             cmdline = BUILD_MACHINE[lang]['cmdline']
-            b = builder(cmdline, path)
+            b = builder(cmdline, fpath)
         else:
             raise Exception("Builder not configured for {!r}! Call the developer".format(lang))  # noqa
     except Exception as e:
         print("\n", e)
-        _exit(1)
+        os._exit(1)
     finally:
         return b
 
@@ -434,11 +477,11 @@ def execute_builder(b):
     answer = out.decode("utf-8").strip("\n")
     if err:
         print(err)
-        _exit(1)
-    stdout.write(ERASE_LINE)
+        os._exit(1)
+    sys.stdout.write(ERASE_LINE)
     building = "\rBuilded {}: Answer: {}: {:.2f}s\n".format(b.path, answer, t)
-    stdout.write(building)
-    stdout.flush()
+    sys.stdout.write(building)
+    sys.stdout.flush()
 
     return answer, t
 
@@ -446,33 +489,39 @@ def execute_builder(b):
 # need docs
 def build_result(df, ignore_errors=False, blame=False):
     class Control:  # to handle the spinner time at each solution
-        time = time()
+        time = time.time()
         done = False
 
     control = Control()
-    columns = ["Problem", "Language", "Time", "Answer"]
+    columns = ["Problem", "Language", "Time", "Answer", "Correct"]
     data = []
+    hashes = get_problem_hashes()
     spin_thread = threading.Thread(target=spinner, args=(control,))
     spin_thread.start()
-    for lang, path in solutions_paths(df):
-        if "slow" in path and not blame:
-            stdout.write("\rIgnored {}: bad solution (slow).\n".format(path))
+    for lang, spath in solutions_paths(df):
+
+        if "slow" in spath and not blame:
+            sys.stdout.write("\rIgnored {}: bad solution (slow).\n".format(spath))  # noqa
             continue
 
         if lang in BUILD_SUPPORT:
-            # WHY THESE spaces woRKS?   so muuch lol                ↓
-            stdout.write("@Building next {}: {}".format(path, 12 * ' '))
-            b = choose_builder(lang, path)
-            control.time = time()
+            sys.stdout.write("@Building next {}: {}".format(spath, 12 * ' '))
+            b = choose_builder(lang, spath)
+            control.time = time.time()
             answer, t = execute_builder(b)
-            problem = split_problem_language(path)[0]
-            data.append([problem, lang, t, answer])
+            problem = split_problem_language(spath)[0]
+            correct = "No-hash"
+            if problem in hashes:
+                answer_hash = digest_answer(answer)
+                correct = answer_hash == hashes[problem]
+
+            data.append([problem, lang, t, answer, correct])
 
         elif not ignore_errors:
-            stdout.write("\r{}: Don't have support yet for {!r}!\n".format(path, lang))  # noqa
+            sys.stdout.write("\r{}: Don't have support yet for {!r}!\n".format(spath, lang))  # noqa
 
-    stdout.write("\r\n")
-    stdout.flush()
+    sys.stdout.write("\r\n")
+    sys.stdout.flush()
     control.done = True
     spin_thread.join()
 
@@ -526,8 +575,8 @@ def header(opts):
 def handle_graph(df, options):
     import matplotlib.pyplot as plt
     import matplotlib
-    from itertools import islice, cycle
-    my_colors = list(islice(cycle(['b', 'r', 'g', 'y', 'k']), None, len(df)))
+    cicle_colors = itertools.cycle(['b', 'r', 'g', 'y', 'k'])
+    my_colors = itertools.islice(cicle_colors, None, len(df))
     matplotlib.style.use('ggplot')
     if options.build:
         df = build_per_language(remove_problem(df))
@@ -535,7 +584,7 @@ def handle_graph(df, options):
     elif options.list and options.count:
         # Make a list by cycling through the colors you care about
         # to match the length of your data.
-        df.plot(kind='barh', stacked=True, color=my_colors)
+        df.plot(kind='barh', stacked=True, color=list(my_colors))
     plt.show()
 
 
@@ -570,7 +619,7 @@ def handle_options(options):
         try:
             df = build_result(df[langs_selected], options.all, options.blame)
         except(SystemExit, KeyboardInterrupt):
-            _exit(1)
+            os._exit(1)
 
     elif options.path:
         df = '\n'.join(path for _, path in solutions_paths(df[langs_selected]))
@@ -586,10 +635,11 @@ def main():
 
     if not any(options.__dict__.values()):
         parser.print_help()
-        exit(0)
+        os._exit(0)
 
     print(header(options.__dict__))
     handle_options(options)
+
 
 if __name__ == "__main__":
     main()
