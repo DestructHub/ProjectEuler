@@ -49,14 +49,19 @@ class Execute(Checker):
 
     """Interactive languages building"""
 
-    def execute(self):
+    def execute(self, change_directory=True):
         before = time.time()
-        args = self.compiler + [path.basename(self.path)]
+        args = self.compiler
         oldpwd = os.getcwd()
-        os.chdir(path.dirname(self.path))  # yes, i know... you can cry too
+        if change_directory: # yes, you can cry too
+            args += [path.basename(self.path)]
+            os.chdir(path.dirname(self.path))
+        else:
+            args += [self.path]
         program = subprocess.Popen(args, stdout=subprocess.PIPE)
         out, _ = program.communicate()
-        os.chdir(oldpwd)
+        if change_directory:
+            os.chdir(oldpwd)
         time_passed = time.time() - before
         return out, program.returncode, time_passed
 
@@ -77,7 +82,7 @@ class Build(Checker):
         if self.compile():
             compiled = path.abspath(self.output)
             program = Execute("bash -c", "{!r}".format(compiled))
-            output = program.execute()
+            output = program.execute(change_directory=False)
             os.remove(compiled)
             return output
         return b"compiles fails", EnvironmentError, 0
