@@ -51,9 +51,12 @@ class Execute(Checker):
 
     def execute(self):
         before = time.time()
-        args = self.compiler + [self.path]
+        args = self.compiler + [path.basename(self.path)]
+        oldpwd = os.getcwd()
+        os.chdir(path.dirname(self.path))  # yes, i know... you can cry too
         program = subprocess.Popen(args, stdout=subprocess.PIPE)
         out, _ = program.communicate()
+        os.chdir(oldpwd)
         time_passed = time.time() - before
         return out, program.returncode, time_passed
 
