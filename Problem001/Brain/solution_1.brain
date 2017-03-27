@@ -1,0 +1,26 @@
+++++++++++>+* make the number 999 at cell 1
+[ run while the number is greater than 0 at cell 1
+  >+*>+*>+*>+*>+* copy number to cell 2 3 4 5 and 6
+  <<% go back to cell 4 and mod it with itself because x mod x equal 0
+  <<% go back to cell 2 and mod it with itself
+  +++>% make number 3 at cell 2 and mod it with x at cell 3
+
+  ? if x mod 3 is not equal 0
+    >+++++>%
+    ? 
+      > go to cell 6 if not 0
+    : if cell 5 equal zero add it at cell 7
+      >[>+<-]
+    ; 
+
+  : if x mod 3 equal 0
+    ?
+      >>> go to cell 6
+    :
+      >>>[>+<-] if cell 3 equal zero add it at cell 7
+    ;
+  ;
+
+  [-]<[-]<[-]<[-]<[-]<- clean and go back to cell 1 and subtract one
+]
+
