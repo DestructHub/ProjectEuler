@@ -1,7 +1,8 @@
 <?php
 
-	echo array_sum(array_filter(range(1, 999), function($x){
-		return !($x % 3 && $x % 5);	//Morgan's laws
-	}));
+    	echo array_reduce(range(1, 999), function($carry, $x){
+		return $carry += (!($x % 3 && $x % 5)) * $x; //Morgan's laws
+    	});
+
 
 ?>
