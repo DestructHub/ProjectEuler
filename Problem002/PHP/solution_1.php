@@ -1,16 +1,15 @@
 <?php
 
-    $fibonacci = array( 1, 2);
+    $fibonacci = array(1, 2);
 
-    array_walk( $fibonacci, function($num) use (&$fibonacci)
-    {
-        if (4000000 / $num > 2.6244){ // Will never be smaller then Φ²
-            array_push( $fibonacci, $num + next($fibonacci));
-            prev($fibonacci);
-        }
+    array_walk($fibonacci, function($x) use (&$fibonacci){
+        if($x * 2.6180 <= 4000000) // lim Φ²n, n -> ∞
+            array_push( $fibonacci, array_sum(array_slice($fibonacci, -2, 2)));
     });
-    
-    echo array_sum($fibonacci);
-    
+
+    echo array_reduce($fibonacci, function($carry, $x) use (&$fibonacci){
+        return $carry += ($x%2 == 0) * $x;
+    });
+
 ?>
 
