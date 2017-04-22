@@ -35,3 +35,4 @@ script: python stats.py --build
                         --search lua
                         --search bash
                         --search c++
+                        --search c
