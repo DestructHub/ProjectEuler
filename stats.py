@@ -53,7 +53,7 @@ class Execute(Checker):
         before = time.time()
         args = self.compiler
         oldpwd = os.getcwd()
-        if change_directory: # yes, you can cry too
+        if change_directory:  # yes, you can cry too
             args += [path.basename(self.path)]
             os.chdir(path.dirname(self.path))
         else:
@@ -72,8 +72,12 @@ class Build(Checker):
 
     fout = "compiled.out"
 
+    def __init__(self, fpath, compiler, ext_params=[]):
+        super().__init__(fpath, compiler)
+        self.ext_params = ext_params
+
     def compile(self):
-        args = self.compiler + [self.path, "-o", self.output]
+        args = self.compiler + [self.path, "-o", self.output] + self.ext_params
         program = subprocess.Popen(args, stdout=subprocess.PIPE)
         return program.wait() == 0
 
@@ -93,7 +97,7 @@ BUILD_SUPPORT = [
     "Python",      # you need python | pacman -Su python
     "Go",          # you need golang | pacman -Su golang
     "Clojure",     # you need clojure | pacman -Su clojure
-    "CommonLisp",  # you need clisp | pacman -Su clisp
+    "CommonLisp",  # you need sbcl | pacman -Su sbcl
     "Haskell",     # you need ghc | pacman -Su ghc
     "Lua",         # you need lua | pacman -Su lua5.3
     "Ruby",        # you need ruby | pacman -Su ruby
@@ -134,8 +138,9 @@ BUILD_MACHINE = {
     },
 
     "C": {
-        "cmdline": "gcc -std=c99 -lm",
-        "builder": Build
+        "cmdline": "gcc -std=c99",
+        "builder": Build,
+        "ext_params": ["-lm"]
     },
 
     "C++": {
@@ -316,10 +321,10 @@ def get_problem_hashes():
 def digest_answer(answer):
     clean_answer = answer.strip(' \n')
     # Sorry for this... Unfortunatelly all hashes
-    # on this repository was be created using the `add` script
+    # on this repository was created using the `add` script
     # at which generates the hashes using `echo $ANSWER | md5sum`
-    # that means: all generated hashes was appended with a newline
-    # because the usage of ECHO!
+    # that means: all generated hashes has appended a newline
+    # because this is the usage of ECHO!
     # SAD SAD SAAAAAAD
     # This would be can fixed using `printf` instead `echo`.
     # But things need be rebuild from start. YES. Recreate all the hashes.
@@ -448,7 +453,6 @@ def count_solutions(df, solutions=True):
     return df_
 
 
-# docs?
 def spinner(control):
     animation = r"⣾⣽⣻⢿⡿⣟⣯"
     sys.stdout.write(3 * " ")
@@ -463,13 +467,14 @@ def spinner(control):
             break
 
 
-# need docs
+# docs?
 def choose_builder(lang, fpath):
     try:
         if lang in BUILD_MACHINE:
             builder = BUILD_MACHINE[lang]['builder']
             cmdline = BUILD_MACHINE[lang]['cmdline']
-            b = builder(cmdline, fpath)
+            ext_params = BUILD_MACHINE[lang].get('ext_params')
+            b = builder(cmdline, fpath, ext_params or [])
         else:
             raise Exception("Builder not configured for {!r}! Call the developer".format(lang))  # noqa
     except Exception as e:
@@ -537,6 +542,7 @@ def build_result(df, ignore_errors=False, blame=False):
     return final_df.sort_values("Problem")
 
 
+# need docs
 def list_by_count(df):
     df_ = count_solutions(df, solutions=False)
     count = [sum(df_[lang]) for lang in df_.columns]
@@ -555,13 +561,13 @@ def blame_solutions(df):
     return df_
 
 
-# Problem015 -> 15
 def remove_problem(df):
     df_ = df
     df_.Problem = df.Problem.map(lambda x: x.replace("Problem", "").strip('0'))
     return df_
 
 
+# Problem015 -> 15
 def build_per_language(df):
     index = df.Problem.map(int).max()
     languages = set(df.Language)
