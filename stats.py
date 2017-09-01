@@ -32,9 +32,10 @@ class Checker(object):
 
     checked = []
 
-    def __init__(self, compiler, path):
+    def __init__(self, compiler, path, ext_params=[]):
         self.compiler = compiler.split()
         self.path = path
+        self.ext_params = ext_params
         self.check()
 
     def check(self):
@@ -71,10 +72,6 @@ class Build(Checker):
     """For compiled languages: C++, C for example"""
 
     fout = "compiled.out"
-
-    def __init__(self, fpath, compiler, ext_params=[]):
-        super().__init__(fpath, compiler)
-        self.ext_params = ext_params
 
     def compile(self):
         args = self.compiler + [self.path, "-o", self.output] + self.ext_params
