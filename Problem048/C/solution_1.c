@@ -1,5 +1,5 @@
 /*
- * =====================================================================================
+ * =============================================================================
  *
  *                      Copyright 2016 Manoel Vilela
  *
@@ -7,16 +7,18 @@
  *        Contact: manoel_vilela@engineer.com
  *   Organization: UFPA
  *
- * =====================================================================================
+ * =============================================================================
 **/
 
 
 /*
 
-A solução para uma computação eficiente disso é saber como fatorar rapidamente uma
-expressão do tipo A ^ B mod C = x
-https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/fast-modular-exponentiation
+A solução para uma computação eficiente disso é saber como fatorar rapidamente
+uma expressão do tipo: A ^ B mod C = x
 
+=> (A_1 * A_2 * A_3 ... A_B) mod C                 (exponentiation definition)
+=> ((A_1 mod C) * (A_2 mod C) * ... (A_B mod C))   (distributive mod property)
+=> (A mod C) ^ B                                   (exponentiation definition)
 
 */
 
@@ -24,26 +26,26 @@ https://www.khanacademy.org/computing/computer-science/cryptography/modarithmeti
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 
-char* slice(char *array, long long s, long long e) {
-    char *array_sliced;
-    array_sliced = malloc(sizeof(char) * (e - s));
 
-    int index = 0;
-    for (int i = s; i < e; i++) {
-        array_sliced[index] = array[i];
-        index++;
+uint64_t pow_mod(uint64_t x, uint64_t e, uint64_t mod) {
+    uint64_t result = 1;
+    x %= mod;
+    while(e--) {
+        result = (result % mod) * x;
     }
 
-    return array_sliced;
+    return result;
 }
 
-int main(int argc, char *argv[]) {
-    long long num = 0;
-    for (int i = 1; i <= 1000; i++){
-        num += fmod(pow(i, i), 1e10);
+int main(void) {
+    uint64_t num = 0;
+    uint64_t mod = (uint64_t) 1E10;
+    for (uint64_t i = 1; i <= 1000; i++){
+        num = (num + pow_mod(i, i, mod)) % mod;
     }
 
-    printf("incomplete solution\n");
+    printf("%lu\n", num);
     return 0;
 }
