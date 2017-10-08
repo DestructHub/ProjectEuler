@@ -109,7 +109,7 @@ BUILD_SUPPORT = [
 BUILD_MACHINE = {
 
     "Python": {
-        "cmdline": "python",
+        "cmdline": "python3",
         "builder": Execute
     },
 

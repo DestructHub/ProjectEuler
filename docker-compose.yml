@@ -1,0 +1,18 @@
+version: "2"
+
+services:
+  runner:
+    image: lubien/project_euler
+    command: python3 stats.py -b
+                              --s python
+                              --s commonlisp
+                              --s ruby
+                              --s haskell
+                              --s go
+                              --s php
+                              --s python
+                              --s elixir
+                              --s lua
+                              --s c++
+    volumes:
+      - .:/code
