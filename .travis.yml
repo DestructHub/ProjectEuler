@@ -1,37 +1,7 @@
-language: python
-python:
-  - "3.5"
+sudo: required
 
-sudo: true
+services:
+  - docker
 
-before_install:
-  - wget http://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-  - sudo dpkg -i erlang-solutions_1.0_all.deb
-  - sudo add-apt-repository ppa:eugenesan/ppa -y
-  - sudo apt-get update
-  - sudo apt-get install elixir -y
-  - sudo apt-get install php5 -y
-  - sudo apt-get install golang -y
-  - sudo apt-get install clojure -y
-  - sudo apt-get install ghc -y
-  - sudo apt-get install g++ gcc -y
-  - sudo apt-get install lua5.2 -y
-  - sudo apt-get install ruby-full -y
-  - sudo apt-get install sbcl -y
-  - sudo pip install cython
-
-install:
-  - pip install -r requirements.txt
-
-script: python stats.py --build
-                        --search python
-                        --search commonlisp
-                        --search ruby
-                        --search haskell
-                        --search go
-                        --search php
-                        --search python
-                        --search elixir
-                        --search lua
-                        --search bash
-                        --search c++
+script:
+  - docker-compose up
