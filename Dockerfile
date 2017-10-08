@@ -23,9 +23,14 @@ RUN apt-get install lua5.2 -y
 RUN apt-get install ruby-full -y
 RUN apt-get install sbcl -y
 RUN apt-get install python3-dev -y
-RUN apt-get install python-dev -y
-RUN pip3 install cython
+RUN apt-get install cython -y
+RUN apt-get install python3-pandas -y
+RUN apt-get install python3-numpy -y
+RUN pip3 install sympy
+# Set the locale
+RUN locale-gen en_US.UTF-8  
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8
 
-ADD requirements.txt .
-RUN pip3 install -r requirements.txt
 WORKDIR /code
