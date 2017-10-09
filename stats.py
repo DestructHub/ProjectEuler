@@ -487,7 +487,7 @@ def execute_builder(b):
         print(err)
         os._exit(1)
     sys.stdout.write(ERASE_LINE)
-    building = "\rBuilded {}: Answer: {}: {:.2f}s\n".format(b.path, answer, t)
+    building = "\rBuilt {}: Answer: {}: {:.2f}s\n".format(b.path, answer, t)
     sys.stdout.write(building)
     sys.stdout.flush()
 
