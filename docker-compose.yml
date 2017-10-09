@@ -17,6 +17,6 @@ services:
                                         -s c
                                         --quiet
     environment:
-      STATS_POOL_SIZE: #{STATS_POOL_SIZE | 8}
+      STATS_POOL_SIZE: #{STATS_POOL_SIZE}
     volumes:
       - .:/code
