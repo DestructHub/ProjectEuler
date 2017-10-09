@@ -22,8 +22,8 @@
 	- [X] Python, @ryukinix
 	- [X] CommonLisp, @ryukinix
 	- [X] Clojure, @ryukinix
-	- [ ] Go, @ryukinix
-	- [ ] C, @ryukinix
+	- [X] Go, @ryukinix
+	- [X] C, @ryukinix
 - [X] [Problem049](https://projecteuler.net/problem=49)
 	- [X] Python, @ryukinix
 - [ ] [Problem050](https://projecteuler.net/problem=50)
