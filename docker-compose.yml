@@ -2,7 +2,7 @@ version: "2"
 
 services:
   runner:
-    image: lubien/project_euler
+    image: destructhub/project_euler
     command: python3 stats.py -b
                               --s python
                               --s commonlisp
