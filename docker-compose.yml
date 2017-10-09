@@ -3,19 +3,17 @@ version: "2"
 services:
   runner:
     image: destructhub/project_euler
-    command: python3 stats.py -b
-                              --s python
-                              --s commonlisp
-                              --s ruby
-                              --s haskell
-                              --s go
-                              --s php
-                              --s python
-                              --s elixir
-                              --s lua
-                              --s c++
-                              --s bash
-                              --s clojure
-                              --s c
+    command: elixir --no-halt stats.exs -s python
+                                        -s commonlisp
+                                        -s ruby
+                                        -s haskell
+                                        -s go
+                                        -s php
+                                        -s elixir
+                                        -s lua
+                                        -s c++
+                                        -s bash
+                                        -s clojure
+                                        -s c
     volumes:
       - .:/code
