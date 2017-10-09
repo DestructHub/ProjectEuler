@@ -4,11 +4,12 @@ defmodule Settings do
   end
 
   defp initial_state do
-    env = case Integer.parse(System.get_env("STATS_POOL_SIZE")) do
-      {int} -> int
+    env = System.get_env("STATS_POOL_SIZE")
+    parsed = env && case Integer.parse(env) do
+      {int, _} -> int
       :error -> false
     end
-    pool_size = env  || 2 * :erlang.system_info(:schedulers_online)
+    pool_size = parsed || 2 * :erlang.system_info(:schedulers_online)
 
     %{pool_size: pool_size}
   end
