@@ -29,14 +29,16 @@ defmodule CLI do
       help: :boolean,
       search: [:string, :keep],
       pool_size: :integer,
-      all: :boolean
+      all: :boolean,
+      quiet: :boolean
     ],
 
     aliases: [
       h: :help,
       s: :search,
       p: :pool_size,
-      a: :all
+      a: :all,
+      q: :quiet
     ]
   ]
 
@@ -51,6 +53,7 @@ defmodule CLI do
 
   def process({parsed, _, _}) do
     all_languages? = Keyword.get parsed, :all, false
+    quiet? = Keyword.get parsed, :quiet, false
     languages = Keyword.get_values(parsed, :search)
     pool_size = Keyword.get parsed, :pool_size, Settings.get(:pool_size)
 
@@ -64,7 +67,7 @@ defmodule CLI do
       |> Producer.start_link(all_languages?)
 
       Consumer.start_link()
-      Renderer.start_link()
+      Renderer.start_link(quiet?)
       Manager.start_link()
       Manager.start_workers()
     end
@@ -447,10 +450,14 @@ defmodule Renderer do
 
   use GenServer
 
-  def start_link do
-    pool_size = Settings.get(:pool_size)
-    labels = for _ <- 1..pool_size, do: nil
-    GenServer.start_link __MODULE__, labels, name: __MODULE__
+  def start_link(quiet?) do
+    if quiet? do
+      GenServer.start_link RendererQuiet, nil, name: __MODULE__
+    else
+      pool_size = Settings.get(:pool_size)
+      labels = for _ <- 1..pool_size, do: nil
+      GenServer.start_link __MODULE__, labels, name: __MODULE__
+    end
   end
 
   def init(labels) do
@@ -518,6 +525,18 @@ defmodule Renderer do
       end)
 
     {Enum.join(lines, "\n"), labels}
+  end
+end
+
+defmodule RendererQuiet do
+  use GenServer
+
+  def init(_) do
+    {:ok, nil}
+  end
+
+  def handle_cast(_, _) do
+    {:noreply, nil}
   end
 end
 

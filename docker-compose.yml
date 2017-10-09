@@ -15,6 +15,7 @@ services:
                                         -s bash
                                         -s clojure
                                         -s c
+                                        --quiet
     environment:
       STATS_POOL_SIZE: #{STATS_POOL_SIZE | 8}
     volumes:
