@@ -4,4 +4,4 @@ services:
   - docker
 
 script:
-  - docker-compose up --abort-on-container-exit
+  - docker-compose run async --quiet
