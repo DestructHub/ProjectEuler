@@ -14,5 +14,7 @@ services:
                               --s elixir
                               --s lua
                               --s c++
+                              --s bash
+                              --s clojure
     volumes:
       - .:/code
