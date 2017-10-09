@@ -11,6 +11,12 @@ Compilation of some solutions of the challenges existent in the website www.proj
 ![Solutions by Language](data/count.png)
 ![Time Execution by Language](data/time.png)
 
+## Test
+
+You can now test the algoritms just using our Docker image hosted on `destructhub/project_euler` just calling:
+`docker-compose up`. On the end of execution, will be print a tabular-like structure with information about problem,
+language, time execution and if the answer is correct.
+
 ## Status
 
 Check the status of our roadmap here: [STATUS.md](STATUS.md)
