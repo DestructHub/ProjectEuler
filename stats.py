@@ -73,7 +73,7 @@ class Build(Checker):
     fout = "compiled.out"
 
     def compile(self):
-        args = self.compiler + [self.path, "-o", self.output]
+        args = [self.compiler[0], self.path, "-o", self.output] + self.compiler[1:]
         program = subprocess.Popen(args, stdout=subprocess.PIPE)
         return program.wait() == 0
 
