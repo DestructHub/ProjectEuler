@@ -7,14 +7,14 @@ RUN apt-get update \
 RUN apt-get install -y software-properties-common \
                        python-software-properties \
                        python3-pip \
-                       wget 
+                       wget
 ADD requirements.txt .
 RUN apt-get install cython -y
 RUN pip3 install -r requirements.txt
 # set locale
-RUN locale-gen en_US.UTF-8  
-ENV LANG en_US.UTF-8  
-ENV LANGUAGE en_US:en  
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 # language deps
