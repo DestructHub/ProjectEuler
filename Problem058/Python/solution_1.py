@@ -32,7 +32,7 @@ class Problem058(object):
     def _solve(self, ratio_limit):
         while self.prime_ratio > ratio_limit:
             self._record_next_diag_primes()
-        return self.prime_ratio, self.level
+        return self.level
 
     @classmethod
     def solve(cls):
