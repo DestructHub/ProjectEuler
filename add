@@ -7,10 +7,18 @@
 
 # usage: add <problem-num> <answer>
 
+if [ -x "$(command -v md5)" ]; then
+    alias md5sum='md5'
+elif [ ! -x "$(command -v md5sum)" ]; then
+    echo "None of 'md5' and 'md5sum' cmd line are not found"
+    echo "Try install coretuils before using this script"
+    exit 1
+fi
+
 num=$(expr $1 + 0)
 dir="Problem"$(printf "%03d" $num)
 readme="[The original source of problem](https://projecteuler.net/problem=$num)"
-hash=$(echo $2 | md5sum)
+hash=$(printf $2 | md5sum)
 mkdir -p $dir
 echo "Created folder $dir."
 echo $hash > $dir/.hash
