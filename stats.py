@@ -324,8 +324,7 @@ def digest_answer(answer):
     # This would be can fixed using `printf` instead `echo`.
     # But things need be rebuild from start. YES. Recreate all the hashes.
     # SO NO NO NO NOO NOOOOOOOOO
-    hacky = clean_answer # the hacky works
-    return hashlib.md5(hacky.encode('utf-8')).hexdigest()
+    return hashlib.md5(clean_answer.encode('utf-8')).hexdigest()
 
 
 def search_language(query, languages):
