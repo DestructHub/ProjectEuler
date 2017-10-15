@@ -314,7 +314,7 @@ def get_problem_hashes():
 
 
 def digest_answer(answer):
-    clean_answer = answer.strip(' \n')
+    clean_answer = answer.strip(' \n')[:-1]
     # Sorry for this... Unfortunatelly all hashes
     # on this repository was be created using the `add` script
     # at which generates the hashes using `echo $ANSWER | md5sum`
@@ -521,6 +521,10 @@ def build_result(df, ignore_errors=False, blame=False):
             if problem in hashes:
                 answer_hash = digest_answer(answer)
                 correct = answer_hash == hashes[problem]
+                if correct:
+                    print('Correct answer !')
+                else:
+                    print('Bad Answer !')
 
             data.append([problem, lang, t, answer, correct])
 

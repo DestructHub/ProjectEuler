@@ -51,7 +51,7 @@ def _hash_answer(answer):
     """
     hash execution result using md5
     """
-    answer = answer.encode('utf-8')
+    answer = answer.encode('utf-8')[:-1]
     hashed_answer = hashlib.md5(answer).hexdigest()
     return hashed_answer
 
@@ -91,12 +91,15 @@ def _run_solution_script(lang, path):
     # ('233168\n', '', 0)
     return op[:-1], err, es
 
+@timeout_decorator.timeout(RUNTIME_LIMIT - 50, timeout_exception=StopIteration)
+def _no_pitty_run_solution(lang, path):
+    cmd_line = "{0} {1}".format(_starters[lang], path)
+    op, err, es = _subprocess_call_with_communicate(cmd_line)
+    # ('233168\n', '', 0)
+    return op[:-1], err, es
+
 
 ###############################################################################
-
-def _manual_rehash_script(n):
-    path = _hash_file(n)
-
 
 def _rewrite_hash_file(problem_n, answer):
     """
@@ -107,42 +110,82 @@ def _rewrite_hash_file(problem_n, answer):
     print('   === > fixed .hash file for problem {0}'.format(problem_n))
 
 
-def run_solution(lang, path):
+def run_solution(lang, path, no_pitty=False):
     try:
-        answer, _, _ = _run_solution_script(lang, path)
+        if no_pitty:
+            answer, err, es = _no_pitty_run_solution(lang, path)
+        else:
+            answer, err, es = _run_solution_script(lang, path)
+        if not answer:
+            print("   === > SKIPPED NO ANSWER [ es : {0} ]".format(es))
+            return -1
         print('   === > answer : {0}'.format(answer))
         return answer
     except:
-        print(' TOOO LONG RUNTIME ')
+        print('   === > Time run out ')
         return False
 
 ###############################################################################
 def run_fix_for_all_problems(p, q):
     """
-    fix hash problem for all problems between p, q
+    fix hash files for all problems between p, q
     """
     a, b, s = None, None, None
+    total_fixed_hashes = 0
+    unfixed_hashes = []
+    timed_out_solutions = []
+    no_pitty_club = []
     time_1 = time.time()
     for i in range(p, q):
         if not os.path.exists("{0}/{1}".format(PE_PATH, _problem_data(i))):
             continue
         a, b = find_solution_for_problem(i)
         if a:
-            print('   === > found solution for problem {0} in {1}'.format(i, a))
+            print('=== > found solution for problem {0} in {1}'.format(i, a))
             s = run_solution(a, b)
+            if s == -1:
+                unfixed_hashes += [i]
+                continue
             if s:
                 _rewrite_hash_file(i, s)
+                total_fixed_hashes += 1
+            else:
+                timed_out_solutions += [i]
+                unfixed_hashes += [i]
         else:
             a, b = find_solution_for_problem(i, slow=True)
             if a:
                 print('   === > found slow solution for problem {0} in {1}'.format(i, a))
-                s = run_solution(a, b)
+                if i > 145:
+                    print('   === > NO PITTY mode on for this problem')
+                    no_pitty_club += [i]
+                    s = run_solution(a, b, no_pitty=True)
+                else:
+                    s = run_solution(a, b)
+                if s == -1:
+                    unfixed_hashes += [i]
+                    continue
                 if s:
                     _rewrite_hash_file(i, s)
+                    total_fixed_hashes += 1
+                else:
+                    timed_out_solutions += [i]
+                    unfixed_hashes += [i]
             else:
                 print('   === > No solution found for problem {0}'.format(i))
+                unfixed_hashes += [i]
     time_2 = time.time()
     print('      ======= > Total runtime :  {0}'.format(time_2 - time_1))
+    print('      ======= > Total fixed hashes {0}'.format(total_fixed_hashes))
+    print('      ======= > Unsolved hashes : \n{0}'.format(
+        ''.join(['       - ' + str(i) + '\n' for i in unfixed_hashes])
+    ))
+    print('      ======= > Timeout out solutions : \n{0}'.format(
+        ''.join(['       - ' + str(i) + '\n' for i in timed_out_solutions])
+    ))
+    print('      ======= > No pitty solutions (too slow to test) : \n{0}'.format(
+        ''.join(['       - ' + str(i) + '\n' for i in no_pitty_club])
+    ))
 
 
 if __name__ == "__main__":
