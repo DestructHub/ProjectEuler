@@ -1,5 +1,5 @@
 import math
-from Collection import Counter
+from collections import Counter
 
 def _prime_sieve(start, limit):
     def is_prime(n):
@@ -40,5 +40,5 @@ def min_phi_ratio(limit):
 def solve():
     return min_phi_ratio(10000000)
 
-if __name__ == "__main__"
+if __name__ == "__main__":
     print(solve())
