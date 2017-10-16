@@ -8,3 +8,4 @@
    (map #(Character/digit % 10))
    (reduce +)))
 
+(println (solution))

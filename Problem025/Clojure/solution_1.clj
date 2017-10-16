@@ -8,3 +8,5 @@
        (take-while #(< (count (str %)) 1000))
        (count)
        (+ 1)))
+
+(println (solution))

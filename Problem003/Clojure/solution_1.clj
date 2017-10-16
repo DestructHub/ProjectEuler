@@ -29,4 +29,4 @@
       (ratio? x) (recur remaining (+' prime 1) factors)
       :else (recur x 1 (cons p factors)))))
 
-(str (first (solution 600851475143)))
+(println (str (first (solution 600851475143))))

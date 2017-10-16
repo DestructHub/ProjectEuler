@@ -19,4 +19,4 @@
   ([] (prime-seq 2))
   ([n] (cons n (lazy-seq (prime-seq (next-prime (+' 1 n )))))))
 
-(str (last (take 10001 (prime-seq))))
+(println (str (last (take 10001 (prime-seq)))))
