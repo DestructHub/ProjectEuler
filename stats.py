@@ -314,7 +314,7 @@ def get_problem_hashes():
 
 
 def digest_answer(answer):
-    clean_answer = answer.strip(' \n')[:-1]
+    clean_answer = answer.strip(' \n')
     # Sorry for this... Unfortunatelly all hashes
     # on this repository was be created using the `add` script
     # at which generates the hashes using `echo $ANSWER | md5sum`
