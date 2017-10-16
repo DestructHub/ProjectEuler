@@ -51,7 +51,7 @@ def _hash_answer(answer):
     """
     hash execution result using md5
     """
-    answer = answer.encode('utf-8')[:-1]
+    answer = answer.encode('utf-8')
     hashed_answer = hashlib.md5(answer).hexdigest()
     return hashed_answer
 
@@ -107,7 +107,7 @@ def _rewrite_hash_file(problem_n, answer):
     """
     with open(_hash_file(problem_n), 'w') as f:
         f.write(_hash_answer(answer))
-    print('   === > fixed .hash file for problem {0}'.format(problem_n))
+    print('=== > fixed .hash file for problem {0}'.format(problem_n))
 
 
 def run_solution(lang, path, no_pitty=False):
@@ -126,6 +126,24 @@ def run_solution(lang, path, no_pitty=False):
         return False
 
 ###############################################################################
+
+def _pick_solution_cheat(i):
+    with open('solutions.txt', 'r') as f:
+        data = f.readlines()
+        sol = data[i - 1][3:-1]
+        print(sol)
+        print('-')
+        return sol
+
+def run_cheat_fix(p, q):
+    sol = None
+    for i in range(p, q):
+        if not os.path.exists("{0}/{1}".format(PE_PATH, _problem_data(i))):
+            continue
+        s = _pick_solution_cheat(i)
+        _rewrite_hash_file(i, s)
+        print('Corrected problem {0} with md5 hash of : {1}'.format(i, s))
+
 def run_fix_for_all_problems(p, q):
     """
     fix hash files for all problems between p, q
@@ -189,4 +207,4 @@ def run_fix_for_all_problems(p, q):
 
 
 if __name__ == "__main__":
-    run_fix_for_all_problems(1, 600)
+    run_cheat_fix(1, 600)
