@@ -315,15 +315,6 @@ def get_problem_hashes():
 
 def digest_answer(answer):
     clean_answer = answer.strip(' \n')
-    # Sorry for this... Unfortunatelly all hashes
-    # on this repository was be created using the `add` script
-    # at which generates the hashes using `echo $ANSWER | md5sum`
-    # that means: all generated hashes was appended with a newline
-    # because the usage of ECHO!
-    # SAD SAD SAAAAAAD
-    # This would be can fixed using `printf` instead `echo`.
-    # But things need be rebuild from start. YES. Recreate all the hashes.
-    # SO NO NO NO NOO NOOOOOOOOO
     return hashlib.md5(clean_answer.encode('utf-8')).hexdigest()
 
 
