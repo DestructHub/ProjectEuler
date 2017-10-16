@@ -4,4 +4,6 @@ services:
   - docker
 
 script:
-  - docker-compose run async --quiet
+  - docker-compose run sync
+  - git checkout master
+  - docker-compose run sync
