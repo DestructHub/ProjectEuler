@@ -7,3 +7,5 @@
        (map (partial map #(Character/digit % 10)))
        (pmap (partial reduce *'))
        (apply max)))
+
+(println (solution))

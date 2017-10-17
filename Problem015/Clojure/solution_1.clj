@@ -10,6 +10,6 @@
 
 
 ;; (print (/ (fat 40) (Math/pow (fat 20) 2) )) overflow man
-(println (bigint (/ (fatorial (bigint 40)) (Math/pow (fat (bigint 20)) 2) )))
+(println (str(bigint (/ (fatorial (bigint 40)) (Math/pow (fat (bigint 20)) 2) ))))
 
 ;; print(fat(40) / fat(20) ^ 2)
