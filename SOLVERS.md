@@ -14,4 +14,5 @@
 | Leonardo Rogerio     | leorog                |
 | Vitor Rodrigues      | tkovs                 |
 | Mateus Guimarães     | mateusjatenee         |
-| Rafael Campos Nunes  | rafaelcamposn		   |
+| Rafael Campos Nunes  | rafaelcamposn		     |
+| Lucas Machado        | machad0	        	   |
