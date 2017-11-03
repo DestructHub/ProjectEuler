@@ -8,7 +8,6 @@
 ![[rafaelcn](www.github.com/rafaelcn)](https://projecteuler.net/profile/rafaelcamposn.png)
 ![[a-hilaly](www.github.com/a-hilaly)](https://projecteuler.net/profile/mellatora.png)
 
-
 | Solver Name          | ProjectEuler NickName |
 | :--------------------| :-------------------- |
 | Manoel Vilela        | lerax                 |
