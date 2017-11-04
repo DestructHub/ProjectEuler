@@ -6,6 +6,7 @@
 ![[tkovs](www.github.com/tkovs)](https://projecteuler.net/profile/tkovs.png)
 ![[mateusjatenee](www.github.com/mateusjatenee)](https://projecteuler.net/profile/mateusjatenee.png)
 ![[rafaelcn](www.github.com/rafaelcn)](https://projecteuler.net/profile/rafaelcamposn.png)
+![[a-hilaly](www.github.com/a-hilaly)](https://projecteuler.net/profile/mellatora.png)
 
 | Solver Name          | ProjectEuler NickName |
 | :--------------------| :-------------------- |
@@ -14,5 +15,6 @@
 | Leonardo Rogerio     | leorog                |
 | Vitor Rodrigues      | tkovs                 |
 | Mateus Guimarães     | mateusjatenee         |
-| Rafael Campos Nunes  | rafaelcamposn		     |
-| Lucas Machado        | machad0	        	   |
+| Rafael Campos Nunes  | rafaelcamposn         |
+| Lucas Machado        | machad0               |
+| M. A. Hilaly         | mellatora             |
