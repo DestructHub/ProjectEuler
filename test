@@ -2,15 +2,15 @@
 
 git fetch origin
 
-function diff_files () {
+function diff_files {
     git diff origin/master --name-only
 }
 
-function pipe_example () {
+function pipe_example {
     diff_files | python3 stats.py --search
 }
 
-function arg_array_example () {
+function arg_array_example {
     changed_files=( $(diff_files) )
     python3 stats.py --search ${changed_files[*]}
 }
