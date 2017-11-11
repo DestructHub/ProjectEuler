@@ -1,12 +1,28 @@
 #!/bin/sh
 
-
-echo "STAGED FILES"
-git diff --cached --name-only
-
-echo "DIFF MASTER FILES"
 git fetch origin
-git diff origin/master --name-only
 
-echo "Forcing test fail"
+function diff_files () {
+    git diff origin/master --name-only
+}
+
+function pipe_example () {
+    diff_files | python3 stats.py --search
+}
+
+function arg_array_example () {
+    changed_files=( $(diff_files) )
+    python3 stats.py --search ${changed_files[*]}
+}
+
+cmd="$1"
+
+if [ "$cmd" = "--staged-only" ] || [ "$cmd" = "-so" ]; then
+    echo "using array.."
+    arg_array_example
+    echo "using pipe.."
+    pipe_example
+fi
+
+
 exit 1
