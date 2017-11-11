@@ -21,7 +21,7 @@ import subprocess
 import re
 import sys
 import hashlib
-
+import fileinput
 
 # #
 # Bulding classes
@@ -201,6 +201,26 @@ BUILD_MACHINE = {
 # Cmdline parsing definitions
 # #
 
+def _callback(option, opt_str, value, parser):
+    """
+    Used to parse several arguments for one option, knowing that arguments
+    never start with a `-` and `--`
+    """
+    assert value is None
+    value = []
+    if not parser.rargs:
+        for arg in fileinput.input([]):
+            value.append(arg.strip('\n'))
+    else:
+        for arg in parser.rargs:
+            # stop on --foo like options
+            if arg[:2] == "--" and len(arg) > 2:
+                break
+            if arg[:1] == "-" and len(arg) > 1:
+                break
+            value.append(arg)
+    del parser.rargs[:len(value)]
+    setattr(parser.values, option.dest, value)
 
 parser = OptionParser()
 
@@ -216,9 +236,8 @@ parser.add_option(
     "-s", "--search",
     help="Choose the languages for print information",
     dest="search",
-    action="append",
-    default=[],
-    nargs=1
+    action="callback",
+    callback=_callback,
 )
 
 parser.add_option(
@@ -591,7 +610,10 @@ def handle_options(options):
     langs = {x.lower(): x for x in df.columns}
     query = [x.lower() for x in options.search]
 
+    print(options.search)
+
     langs_selected = [langs[x] for x in search_language(query, langs)]
+
     if options.all:
         langs_selected = [x for x in langs.values()]
 
