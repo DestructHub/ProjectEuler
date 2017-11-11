@@ -1,28 +1,19 @@
 #!/bin/bash
 
-git fetch origin
+#git fetch origin
 
 function diff_files () {
     git diff origin/master --name-only
 }
 
-function pipe_example () {
-    diff_files | python3 stats.py --search
-}
-
-function arg_array_example () {
-    changed_files=( $(diff_files) )
-    python3 stats.py --search ${changed_files[*]}
+function search () {
+    git diff origin/master --name-only | python3 stats.py --search
 }
 
 cmd="$1"
 
 if [ "$cmd" = "--staged-only" ] || [ "$cmd" = "-so" ]; then
-    echo "using array.."
-    arg_array_example
-    echo "using pipe.."
-    pipe_example
+    search
 fi
-
 
 exit 1

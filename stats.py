@@ -611,7 +611,8 @@ def handle_options(options):
     query = [x.lower() for x in options.search]
 
     print(options.search)
-
+    if True == True:
+        return
     langs_selected = [langs[x] for x in search_language(query, langs)]
 
     if options.all:
