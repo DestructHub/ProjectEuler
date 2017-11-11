@@ -5,4 +5,4 @@ services:
 
 script:
   - sudo chmod +x test
-  - ./test
+  - ./test --staged-only
