@@ -1,12 +1,12 @@
 #!/bin/sh
 
 
-function staged_files () {
+function staged_files {
     git diff --cached --name-only
 }
 
 # get the current file which differs on the master branch
-function diff-master-files {
+function diff_master_files {
     git fetch origin # get the last changes from origin/master
     git diff origin/master --name-only
 }
