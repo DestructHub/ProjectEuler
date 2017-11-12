@@ -6,10 +6,6 @@ where each “_” is a single digit.
 --}
 
 {--
-New comment
---}
-
-{--
 Some thoughts:
 
 As n² = 1_2_3_4_5_6_7_8_9_0 terminates with 0, so then n as well terminates
