@@ -7,7 +7,7 @@ function diff_files () {
 }
 
 function search () {
-    git diff origin/master --name-only | python3 stats.py --search
+    git diff origin/master --name-only | xargs python3 stats.py --build --files
 }
 
 cmd="$1"
