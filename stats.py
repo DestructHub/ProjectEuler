@@ -208,17 +208,13 @@ def _callback(option, opt_str, value, parser):
     """
     assert value is None
     value = []
-    if not parser.rargs:
-        for arg in fileinput.input([]):
-            value.append(arg.strip('\n'))
-    else:
-        for arg in parser.rargs:
-            # stop on --foo like options
-            if arg[:2] == "--" and len(arg) > 2:
-                break
-            if arg[:1] == "-" and len(arg) > 1:
-                break
-            value.append(arg)
+    for arg in parser.rargs:
+        # stop on --foo like options
+        if arg[:2] == "--" and len(arg) > 2:
+            break
+        if arg[:1] == "-" and len(arg) > 1:
+            break
+        value.append(arg)
     del parser.rargs[:len(value)]
     setattr(parser.values, option.dest, value)
 
@@ -236,6 +232,15 @@ parser.add_option(
     "-s", "--search",
     help="Choose the languages for print information",
     dest="search",
+    action="append",
+    default=[],
+    nargs=1,
+)
+
+parser.add_option(
+    "-f", "--files",
+    help="Choose the languages for print information",
+    dest="files",
     action="callback",
     callback=_callback,
 )
@@ -409,7 +414,7 @@ def load_dataframe():
     return pd.DataFrame.from_dict(parse_solutions(walk_problems()), "index")
 
 
-def solutions_paths(df):
+def solutions_paths(df, from_files=None):
     """
     Function: load_filepaths
     Summary: Get each filepath of solutions based on pd.DataFrame
@@ -424,6 +429,10 @@ def solutions_paths(df):
     Returns: list of file paths
     """
     paths = []
+    if from_files:
+        for problem, lang, s in from_files:
+            paths.append((lang, path.join(problem, lang, s)))
+        return paths
     for column in df.columns:
         solutions = df[df[column].notnull()][column]
         lang = solutions.name
@@ -432,7 +441,6 @@ def solutions_paths(df):
             p = ((lang, path.join(problem, lang, s))
                  for s in solutions[problem])
             paths.extend(p)
-
     return paths
 
 
@@ -456,6 +464,17 @@ def count_solutions(df, solutions=True):
 
     return df_
 
+def handle_files(files):
+    """
+    """
+    solutions = []
+    build_files = []
+    for f in files:
+        if f.count("/") == 2:
+            solutions.append(tuple(f.split("/")))
+        elif f.count("/") == 1: continue
+        elif f.count("/") == 0: build_files.append(f)
+    return solutions, build_files
 
 # docs?
 def spinner(control):
@@ -504,7 +523,7 @@ def execute_builder(b):
 
 
 # need docs
-def build_result(df, ignore_errors=False, blame=False):
+def build_result(df, ignore_errors=False, blame=False, only=[]):
     class Control:  # to handle the spinner time at each solution
         time = time.time()
         done = False
@@ -515,7 +534,8 @@ def build_result(df, ignore_errors=False, blame=False):
     hashes = get_problem_hashes()
     spin_thread = threading.Thread(target=spinner, args=(control,))
     spin_thread.start()
-    for lang, spath in solutions_paths(df):
+    _problems = only if only else solutions_paths(df)
+    for lang, spath in _problems:
 
         if "slow" in spath and not blame:
             sys.stdout.write("\rIgnored {}: bad solution (slow).\n".format(spath))  # noqa
@@ -609,11 +629,16 @@ def handle_options(options):
     df = load_dataframe()
     langs = {x.lower(): x for x in df.columns}
     query = [x.lower() for x in options.search]
+    unstaged_solutions = []
+    unstaged_core_files = []
+    tbsolutions = []
 
-    print(options.search)
-    if True == True:
-        return
     langs_selected = [langs[x] for x in search_language(query, langs)]
+
+
+    if options.files:
+        unstaged_solutions, unstaged_core_files = handle_files(options.files)
+        tbsolutions = solutions_paths(df, from_files=unstaged_solutions)
 
     if options.all:
         langs_selected = [x for x in langs.values()]
@@ -638,7 +663,10 @@ def handle_options(options):
 
     elif options.build:
         try:
-            df = build_result(df[langs_selected], options.all, options.blame)
+            df = build_result(df[langs_selected],
+                              options.all,
+                              options.blame,
+                              only=tbsolutions)
         except(SystemExit, KeyboardInterrupt):
             os._exit(1)
 
