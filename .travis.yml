@@ -4,4 +4,5 @@ sudo: required
  -  - docker
 
 script:
+  - sudo chmod +x test
   - docker-compose run diff-sync

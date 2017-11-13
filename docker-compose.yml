@@ -39,7 +39,6 @@ services:
   diff-sync:
     image: destructhub/project_euler
     command:
-      - chmod +x test
       - ./test --commited-only
     volumes:
       - .:/code
