@@ -7,4 +7,4 @@ python:
 script:
   - sudo pip install -r requirements.txt
   - sudo chmod +x test
-  - ./test --staged-only
+  - ./test --commited-only
