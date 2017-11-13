@@ -32,4 +32,5 @@ RUN apt-get install lua5.2 -y
 RUN apt-get install ruby-full -y
 RUN apt-get install sbcl -y
 RUN apt-get install gawk -y
+RUN apt-get install git -y
 WORKDIR /code

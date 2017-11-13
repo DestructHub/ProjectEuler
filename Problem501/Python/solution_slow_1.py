@@ -33,4 +33,7 @@ def f_p(n):
             print x, (x - last)
             last = x
     return last
+
+# Another comment
+
 f_p(10 ** 12)

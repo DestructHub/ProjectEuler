@@ -8,7 +8,7 @@
 # usage: add <problem-num> <answer>
 
 if [ -x "$(command -v md5)" ]; then
-    alias md5sum='md5'
+    alias md5sum='xargs md5 -s'
 elif [ ! -x "$(command -v md5sum)" ]; then
     echo "None of 'md5' and 'md5sum' cmd line are not found"
     echo "Try install coretuils before using this script"
