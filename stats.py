@@ -540,6 +540,11 @@ def build_result(df, ignore_errors=False, blame=False, only=()):
     spin_thread.start()
     _problems = only if only else solutions_paths(df)
     for lang, spath in _problems:
+
+        if not os.path.exists(spath):
+            sys.stdout.write("\rSkipped {}: file doesnt exist".format(spath))
+            continue
+
         if "slow" in spath and not blame:
             sys.stdout.write("\rIgnored {}: bad solution (slow).\n".format(spath))  # noqa
             continue

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ ! "$TRAVIS_BRANCH" = "" ]; then
+    # Cancel build if travis is building pushed version
+    exit 0
+fi
+
 # only return the arguments which are files that exists on the filesystem
 function filter_exists {
     while read line; do
@@ -23,6 +28,9 @@ function build_commited () {
 }
 
 function build_staged () {
+    # Build only staged files
+    #NOTE: Run before opening PR on your machine, make sure
+    #      `git add .`
     staged_files | xargs python3 stats.py --build --files
 }
 
@@ -31,7 +39,6 @@ function main () {
     status=0
     mode=$1
     target=$2
-
     if [ "$mode" = "" ]; then
         build_commited
     elif [ "$mode" = "async" ]; then
@@ -48,8 +55,7 @@ function main () {
         echo "Usage : test.sh [sync|async] [diff|staged]"
         status=1
     fi
-
     exit $status
 }
 
-main
+main $@
