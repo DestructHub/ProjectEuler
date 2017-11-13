@@ -239,7 +239,7 @@ parser.add_option(
 
 parser.add_option(
     "-f", "--files",
-    help="Search for uncommited changes and build them",
+    help="Receive a list of file paths to build them",
     dest="files",
     action="callback",
     callback=_callback,
