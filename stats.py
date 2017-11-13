@@ -239,7 +239,7 @@ parser.add_option(
 
 parser.add_option(
     "-f", "--files",
-    help="Choose the languages for print information",
+    help="Search for uncommited changes and build them",
     dest="files",
     action="callback",
     callback=_callback,
@@ -466,6 +466,10 @@ def count_solutions(df, solutions=True):
 
 def handle_files(files):
     """
+    Analyse files to return two lists :
+        - solutions : list of files that are more likely solutions
+        - build_files : list of files that are more build files (stats.py,
+          stats.exs, ...)
     """
     solutions = []
     build_files = []
@@ -523,7 +527,7 @@ def execute_builder(b):
 
 
 # need docs
-def build_result(df, ignore_errors=False, blame=False, only=[]):
+def build_result(df, ignore_errors=False, blame=False, only=()):
     class Control:  # to handle the spinner time at each solution
         time = time.time()
         done = False
@@ -536,7 +540,6 @@ def build_result(df, ignore_errors=False, blame=False, only=[]):
     spin_thread.start()
     _problems = only if only else solutions_paths(df)
     for lang, spath in _problems:
-
         if "slow" in spath and not blame:
             sys.stdout.write("\rIgnored {}: bad solution (slow).\n".format(spath))  # noqa
             continue
@@ -629,16 +632,16 @@ def handle_options(options):
     df = load_dataframe()
     langs = {x.lower(): x for x in df.columns}
     query = [x.lower() for x in options.search]
-    unstaged_solutions = []
-    unstaged_core_files = []
+    uncommited_solutions = []
+    uncommited_core_files = []
     tbsolutions = []
 
     langs_selected = [langs[x] for x in search_language(query, langs)]
 
 
     if options.files:
-        unstaged_solutions, unstaged_core_files = handle_files(options.files)
-        tbsolutions = solutions_paths(df, from_files=unstaged_solutions)
+        uncommited_solutions, uncommited_core_files = handle_files(options.files)
+        tbsolutions = solutions_paths(df, from_files=uncommited_solutions)
 
     if options.all:
         langs_selected = [x for x in langs.values()]
