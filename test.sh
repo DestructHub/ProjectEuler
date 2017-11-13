@@ -26,15 +26,15 @@ mode=$1
 target=$2
 
 if [ "$mode" = "" ]; then
-    build_staged
+    build_uncommited
 elif [ "$mode" = "async" ]; then
     #TODO: stats.exs --build --files
     echo "Not Implemented"
     status=1
 elif [ "$mode" = "sync" ]; then
-    if [ "$target" = "$diff" ]; then
+    if [ "$target" = "diff" ]; then
         build_uncommited
-    elif [ "$target" = "$staged" ]; then
+    elif [ "$target" = "staged" ]; then
         build_staged
     fi
 else
