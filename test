@@ -32,6 +32,7 @@ function main () {
     mode=$1
     target=$2
 
+
     if [ "$mode" = "" ]; then
         build_commited
     elif [ "$mode" = "async" ]; then
@@ -52,4 +53,4 @@ function main () {
     exit $status
 }
 
-main
+main $@
