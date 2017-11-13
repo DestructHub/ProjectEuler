@@ -17,10 +17,8 @@ function build_all () {
     mode="$2" # sync/async
     if [ "$opt" = "--master-only" ] || [ "$opt" = "-m" ]; then
         git checkout master
-        echo "heheheh"
         python3 stats.py --build --all
     elif [ "$opt" = "--master-with-commited"] || [ "$opt" = "-mc" ]; then
-        ehco "heheheheh"
         python3 stats.py --build --all
     fi
 }
@@ -31,8 +29,7 @@ opt="$3"
 if [ "$cmd" = "--commited-only" ] || [ "$cmd" = "-c" ]; then
     build_commited
 elif [ "$cmd" = "--all" ] || [ "$cmd" = "-a" ]; then
-    echo "heheheh"
     build_all $opt
 fi
 
-exit 1
+exit 0
