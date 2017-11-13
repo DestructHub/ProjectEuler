@@ -32,4 +32,4 @@ elif [ "$cmd" = "--all" ] || [ "$cmd" = "-a" ]; then
     build_all $opt
 fi
 
-exit 0
+exit 1
