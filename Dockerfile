@@ -7,12 +7,8 @@ RUN apt-get update \
 RUN apt-get install -y software-properties-common \
                        python-software-properties \
                        python3-pip \
-                       wget \
-                       git 
+                       wget
 ADD requirements.txt .
-ADD test.sh .
-RUN chmod +x test.sh
-
 RUN apt-get install cython -y
 RUN pip3 install -r requirements.txt
 # set locale
@@ -36,4 +32,5 @@ RUN apt-get install lua5.2 -y
 RUN apt-get install ruby-full -y
 RUN apt-get install sbcl -y
 RUN apt-get install gawk -y
+RUN apt-get install git -y
 WORKDIR /code
