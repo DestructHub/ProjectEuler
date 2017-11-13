@@ -9,6 +9,8 @@ RUN apt-get install -y software-properties-common \
                        python3-pip \
                        wget
 ADD requirements.txt .
+ADD test.sh .
+RUN chmod +x test.sh
 RUN apt-get install cython -y
 RUN pip3 install -r requirements.txt
 # set locale
