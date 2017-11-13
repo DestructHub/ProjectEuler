@@ -1,35 +1,46 @@
 #!/bin/bash
 
-#git fetch origin
 
 function diff_files () {
+    # Return uncommited changes file names
     git diff origin/master --name-only
 }
 
-function build_commited () {
+function staged_files () {
+    # Return staged file names
+    git diff --cached --name-only
+}
+
+function build_uncommited () {
     # Build only commited changed
-    #TODO: mode=sync/async
-    git diff origin/master --name-only | xargs python3 stats.py --build --files
+    diff_files | xargs python3 stats.py --build --files
 }
 
-function build_all () {
-    opt="$1"
-    mode="$2" # sync/async
-    if [ "$opt" = "--master-only" ] || [ "$opt" = "-m" ]; then
-        git checkout master
-        python3 stats.py --build --all
-    elif [ "$opt" = "--master-with-commited"] || [ "$opt" = "-mc" ]; then
-        python3 stats.py --build --all
+function build_staged () {
+    staged_files | xargs python3 stats.py --build --files
+}
+
+status=0
+
+mode=$1
+target=$2
+
+if [ "$mode" = "" ]; then
+    build_staged
+elif [ "$mode" = "async" ]; then
+    #TODO: stats.exs --build --files
+    echo "Not Implemented"
+    status=1
+elif [ "$mode" = "sync" ]; then
+    if [ "$target" = "$diff" ]; then
+        build_uncommited
+    elif [ "$target" = "$staged" ]; then
+        build_staged
     fi
-}
-
-cmd="$1"
-mode="$2" # sync/async
-opt="$3"
-if [ "$cmd" = "--commited-only" ] || [ "$cmd" = "-c" ]; then
-    build_commited
-elif [ "$cmd" = "--all" ] || [ "$cmd" = "-a" ]; then
-    build_all $opt
+else
+    echo "Usage : test.sh [sync|async] [diff|staged]"
+    status=1
 fi
 
-exit 1
+
+exit $status
