@@ -1,10 +1,12 @@
 #!/bin/bash
 
-#if [ -z TRAVIS_PULL_REQUEST_BRANCH ]; then
-#    # Cancel build if travis is building pushed version
-#    echo "Skipped this build"
-#    exit 0
-#fi
+env
+
+if [ -z TRAVIS_PULL_REQUEST ]; then
+    # Cancel build if travis is building pushed version
+    echo "Skipped this build"
+    exit 0
+fi
 
 # only return the arguments which are files that exists on the filesystem
 function filter_exists {
