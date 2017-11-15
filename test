@@ -2,6 +2,7 @@
 
 if [ ! "$TRAVIS_BRANCH" = "" ]; then
     # Cancel build if travis is building pushed version
+    echo "Skipped this build"
     exit 0
 fi
 
