@@ -35,7 +35,6 @@ function build_staged () {
     staged_files | xargs python3 stats.py --build --files
 }
 
-
 function main () {
     status=0
     mode=$1
