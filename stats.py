@@ -643,9 +643,12 @@ def handle_options(options):
 
     langs_selected = [langs[x] for x in search_language(query, langs)]
 
-
     if options.files:
         uncommited_solutions, uncommited_core_files = handle_files(options.files)
+        if not uncommited_solutions and uncommited_core_files:
+            sys.stdout.write("\rForced to exit")
+            sys.stdout.write("\rChanged_core_files : \n {}".format(uncommited_core_files))
+            return
         tbsolutions = solutions_paths(df, from_files=uncommited_solutions)
 
     if options.all:

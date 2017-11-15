@@ -1,7 +1,10 @@
 #!/bin/bash
 
-if [ ! "$TRAVIS_BRANCH" = "" ]; then
+env
+
+if [ -z TRAVIS_PULL_REQUEST ]; then
     # Cancel build if travis is building pushed version
+    echo "Skipped this build"
     exit 0
 fi
 
@@ -33,7 +36,6 @@ function build_staged () {
     #      `git add .`
     staged_files | xargs python3 stats.py --build --files
 }
-
 
 function main () {
     status=0
