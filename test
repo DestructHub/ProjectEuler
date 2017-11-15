@@ -1,5 +1,13 @@
 #!/bin/bash
 
+echo "test =: "
+echo $TRAVIS_PULL_REQUEST_BRANCH
+echo "-"
+echo $TRAVIS_PULL_REQUEST
+echo "-"
+echo $TRAVIS_BRANCH
+echo "-"
+
 if [ -z TRAVIS_PULL_REQUEST_BRANCH ]; then
     # Cancel build if travis is building pushed version
     echo "Skipped this build"
