@@ -540,6 +540,11 @@ def build_result(df, ignore_errors=False, blame=False, only=()):
     spin_thread.start()
     _problems = only if only else solutions_paths(df)
     for lang, spath in _problems:
+
+        if not os.path.exists(spath):
+            sys.stdout.write("\rSkipped {}: file doesnt exist".format(spath))
+            continue
+
         if "slow" in spath and not blame:
             sys.stdout.write("\rIgnored {}: bad solution (slow).\n".format(spath))  # noqa
             continue
@@ -638,9 +643,12 @@ def handle_options(options):
 
     langs_selected = [langs[x] for x in search_language(query, langs)]
 
-
     if options.files:
         uncommited_solutions, uncommited_core_files = handle_files(options.files)
+        if not uncommited_solutions and uncommited_core_files:
+            sys.stdout.write("\rForced to exit")
+            sys.stdout.write("\rChanged_core_files : \n {}".format(uncommited_core_files))
+            return
         tbsolutions = solutions_paths(df, from_files=uncommited_solutions)
 
     if options.all:
