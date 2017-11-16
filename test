@@ -1,8 +1,6 @@
 #!/bin/bash
 
-env
-
-if [ -z $TRAVIS_PULL_REQUEST ]; then
+if [ "$TRAVIS_PULL_REQUEST" = "false"]; then
     # Cancel build if travis is building pushed version
     echo "Skipped this build"
     exit 0
