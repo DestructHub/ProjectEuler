@@ -5,4 +5,4 @@ services:
 
 script:
   - sudo chmod +x ./test
-  - docker-compose run diff-sync -e "TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST"
+  - docker-compose run -e "TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST" diff-sync
