@@ -39,6 +39,6 @@ services:
   diff-sync:
     image: destructhub/project_euler
     command:
-      - ./test
+      - bash test
     volumes:
       - .:/code
