@@ -14,7 +14,8 @@ if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
                                    -s c++ \
                                    -s bash \
                                    -s clojure \
-                                   -s c
+                                   -s c \
+                                   -q
         exit $?
     else # Cancel build if travis is building pushed version
         echo "Skipped this build"
