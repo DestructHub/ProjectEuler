@@ -2,9 +2,13 @@
 
 
 if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
-    # Cancel build if travis is building pushed version
-    echo "Skipped this build"
-    exit 0
+    if [ "$TRAVIS_BRANCH" = "master" ]; then
+        docker-compose run async
+        exit $?
+    else # Cancel build if travis is building pushed version
+        echo "Skipped this build"
+        exit 0
+    fi
 fi
 
 # only return the arguments which are files that exists on the filesystem
