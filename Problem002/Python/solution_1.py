@@ -14,6 +14,7 @@ def fib_generator(n):
         a, b = b, a + b
         yield a
 
+# ADD COMMENT
 
 def solution(n):
     return sum(i for i in fib_generator(n) if not i % 2)
