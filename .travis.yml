@@ -1,7 +1,8 @@
 sudo: required
 
--services:
- -  - docker
+services:
+  - docker
 
 script:
-  - docker-compose run diff-sync
+  - sudo chmod +x ./test
+  - docker-compose run -e "TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST" diff-sync
