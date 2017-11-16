@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
     # Cancel build if travis is building pushed version
     echo "Skipped this build"
@@ -52,7 +53,7 @@ function main () {
             build_staged
         fi
     else
-        echo "Usage : ./test [sync|async] [diff|staged]"
+        echo "Usage : $0 [sync|async] [diff|staged]"
         status=1
     fi
     exit $status
