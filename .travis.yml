@@ -4,5 +4,6 @@ services:
   - docker
 
 script:
+  - env
   - sudo chmod +x "$PWD/test"
   - docker-compose run diff-sync
