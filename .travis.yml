@@ -4,4 +4,4 @@ sudo: required
  -  - docker
 
 script:
-  - docker-compose run diff-sync
+  - docker-compose run diff-sync -e TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST
