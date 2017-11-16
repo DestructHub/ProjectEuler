@@ -643,7 +643,7 @@ def handle_options(options):
         uncommited_solutions, uncommited_core_files = handle_files(options.files)
         if not uncommited_solutions and uncommited_core_files:
             sys.stdout.write(
-                "\rForced to exit: No solutions to build\nChanged_core_files : \n {}".format(
+                "\rForced to exit: No solutions to build\nChanged_core_files:\n{}\n".format(
                 uncommited_core_files)
             )
             return
