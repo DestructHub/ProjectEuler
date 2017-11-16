@@ -52,7 +52,7 @@ function main () {
             build_staged
         fi
     else
-        echo "Usage : test.sh [sync|async] [diff|staged]"
+        echo "Usage : ./test [sync|async] [diff|staged]"
         status=1
     fi
     exit $status
