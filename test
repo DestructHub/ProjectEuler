@@ -65,8 +65,10 @@ function main () {
     elif [ "$mode" = "sync" ]; then
         if [ "$target" = "diff" ]; then
             build_commited
+            status=$?
         elif [ "$target" = "staged" ]; then
             build_staged
+            status=$?
         fi
     else
         echo "Usage : $0 [sync|async] [diff|staged]"
