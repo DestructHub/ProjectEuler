@@ -373,6 +373,11 @@ def split_problem_language(path):
     return path.strip("./").split("/")
 
 
+def is_solution(string):
+    solution = re.compile("solution_+(?!out)")
+    return solution.match(string)
+
+
 def parse_solutions(problems):
     """
     Function: parse_solutions
@@ -382,14 +387,12 @@ def parse_solutions(problems):
         @param (problems): os.walk functions output
     Returns: problem:lang -> [solutions] <dict>
     """
-    solution = re.compile("solution_+(?!out)")
-
     map_solutions = {}
     for problem_path, dirs, files in problems:
         problem, lang = split_problem_language(problem_path)
         map_solutions.setdefault(problem, {}).setdefault(lang, [])
         for file in files:
-            if solution.match(file):
+            if is_solution(file):
                 map_solutions[problem][lang].append(file)
 
     return map_solutions
@@ -467,7 +470,8 @@ def count_solutions(df, solutions=True):
 def handle_files(files):
     """
     Analyse files to return two lists :
-        - solutions : list of files that are more likely solutions
+        - solutions : list of files as 3-uple of strings that are more likely solutions
+          on the format: (ProblemXXX, 'Lang', 'solution_x.y')
         - build_files : list of files that are more build files (stats.py,
           stats.exs, ...)
     """
@@ -476,9 +480,11 @@ def handle_files(files):
     for f in files:
         if f.count("/") == 2:
             solutions.append(tuple(f.split("/")))
-        elif f.count("/") == 1: continue
-        elif f.count("/") == 0: build_files.append(f)
-    return solutions, build_files
+        elif f.count("/") == 1: 
+            continue
+        elif f.count("/") == 0: 
+            build_files.append(f)
+    return list(filter(lambda x: is_solution(x[2]), solutions)), build_files
 
 # docs?
 def spinner(control):
