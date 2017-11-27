@@ -480,9 +480,10 @@ def handle_files(files):
     for f in files:
         if f.count("/") == 2:
             solutions.append(tuple(f.split("/")))
-        elif f.count("/") == 1: 
-            continue
-        elif f.count("/") == 0: 
+        elif f.count("/") == 1 and "Problem" in f:
+            solutions += [(f, lang, solution) for lang in os.listdir(f)
+                    if lang in BUILD_SUPPORT for solution in os.listdir(f + lang)]
+        elif f.count("/") == 0:
             build_files.append(f)
     return list(filter(lambda x: is_solution(x[2]), solutions)), build_files
 
@@ -652,7 +653,7 @@ def handle_options(options):
                 "\rForced to exit: No solutions to build\nChanged_core_files : \n {}".format(
                 uncommited_core_files)
             )
-            return
+            sys.exit(1)
         tbsolutions = solutions_paths(df, from_files=uncommited_solutions)
 
     if options.all:
@@ -690,6 +691,15 @@ def handle_options(options):
 
     pd.set_option("display.max_rows", len(df))
     print(df)
+
+    count_ws = list(df["Correct"]).count(False)
+    correct_ratio = 1 - count_ws/len(df)
+
+    sys.stdout.write(
+        print("Correct solutions ratio : {0}% ".format(correct_ratio * 100))
+    )
+    if count_ws: sys.exit(1)
+
     if options.graph:
         handle_graph(df, options)
 
