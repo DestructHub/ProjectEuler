@@ -696,7 +696,7 @@ def handle_options(options):
     correct_ratio = 1 - count_ws/len(df)
 
     sys.stdout.write(
-        print("Correct solutions ratio : {0}% ".format(correct_ratio * 100))
+        "Correct solutions ratio : {0}% \n".format(correct_ratio * 100)
     )
     if count_ws: sys.exit(1)
 
