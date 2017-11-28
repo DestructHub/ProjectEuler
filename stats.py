@@ -22,6 +22,7 @@ import re
 import sys
 import hashlib
 import fileinput
+import signal
 
 # #
 # Bulding classes
@@ -533,8 +534,24 @@ def execute_builder(b):
     return answer, t
 
 
+SOLUTION_RUNTIME_LIMIT = 1
+
+class TimeOutController:
+    class Timeout(Exception): pass
+
+    def __init__(self, sec=SOLUTION_RUNTIME_LIMIT):
+        signal.signal(signal.SIGALRM, self.raise_timeout)
+        signal.alarm(sec)
+
+    def cancel(self):
+        signal.alarm(0) # disable alarm
+
+    def raise_timeout(self, *args):
+        raise TimeOutController.Timeout()
+
 # need docs
 def build_result(df, ignore_errors=False, blame=False, only=()):
+
     class Control:  # to handle the spinner time at each solution
         time = time.time()
         done = False
@@ -547,7 +564,7 @@ def build_result(df, ignore_errors=False, blame=False, only=()):
     spin_thread.start()
     _problems = only if only else solutions_paths(df)
     for lang, spath in _problems:
-
+        print("O")
         if "slow" in spath and not blame:
             sys.stdout.write("\rIgnored {}: bad solution (slow).\n".format(spath))  # noqa
             continue
@@ -555,25 +572,41 @@ def build_result(df, ignore_errors=False, blame=False, only=()):
         if lang in BUILD_SUPPORT:
             sys.stdout.write("@Building next {}: {}".format(spath, 12 * ' '))
             b = choose_builder(lang, spath)
-            control.time = time.time()
-            answer, t = execute_builder(b)
             problem = split_problem_language(spath)[0]
+            outtimed = False
+            try:
+                _toc = TimeOutController()
+                control.time = time.time()
+                answer, t = execute_builder(b)
+            except TimeOutController.Timeout:
+                #sys.stdout.write("\nSolution timed out. Authorized limit : {0}\n".format(
+                #    SOLUTION_RUNTIME_LIMIT))
+                answer, t = "-1", -1
+                outtimed = True
+
+            if outtimed:
+                continue
             correct = "No-hash"
             if problem in hashes:
                 answer_hash = digest_answer(answer)
-                correct = answer_hash == hashes[problem]
+                correct = answer_hash == hashes[problem] and not outtimed
 
             data.append([problem, lang, t, answer, correct])
+            print("kekekek")
 
         elif not ignore_errors:
             sys.stdout.write("\r{}: Don't have support yet for {!r}!\n".format(spath, lang))  # noqa
-
+    print("D")
     sys.stdout.write("\r\n")
+    print("T1")
     sys.stdout.flush()
+    print("T2")
     control.done = True
+    print("T3")
     spin_thread.join()
-
+    print("T4")
     final_df = pd.DataFrame(data, columns=columns)
+    print("DDD---")
     return final_df.sort_values("Problem")
 
 
@@ -683,6 +716,7 @@ def handle_options(options):
                               options.all,
                               options.blame,
                               only=tbsolutions)
+            print('kekekekekek')
         except(SystemExit, KeyboardInterrupt):
             os._exit(1)
 
