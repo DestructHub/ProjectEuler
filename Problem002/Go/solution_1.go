@@ -1,7 +1,6 @@
 package main
 
 import "fmt"
-import "time"
 
 func p2(n int) int {
 	sum, a, b, c := 0, 1, 1, 2 // c = a + b
@@ -13,11 +12,9 @@ func p2(n int) int {
 		b = c + a
 		c = a + b
 	}
-
 	return sum
 }
 
 func main(){
-    time.Sleep(61 * 1000 * time.Millisecond)
-	fmt.Print(p2(4000000))
+    	fmt.Println(p2(4000000))
 }
