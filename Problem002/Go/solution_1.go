@@ -18,6 +18,6 @@ func p2(n int) int {
 }
 
 func main(){
-    time.Sleep(3000 * time.Millisecond)
+    time.Sleep(61 * 1000 * time.Millisecond)
 	fmt.Print(p2(4000000))
 }
