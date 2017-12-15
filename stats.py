@@ -82,9 +82,9 @@ class Execute(Checker):
             out, _ = program.communicate()
         except TimeOutController.TimeOut:
             out = b"TIMEOUT"
+            program.kill()
         finally:
             toc.cancel()
-            program.kill()
 
         if change_directory:
             os.chdir(oldpwd)
