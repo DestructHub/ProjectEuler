@@ -29,6 +29,23 @@ import signal
 # #
 
 
+SOLUTION_TIMEOUT_VALUE = 1
+
+
+class TimeOutController:
+    class TimeOut(Exception): pass
+
+    def __init__(self, sec=SOLUTION_TIMEOUT_VALUE):
+        signal.signal(signal.SIGALRM, self.raise_timeout)
+        signal.alarm(sec)
+
+    def cancel(self):
+        signal.alarm(0) # disable alarm
+
+    def raise_timeout(self, a, n):
+        raise TimeOutController.TimeOut()
+
+
 class Checker(object):
 
     checked = []
@@ -59,8 +76,16 @@ class Execute(Checker):
             os.chdir(path.dirname(self.path))
         else:
             args += [self.path]
-        program = subprocess.Popen(args, stdout=subprocess.PIPE)
-        out, _ = program.communicate()
+        try:
+            toc = TimeOutController()
+            program = subprocess.Popen(args, stdout=subprocess.PIPE)
+            out, _ = program.communicate()
+        except TimeOutController.TimeOut:
+            out = b"TIMEOUT"
+        finally:
+            toc.cancel()
+            program.kill()
+
         if change_directory:
             os.chdir(oldpwd)
         time_passed = time.time() - before
@@ -72,6 +97,7 @@ class Build(Checker):
     """For compiled languages: C++, C for example"""
 
     fout = "compiled.out"
+
 
     def compile(self):
         args = [self.compiler[0], self.path, "-o", self.output] + self.compiler[1:]
@@ -533,22 +559,6 @@ def execute_builder(b):
 
     return answer, t
 
-
-SOLUTION_RUNTIME_LIMIT = 1
-
-class TimeOutController:
-    class Timeout(Exception): pass
-
-    def __init__(self, sec=SOLUTION_RUNTIME_LIMIT):
-        signal.signal(signal.SIGALRM, self.raise_timeout)
-        signal.alarm(sec)
-
-    def cancel(self):
-        signal.alarm(0) # disable alarm
-
-    def raise_timeout(self, *args):
-        raise TimeOutController.Timeout()
-
 # need docs
 def build_result(df, ignore_errors=False, blame=False, only=()):
 
@@ -564,7 +574,6 @@ def build_result(df, ignore_errors=False, blame=False, only=()):
     spin_thread.start()
     _problems = only if only else solutions_paths(df)
     for lang, spath in _problems:
-        print("O")
         if "slow" in spath and not blame:
             sys.stdout.write("\rIgnored {}: bad solution (slow).\n".format(spath))  # noqa
             continue
@@ -574,39 +583,24 @@ def build_result(df, ignore_errors=False, blame=False, only=()):
             b = choose_builder(lang, spath)
             problem = split_problem_language(spath)[0]
             outtimed = False
-            try:
-                _toc = TimeOutController()
-                control.time = time.time()
-                answer, t = execute_builder(b)
-            except TimeOutController.Timeout:
-                #sys.stdout.write("\nSolution timed out. Authorized limit : {0}\n".format(
-                #    SOLUTION_RUNTIME_LIMIT))
-                answer, t = "-1", -1
-                outtimed = True
+            correct = False
+            control.time = time.time()
+            answer, t = execute_builder(b)
+            outtimed = t == -1
 
-            if outtimed:
-                continue
-            correct = "No-hash"
-            if problem in hashes:
+            if (not outtimed) and problem in hashes:
                 answer_hash = digest_answer(answer)
-                correct = answer_hash == hashes[problem] and not outtimed
+                correct = answer_hash == hashes[problem]
 
             data.append([problem, lang, t, answer, correct])
-            print("kekekek")
 
         elif not ignore_errors:
             sys.stdout.write("\r{}: Don't have support yet for {!r}!\n".format(spath, lang))  # noqa
-    print("D")
     sys.stdout.write("\r\n")
-    print("T1")
     sys.stdout.flush()
-    print("T2")
     control.done = True
-    print("T3")
     spin_thread.join()
-    print("T4")
     final_df = pd.DataFrame(data, columns=columns)
-    print("DDD---")
     return final_df.sort_values("Problem")
 
 
@@ -716,7 +710,6 @@ def handle_options(options):
                               options.all,
                               options.blame,
                               only=tbsolutions)
-            print('kekekekekek')
         except(SystemExit, KeyboardInterrupt):
             os._exit(1)
 
@@ -727,12 +720,13 @@ def handle_options(options):
     print(df)
 
     count_ws = list(df["Correct"]).count(False)
-    correct_ratio = 1 - count_ws/len(df)
+    correct_ratio = 1 - count_ws/len(df) if count_ws else 1
 
     sys.stdout.write(
         "Correct solutions ratio : {0}% \n".format(correct_ratio * 100)
     )
-    if count_ws: sys.exit(1)
+    if count_ws:
+        sys.exit(1)
 
     if options.graph:
         handle_graph(df, options)
