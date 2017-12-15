@@ -29,7 +29,7 @@ import signal
 # #
 
 
-SOLUTION_TIMEOUT_VALUE = 1
+SOLUTION_TIMEOUT_VALUE = 30
 
 
 class TimeOutController:
@@ -508,8 +508,9 @@ def handle_files(files):
         if f.count("/") == 2:
             solutions.append(tuple(f.split("/")))
         elif f.count("/") == 1 and "Problem" in f:
-            solutions += [(f, lang, solution) for lang in os.listdir(f)
-                    if lang in BUILD_SUPPORT for solution in os.listdir(f + lang)]
+            solutions += [(f[1:], lang, solution) for lang in os.listdir(os.getcwd() + f)
+                    if lang in BUILD_SUPPORT for solution in os.listdir(os.getcwd() + f + '/' + lang)]
+            print(solutions, "hahahha")
         elif f.count("/") == 0:
             build_files.append(f)
     return list(filter(lambda x: is_solution(x[2]), solutions)), build_files
