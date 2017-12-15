@@ -29,7 +29,7 @@ import signal
 # #
 
 
-SOLUTION_TIMEOUT_VALUE = 30
+SOLUTION_TIMEOUT_VALUE = 60
 
 
 class TimeOutController:
