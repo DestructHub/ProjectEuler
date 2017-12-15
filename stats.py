@@ -586,8 +586,7 @@ def build_result(df, ignore_errors=False, blame=False, only=()):
             correct = False
             control.time = time.time()
             answer, t = execute_builder(b)
-            outtimed = t == -1
-
+            outtimed = answer == "TIMEOUT"
             if (not outtimed) and problem in hashes:
                 answer_hash = digest_answer(answer)
                 correct = answer_hash == hashes[problem]
