@@ -58,6 +58,7 @@ function main () {
     target=$2
     if [ "$mode" = "" ]; then
         build_commited
+        status=$?
     elif [ "$mode" = "async" ]; then
         #TODO: stats.exs --build --files
         echo "Not Implemented"

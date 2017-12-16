@@ -145,3 +145,6 @@ draft
 
 # My emacs org-mode file (leorog)
 todo.org
+
+# Virtualenv
+venv

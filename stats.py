@@ -22,10 +22,28 @@ import re
 import sys
 import hashlib
 import fileinput
+import signal
 
 # #
 # Bulding classes
 # #
+
+
+SOLUTION_TIMEOUT_VALUE = 60
+
+
+class TimeOutController:
+    class TimeOut(Exception): pass
+
+    def __init__(self, sec=SOLUTION_TIMEOUT_VALUE):
+        signal.signal(signal.SIGALRM, self.raise_timeout)
+        signal.alarm(sec)
+
+    def cancel(self):
+        signal.alarm(0) # disable alarm
+
+    def raise_timeout(self, a, n):
+        raise TimeOutController.TimeOut()
 
 
 class Checker(object):
@@ -58,8 +76,16 @@ class Execute(Checker):
             os.chdir(path.dirname(self.path))
         else:
             args += [self.path]
-        program = subprocess.Popen(args, stdout=subprocess.PIPE)
-        out, _ = program.communicate()
+        try:
+            toc = TimeOutController()
+            program = subprocess.Popen(args, stdout=subprocess.PIPE)
+            out, _ = program.communicate()
+        except TimeOutController.TimeOut:
+            out = b"TIMEOUT"
+            program.kill()
+        finally:
+            toc.cancel()
+
         if change_directory:
             os.chdir(oldpwd)
         time_passed = time.time() - before
@@ -71,6 +97,7 @@ class Build(Checker):
     """For compiled languages: C++, C for example"""
 
     fout = "compiled.out"
+
 
     def compile(self):
         args = [self.compiler[0], self.path, "-o", self.output] + self.compiler[1:]
@@ -480,9 +507,11 @@ def handle_files(files):
     for f in files:
         if f.count("/") == 2:
             solutions.append(tuple(f.split("/")))
-        elif f.count("/") == 1: 
-            continue
-        elif f.count("/") == 0: 
+        elif f.count("/") == 1 and "Problem" in f:
+            f = f.strip('/')
+            solutions += [(f, lang, solution) for lang in os.listdir(os.getcwd() + '/' + f)
+                    if lang in BUILD_SUPPORT for solution in os.listdir(os.getcwd() + '/' +  f + '/' + lang)]
+        elif f.count("/") == 0:
             build_files.append(f)
     return list(filter(lambda x: is_solution(x[2]), solutions)), build_files
 
@@ -531,9 +560,9 @@ def execute_builder(b):
 
     return answer, t
 
-
 # need docs
 def build_result(df, ignore_errors=False, blame=False, only=()):
+
     class Control:  # to handle the spinner time at each solution
         time = time.time()
         done = False
@@ -546,7 +575,6 @@ def build_result(df, ignore_errors=False, blame=False, only=()):
     spin_thread.start()
     _problems = only if only else solutions_paths(df)
     for lang, spath in _problems:
-
         if "slow" in spath and not blame:
             sys.stdout.write("\rIgnored {}: bad solution (slow).\n".format(spath))  # noqa
             continue
@@ -554,11 +582,13 @@ def build_result(df, ignore_errors=False, blame=False, only=()):
         if lang in BUILD_SUPPORT:
             sys.stdout.write("@Building next {}: {}".format(spath, 12 * ' '))
             b = choose_builder(lang, spath)
+            problem = split_problem_language(spath)[0]
+            outtimed = False
+            correct = False
             control.time = time.time()
             answer, t = execute_builder(b)
-            problem = split_problem_language(spath)[0]
-            correct = "No-hash"
-            if problem in hashes:
+            outtimed = answer == "TIMEOUT"
+            if (not outtimed) and problem in hashes:
                 answer_hash = digest_answer(answer)
                 correct = answer_hash == hashes[problem]
 
@@ -566,12 +596,10 @@ def build_result(df, ignore_errors=False, blame=False, only=()):
 
         elif not ignore_errors:
             sys.stdout.write("\r{}: Don't have support yet for {!r}!\n".format(spath, lang))  # noqa
-
     sys.stdout.write("\r\n")
     sys.stdout.flush()
     control.done = True
     spin_thread.join()
-
     final_df = pd.DataFrame(data, columns=columns)
     return final_df.sort_values("Problem")
 
@@ -652,7 +680,7 @@ def handle_options(options):
                 "\rForced to exit: No solutions to build\nChanged_core_files : \n {}".format(
                 uncommited_core_files)
             )
-            return
+            sys.exit(1)
         tbsolutions = solutions_paths(df, from_files=uncommited_solutions)
 
     if options.all:
@@ -690,6 +718,16 @@ def handle_options(options):
 
     pd.set_option("display.max_rows", len(df))
     print(df)
+
+    count_ws = list(df["Correct"]).count(False)
+    correct_ratio = 1 - count_ws/len(df) if count_ws else 1
+
+    sys.stdout.write(
+        "Correct solutions ratio : {0}% \n".format(correct_ratio * 100)
+    )
+    if count_ws:
+        sys.exit(1)
+
     if options.graph:
         handle_graph(df, options)
 
