@@ -20,7 +20,7 @@ func main() {
 	number := 0
 	for i := 0; i < 1000000; i++ {
 		if isPalindrome(strconv.Itoa(i)) && isPalindrome(binary(int64(i))) {
-			number++
+			number += i
 		}
 	}
 	fmt.Println(number)
