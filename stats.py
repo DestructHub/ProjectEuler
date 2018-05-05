@@ -678,7 +678,7 @@ def handle_options(options):
                 "\rForced to exit: No solutions to build\nChanged_core_files : \n {}".format(
                 uncommited_core_files)
             )
-            sys.exit(1)
+            sys.exit(0)
         tbsolutions = solutions_paths(df, from_files=uncommited_solutions)
 
     if options.all:
