@@ -133,6 +133,8 @@ BUILD_SUPPORT = [
     "Bash",        # hmm, i think you already have this
 ]
 
+BUILD_FILES = ["stats.py", "stats.exs", "test", "add"]
+
 BUILD_MACHINE = {
 
     "Python": {
@@ -507,11 +509,7 @@ def handle_files(files):
     for f in files:
         if f.count("/") == 2:
             solutions.append(tuple(f.split("/")))
-        elif f.count("/") == 1 and "Problem" in f:
-            f = f.strip('/')
-            solutions += [(f, lang, solution) for lang in os.listdir(os.getcwd() + '/' + f)
-                    if lang in BUILD_SUPPORT for solution in os.listdir(os.getcwd() + '/' +  f + '/' + lang)]
-        elif f.count("/") == 0:
+        elif f.count("/") == 0 and f in BUILD_FILES:
             build_files.append(f)
     return list(filter(lambda x: is_solution(x[2]), solutions)), build_files
 
@@ -680,7 +678,7 @@ def handle_options(options):
                 "\rForced to exit: No solutions to build\nChanged_core_files : \n {}".format(
                 uncommited_core_files)
             )
-            sys.exit(1)
+            sys.exit(0)
         tbsolutions = solutions_paths(df, from_files=uncommited_solutions)
 
     if options.all:
