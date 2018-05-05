@@ -133,6 +133,8 @@ BUILD_SUPPORT = [
     "Bash",        # hmm, i think you already have this
 ]
 
+BUILD_FILES = ["stats.py", "stats.exs", "test", "add"]
+
 BUILD_MACHINE = {
 
     "Python": {
@@ -505,15 +507,9 @@ def handle_files(files):
     solutions = []
     build_files = []
     for f in files:
-        print(f)
-
         if f.count("/") == 2:
             solutions.append(tuple(f.split("/")))
-        
-        elif f.count("/") == 1 and "Problem" in f:
-            if "README" in f or "hash" in f:
-                continue
-        elif f.count("/") == 0:
+        elif f.count("/") == 0 and f in BUILD_FILES:
             build_files.append(f)
     return list(filter(lambda x: is_solution(x[2]), solutions)), build_files
 
