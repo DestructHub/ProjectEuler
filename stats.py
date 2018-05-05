@@ -505,12 +505,14 @@ def handle_files(files):
     solutions = []
     build_files = []
     for f in files:
+        print(f)
+
         if f.count("/") == 2:
             solutions.append(tuple(f.split("/")))
+        
         elif f.count("/") == 1 and "Problem" in f:
-            f = f.strip('/')
-            solutions += [(f, lang, solution) for lang in os.listdir(os.getcwd() + '/' + f)
-                    if lang in BUILD_SUPPORT for solution in os.listdir(os.getcwd() + '/' +  f + '/' + lang)]
+            if "README" in f or "hash" in f:
+                continue
         elif f.count("/") == 0:
             build_files.append(f)
     return list(filter(lambda x: is_solution(x[2]), solutions)), build_files
