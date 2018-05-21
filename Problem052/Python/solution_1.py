@@ -12,5 +12,5 @@ for i in xrange(1,1000000):
 		if substr(y,p)==0:
 			count+=1
 	if count==5:
-		print x
+		print(x)
 		break
