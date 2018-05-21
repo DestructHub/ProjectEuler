@@ -23,6 +23,6 @@ int main()
             palindrome=h;
         }
     }
-    printf("%d",palindrome);
+    printf("%uld",palindrome);
     return 0;
 }
