@@ -13,12 +13,12 @@ int main()
 			m=temp%10;
 			fact=1;
 			for(j=1;j<=m;++j)
-			fact*=j;
+				fact*=j;
 			sum+=fact;
 			temp=temp/10;
 		}
 		if(sum==n)
-		sum1+=n;
+			sum1+=n;
 	}
 	printf("%d",sum1);
 	return 0;
