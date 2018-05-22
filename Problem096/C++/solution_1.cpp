@@ -124,7 +124,7 @@ int main()
     fstream ifile;
     int t=50;
     int x=0,y=0,choose;
-    ifile.open("sudo.txt",ios::in);
+    ifile.open("sudoku.txt",ios::in);
     int a[9][9],n,posx,posy;
     srand(time(NULL));
     if(!ifile)
