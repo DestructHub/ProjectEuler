@@ -14,6 +14,6 @@
                         finally (return (list x c)))))
 
 (defun solution ()
-  (loop for (p f) in (factors 600851475143) maximize p))
+  (caar (last (factors 600851475143))))
 
 (format t "~a~%"(solution))
