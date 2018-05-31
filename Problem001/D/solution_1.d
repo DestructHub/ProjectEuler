@@ -1,14 +1,13 @@
-import std.stdio;
+import std.stdio : writeln;
 
-int main()
+void main() 
 {
-    int i, total = 0;
+    int total;
 
-    for (i = 0; i < 1000; i++)
-    {
-        if (i % 3 == 0 || i % 5 == 0)
-            total += i;
+    foreach (n; 1..1000) {
+        if (n % 3 == 0 || n % 5 == 0)
+            total+=n;
     }
+
     writeln(total);
-    return 0;
 }
