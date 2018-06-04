@@ -33,14 +33,15 @@ SOLUTION_TIMEOUT_VALUE = 60
 
 
 class TimeOutController:
-    class TimeOut(Exception): pass
+    class TimeOut(Exception):
+        pass
 
     def __init__(self, sec=SOLUTION_TIMEOUT_VALUE):
         signal.signal(signal.SIGALRM, self.raise_timeout)
         signal.alarm(sec)
 
     def cancel(self):
-        signal.alarm(0) # disable alarm
+        signal.alarm(0)  # disable alarm
 
     def raise_timeout(self, a, n):
         raise TimeOutController.TimeOut()
@@ -67,15 +68,18 @@ class Execute(Checker):
 
     """Interactive languages building"""
 
-    def execute(self, change_directory=True):
+    def enter_dir(self):
+        self.old_dir = os.getcwd()
+        os.chdir(path.dirname(self.path))
+
+    def exit_dir(self):
+        os.chdir(self.old_dir)
+
+    def execute(self):
+        self.enter_dir()
         before = time.time()
         args = self.compiler
-        oldpwd = os.getcwd()
-        if change_directory: # yes, you can cry too
-            args += [path.basename(self.path)]
-            os.chdir(path.dirname(self.path))
-        else:
-            args += [self.path]
+        args += [path.basename(self.path)]
         try:
             toc = TimeOutController()
             program = subprocess.Popen(args, stdout=subprocess.PIPE)
@@ -85,10 +89,8 @@ class Execute(Checker):
             program.kill()
         finally:
             toc.cancel()
-
-        if change_directory:
-            os.chdir(oldpwd)
         time_passed = time.time() - before
+        self.exit_dir()
         return out, program.returncode, time_passed
 
 
@@ -97,7 +99,6 @@ class Build(Checker):
     """For compiled languages: C++, C for example"""
 
     fout = "compiled.out"
-
 
     def compile(self):
         args = [self.compiler[0], self.path, "-o", self.output] + self.compiler[1:]
@@ -109,9 +110,10 @@ class Build(Checker):
         if self.compile():
             compiled = path.abspath(self.output)
             program = Execute("bash -c", "{!r}".format(compiled))
-            output = program.execute(change_directory=False)
+            output = program.execute()
             os.remove(compiled)
             return output
+
         return b"compiles fails", EnvironmentError, 0
 
 
