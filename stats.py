@@ -130,6 +130,8 @@ BUILD_SUPPORT = [
     "PHP",         # you need php | pacman -Su php
     # "Swift",       # you need swift | yaourt -Su swift
     # "Objective-C",  # you need gcc-objc | pacman -Su gcc-objc
+    "Scheme",
+    "Racket",
     "Bash",        # hmm, i think you already have this
 ]
 
@@ -154,6 +156,16 @@ BUILD_MACHINE = {
 
     "CommonLisp": {
         "cmdline": "sbcl --script",
+        "builder": Execute
+    },
+
+    "Racket": {
+        "cmdline": "racket",
+        "builder": Execute
+    },
+
+    "Scheme": {
+        "cmdline": "racket",
         "builder": Execute
     },
 
