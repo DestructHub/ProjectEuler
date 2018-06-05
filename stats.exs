@@ -259,6 +259,16 @@ defmodule Runner do
       builder: :execute
     },
 
+    "Scheme" => %{
+      cmd: "racket",
+      builder: :execute
+    },
+
+    "Racket" => %{
+      cmd: "racket",
+      builder: :execute
+    },
+
     "Haskell" => %{
       cmd: "runhaskell",
       builder: :execute
