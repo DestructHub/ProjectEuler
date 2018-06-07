@@ -160,12 +160,12 @@ BUILD_MACHINE = {
     },
 
     "Racket": {
-        "cmdline": "racket",
+        "cmdline": "racket --script",
         "builder": Execute
     },
 
     "Scheme": {
-        "cmdline": "racket",
+        "cmdline": "racket --script",
         "builder": Execute
     },
 

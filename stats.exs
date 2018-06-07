@@ -260,12 +260,12 @@ defmodule Runner do
     },
 
     "Scheme" => %{
-      cmd: "racket",
+      cmd: "racket --script",
       builder: :execute
     },
 
     "Racket" => %{
-      cmd: "racket",
+      cmd: "racket --script",
       builder: :execute
     },
 
