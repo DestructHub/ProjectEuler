@@ -339,7 +339,7 @@ parser.add_option(
 parser.usage = "%prog [-s language] [-al] [-cpb] [--blame] [--files] [-g]"
 
 
-def walk_problems():
+def walk_problems(root="."):
     """
     Function: walk_problems
     Summary: Walking for repository to get each content of ProblemXXX
@@ -348,7 +348,7 @@ def walk_problems():
     """
     problem = re.compile("./Problem[0-9]{3}/")
     problems = []
-    for x in os.walk("."):
+    for x in os.walk(root):
         if problem.match(x[0]) and "pycache" not in x[0]:
             problems.append(x)
     return problems
@@ -521,6 +521,12 @@ def handle_files(files):
     for f in files:
         if f.count("/") == 2:
             solutions.append(tuple(f.split("/")))
+        elif f.count("/") == 1:
+            dic = parse_solutions(walk_problems(f))
+            problem = list(dic.keys())[0]
+            for lang in dic[problem]:
+                for solution in dic[problem][lang]:
+                    solutions.append((problem, lang, solution))
         elif f.count("/") == 0 and f in BUILD_FILES:
             build_files.append(f)
     return list(filter(lambda x: is_solution(x[2]), solutions)), build_files
@@ -680,7 +686,7 @@ def handle_options(options):
     uncommited_solutions = []
     uncommited_core_files = []
     tbsolutions = []
-    count_ws = 0 # wrong solutions
+    count_ws = 0  # wrong solutions
 
     langs_selected = [langs[x] for x in search_language(query, langs)]
 
