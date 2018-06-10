@@ -336,7 +336,7 @@ parser.add_option(
 
 )
 
-parser.usage = "%prog [-s language] [-al] [-cpb] [--blame] [-g]"
+parser.usage = "%prog [-s language] [-al] [-cpb] [--blame] [--files] [-g]"
 
 
 def walk_problems():
@@ -680,6 +680,7 @@ def handle_options(options):
     uncommited_solutions = []
     uncommited_core_files = []
     tbsolutions = []
+    count_ws = 0 # wrong solutions
 
     langs_selected = [langs[x] for x in search_language(query, langs)]
 
@@ -726,8 +727,6 @@ def handle_options(options):
             sys.stdout.write(
                 "Correct solutions ratio : {0}% \n".format(correct_ratio * 100)
             )
-            if count_ws:
-                sys.exit(1)
         except(SystemExit, KeyboardInterrupt):
             os._exit(1)
 
@@ -736,6 +735,9 @@ def handle_options(options):
 
     pd.set_option("display.max_rows", len(df))
     print(df)
+
+    if count_ws:
+        sys.exit(1)
 
     if options.graph:
         handle_graph(df, options)
