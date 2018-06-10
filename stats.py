@@ -79,7 +79,7 @@ class Execute(Checker):
         self.enter_dir()
         before = time.time()
         args = self.compiler
-        args += [path.basename(self.path)]
+        args += [self.path]
         try:
             toc = TimeOutController()
             program = subprocess.Popen(args, stdout=subprocess.PIPE)
@@ -109,7 +109,7 @@ class Build(Checker):
         self.output = path.join(path.dirname(self.path), self.fout)
         if self.compile():
             compiled = path.abspath(self.output)
-            program = Execute("bash -c", "{!r}".format(compiled))
+            program = Execute("bash -c", "{}".format(compiled))
             output = program.execute()
             os.remove(compiled)
             return output
