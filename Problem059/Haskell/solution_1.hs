@@ -30,5 +30,5 @@ decrypt codes = head [decrypted | pass <- passwords,
                              let decrypted = applyKey codes pass,
                              checkIt decrypted]
 
-main = do content <- readFile "p059_cipher.txt"
+main = do content <- readFile "../p059_cipher.txt"
           print $ sum $ decrypt $ parseFile (head (lines content))

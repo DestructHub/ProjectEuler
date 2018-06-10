@@ -20,7 +20,7 @@ What is the total of all the name scores in the file?
 from os.path import join, dirname
 from string import ascii_uppercase as alf
 
-f = open(join(dirname(__file__), 'p022_names.txt'), 'r').read()[:-1]
+f = open('../p022_names.txt', 'r').read()[:-1]
 l = sorted([x[1:-1] for x in f.split(',')])
 s = lambda x: sum(((alf.index(y) + 1) for y in x))
 print(sum((s(l[x]) * (x + 1) for x in range(len(l)))))

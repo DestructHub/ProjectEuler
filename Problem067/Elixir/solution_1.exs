@@ -27,4 +27,4 @@ defmodule Triangle do
   end
 end
 
-Triangle.input("../Python/p067_triangle.txt")
+Triangle.input("../p067_triangle.txt")

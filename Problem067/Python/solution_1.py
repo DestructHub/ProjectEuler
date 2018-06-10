@@ -66,7 +66,7 @@ class Tree(object):
         self.insert_route(last)
 if __name__ == '__main__':
     from os.path import join, dirname
-    with open(join(dirname(__file__), 'p067_triangle.txt')) as f:
+    with open('../p067_triangle.txt') as f:
         data = int_triangle(f.read()[:-1])
 
     t = Tree(data)
