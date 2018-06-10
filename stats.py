@@ -53,7 +53,7 @@ class Checker(object):
 
     def __init__(self, compiler, path):
         self.compiler = compiler.split()
-        self.path = path
+        self.path = os.path.abspath(path)
         self.check()
 
     def check(self):
@@ -523,7 +523,7 @@ def handle_files(files):
     for f in files:
         if f.count("/") == 2:
             solutions.append(tuple(f.split("/")))
-        elif f.count("/") == 1:
+        elif f.count("/") == 1 and f.startswith("./"):
             dic = parse_solutions(walk_problems(f))
             problem = list(dic.keys())[0]
             for lang in dic[problem]:
