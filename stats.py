@@ -720,6 +720,14 @@ def handle_options(options):
                               options.all,
                               options.blame,
                               only=tbsolutions)
+            count_ws = list(df["Correct"]).count(False)
+            correct_ratio = 1 - count_ws/len(df) if count_ws else 1
+
+            sys.stdout.write(
+                "Correct solutions ratio : {0}% \n".format(correct_ratio * 100)
+            )
+            if count_ws:
+                sys.exit(1)
         except(SystemExit, KeyboardInterrupt):
             os._exit(1)
 
@@ -728,15 +736,6 @@ def handle_options(options):
 
     pd.set_option("display.max_rows", len(df))
     print(df)
-
-    count_ws = list(df["Correct"]).count(False)
-    correct_ratio = 1 - count_ws/len(df) if count_ws else 1
-
-    sys.stdout.write(
-        "Correct solutions ratio : {0}% \n".format(correct_ratio * 100)
-    )
-    if count_ws:
-        sys.exit(1)
 
     if options.graph:
         handle_graph(df, options)
