@@ -1,3 +1,13 @@
+;; An implementation of Farey Sequence(s)
+;;
+;; References:
+;;
+;; - Cut the Knot article: https://www.cut-the-knot.org/blue/Farey.shtml
+;; - Stern-Brocott Tree: https://www.cut-the-knot.org/blue/Stern.shtml
+;; - Ivan Niven, Herbert S. Zuckerman, Hugh L. Montgomery,
+;;      "An introduction to the theory of numbers", 5th Edition, Wiley, NY
+;;
+
 (define gcd
   (lambda (m n)
     (cond
@@ -93,7 +103,7 @@
 (define solve
   (let ((input1 (fraction 3 7))
         (input2 1000000))
-    (num(target (first-interval-with-upper input1) input2))))
+    (num (target (first-interval-with-upper input1) input2))))
 
 (display solve)
 (newline)
