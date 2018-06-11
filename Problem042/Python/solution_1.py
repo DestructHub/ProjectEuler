@@ -25,7 +25,7 @@ def memo(fn):
 
 
 def load_words():
-    with open(join(dirname(__file__), "p042_words.txt")) as f:
+    with open("../p042_words.txt") as f:
         words = f.read().strip("\n").split(",")
     return [x.lower().strip("\"") for x in words]
 

@@ -90,7 +90,7 @@ def run_test():
 
 
 def solution():
-    with open(join(dirname(__file__), 'p081_matrix.txt'), 'r') as f:
+    with open('../p081_matrix.txt', 'r') as f:
         data = parse_grid(f.read()[:-1])
     return Grid(data).solution()
 

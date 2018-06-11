@@ -30,7 +30,7 @@ numbers in the example given above.
 from math import log
 from os.path import dirname, join
 
-filedic = join(dirname(__file__), 'p099_base_exp.txt')
+filedic = join('../p099_base_exp.txt')
 
 dic_evalued = {}
 with open(filedic, 'r') as f:

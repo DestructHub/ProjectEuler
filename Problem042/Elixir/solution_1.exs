@@ -70,4 +70,4 @@ defmodule TriangleWords do
   end
 end
 
-TriangleWords.words("../Python/p042_words.txt",a_z_key)
+TriangleWords.words("../p042_words.txt",a_z_key)

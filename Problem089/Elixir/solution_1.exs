@@ -19,4 +19,4 @@ defmodule RomanNumerals do
   def diff(replaced,original), do: original - replaced
 end
 
-RomanNumerals.convert("p089_romans.txt")
+RomanNumerals.convert("../p089_romans.txt")
