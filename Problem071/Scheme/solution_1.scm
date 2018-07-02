@@ -1,12 +1,19 @@
-;; An implementation of Farey Sequence(s)
-;;
-;; References:
-;;
-;; - Cut the Knot article: https://www.cut-the-knot.org/blue/Farey.shtml
-;; - Stern-Brocott Tree: https://www.cut-the-knot.org/blue/Stern.shtml
-;; - Ivan Niven, Herbert S. Zuckerman, Hugh L. Montgomery,
-;;      "An introduction to the theory of numbers", 5th Edition, Wiley, NY
-;;
+;; -*- mode: scheme; coding: utf-8-unix -*-
+
+#|
+An implementation of Farey Sequence(s)
+
+References:
+- Cut the Knot article: https://www.cut-the-knot.org/blue/Farey.shtml
+- Stern-Brocott Tree: https://www.cut-the-knot.org/blue/Stern.shtml
+- Ivan Niven, Herbert S. Zuckerman, Hugh L. Montgomery,
+              "An introduction to the theory of numbers", 5th Edition, Wiley, NY
+
+TODO:
+- Documentation
+|#
+
+(require srfi/9)
 
 (define gcd
   (lambda (m n)
@@ -16,22 +23,35 @@
      ((< m n) (gcd n m))
      (else (gcd n (remainder m n))))))
 
-(define fraction
-  (lambda (num den)
-    (let ((g (gcd num den)))
-      (cons (/ num g) (/ den g)))))
+(define-record-type :fraction
+  (fraction numerator denominator)
+  fraction?
+  (numerator numerator set-numerator!)
+  (denominator denominator set-denominator!))
 
-(define num
-  (lambda (f)
-    (car f)))
+(define pretty-print-fraction
+  (lambda (header f)
+    (display "Fraction: ")
+    (display header)
+    (newline)
+    (display "Numerator: ")
+    (display (numerator f))
+    (newline)
+    (display "Denominator: ")
+    (display (denominator f))
+    (newline)))
 
-(define den
+(define simplify
   (lambda (f)
-    (cdr f)))
+    (let ((num (numerator f))
+	  (den (denominator f))
+	  (g (gcd num den)))
+      (fraction (/ num g) (/ den g)))))
 
 (define smaller?
   (lambda (f1 f2)
-    (< (* (num f1) (den f2)) (* (num f2) (den f1)))))
+    (< (* (numerator f1) (denominator f2))
+       (* (numerator f2) (denominator f1)))))
 
 (define bigger?
   (lambda (f1 f2)
@@ -39,71 +59,89 @@
 
 (define equals?
   (lambda (f1 f2)
-    (and (= (num f1) (num f2)) (= (den f1) (den f2)))))
+    (not (or (smaller? f1 f2) (bigger? f1 f2)))))
 
-(define interval
-  (lambda (f1 f2)
-    (if (smaller? f1 f2)
-        (cons f1 f2)
-        (cons f2 f1))))
+(define zero
+  (fraction 0 1))
+(define one
+  (fraction 1 1))
 
-(define lower
+(define-record-type :interval
+  (interval lower upper)
+  interval?
+  (lower lower set-lower!)
+  (upper upper set-upper!))
+
+(define canonical-order
   (lambda (i)
-    (car i)))
+    (let ((low (lower i))
+	  (upp (upper i)))
+      (if (bigger? low upp)
+	  (interval upp low)
+	  (interval low upp)))))
 
-(define upper
-  (lambda (i)
-    (cdr i)))
+(define pretty-print-interval
+  (lambda (header i)
+    (display "Interval: ")
+    (display header)
+    (newline)
+    (pretty-print-fraction "Lower" (lower i))
+    (pretty-print-fraction "Upper" (upper i))))
 
 (define mediant
   (lambda (i)
     (let* ((f1 (lower i))
-           (f2 (upper i))
-           (n (+ (num f1) (num f2)))
-           (d (+ (den f1) (den f2))))
+	   (f2 (upper i))
+	   (n (+ (numerator f1) (numerator f2)))
+	   (d (+ (denominator f1) (denominator f2))))
       (fraction n d))))
 
-(define left-mediant-split
+(define lower-mediant-split
   (lambda (i)
-    (let ((med (mediant i)))
-      (interval (lower i) med))))
+    (interval (lower i) (mediant i))))
 
-(define right-mediant-split
+(define upper-mediant-split
   (lambda (i)
-    (let ((med (mediant i)))
-      (interval med (upper i)))))
+    (interval (mediant i) (upper i))))
 
-(define first-interval-with-mediant-acc
-  (lambda (f acc)
-    (let* ((med (mediant acc))
-           (left (left-mediant-split acc))
-           (right (right-mediant-split acc)))
-      (cond
-       ((equals? f med) acc)
-       ((bigger? f med) (first-interval-with-mediant-acc f right))
-       ((smaller? f med) (first-interval-with-mediant-acc f left))))))
+(define zero-one
+  (interval zero one))
 
-(define first-interval-with-mediant
+(define first-interval-mediant
   (lambda (f)
-    (let ((initial-interval (interval (fraction 0 1) (fraction 1 1))))
-      (first-interval-with-mediant-acc f initial-interval))))
+    (define first-interval-mediant-acc
+      (lambda (f acc)
+	(let* ((med (mediant acc))
+	       (lower (lower-mediant-split acc))
+	       (upper (upper-mediant-split acc)))
+	  (cond
+	   ((bigger? f med) (first-interval-mediant-acc f upper))
+	   ((smaller? f med) (first-interval-mediant-acc f lower))
+	   (else acc)))))
+    (first-interval-mediant-acc f zero-one)))
 
-(define first-interval-with-upper
+(define first-interval-upper
   (lambda (f)
-    (left-mediant-split (first-interval-with-mediant f))))
+    (lower-mediant-split (first-interval-mediant f))))
 
-(define target
+(define first-interval-lower
+  (lambda (f)
+    (upper-mediant-split (first-interval-mediant f))))
+
+(define largest-fraction-inside-with-denominator-below
   (lambda (i limit)
-    (let ((med (mediant i)))
+    (let ((med (mediant i))
+	  (up (upper-mediant-split i)))
       (cond
-       ((> (den (lower i)) limit) (lower i))
-       ((> (den med) limit) (lower i))
-       (else (target (right-mediant-split i) limit))))))
+       ((> (denominator (lower i)) limit) (lower i))
+       ((> (denominator med) limit) (lower i))
+       (else (largest-fraction-inside-with-denominator-below up limit))))))
 
 (define solve
   (let ((input1 (fraction 3 7))
         (input2 1000000))
-    (num (target (first-interval-with-upper input1) input2))))
+    (numerator (largest-fraction-inside-with-denominator-below
+		(first-interval-upper input1) input2))))
 
 (display solve)
 (newline)
