@@ -1,0 +1,56 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{tabulary}
+\usepackage{multirow}
+
+\usepackage{polyglossia}
+
+\title{Project Euler - Problem 6}
+\date{}
+\author{DestructHub}
+
+\begin{document}
+
+\maketitle
+
+\section {Statement}
+
+The sum of the squares of the first ten natural numbers is
+
+$$ 1^2 + 2^2 + \ldots + 10^2 = 385 $$
+
+The square of the sum of the first ten natural numbers is,
+
+$$ (1 + 2 + \ldots + 10)^2 = 55^2 = 3025 $$
+
+Hence the difference between the sum of the squares of the first ten natural
+numbers and the square of the sum is $$ 3025 - 385 = 2640$$.
+
+Find the difference between the sum of the squares of the first one hundred
+natural numbers and the square of the sum.
+
+\section{Solution}
+
+We can use two simple formulae:
+
+\begin{align*}
+  1+2+\ldots+n &= \frac{n(n+1)}{2}\\
+  1^2+2^2+\ldots+n^2 &= \frac{n(n+1)(2n+1)}{6}
+\end{align*}
+
+(They can be easily proved by Induction.)
+
+Now it is a matter of simple calculations:
+
+$$\left(\frac{n(n+1)}{2})^2\right) - \frac{n(n+1)(2n+1)}{6} = 5050^2-338350 = 25164150$$  
+
+\end{document}
+
+%%% Compile with lualatex
+
+%%% Local Variables:
+%%% mode: latex
+%%% coding: utf-8-unix
+%%% fill-column: 80
+%%% End:
