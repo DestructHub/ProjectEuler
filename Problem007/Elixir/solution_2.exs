@@ -1,6 +1,6 @@
 defmodule Solution do
   def nth_prime(n) do
-    prime_sequence
+    prime_sequence()
     |> Stream.take(n)
     |> Enum.to_list
     |> List.last
@@ -21,7 +21,7 @@ defmodule Solution do
   def prime?(x) when x in [1, 4], do: false
   def prime?(x) do
     2..round(:math.sqrt(x))
-    |> Enum.reduce_while(true, fn(e, acc) ->
+    |> Enum.reduce_while(true, fn(e, _) ->
       if(0 == rem(x, e)) do
         {:halt, false}
       else
