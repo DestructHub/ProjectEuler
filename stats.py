@@ -135,6 +135,7 @@ BUILD_SUPPORT = [
     "Scheme",
     "Racket",
     "Bash",        # hmm, i think you already have this
+    "OCaml",
 ]
 
 BUILD_FILES = ["stats.py", "stats.exs", "test", "add"]
@@ -219,6 +220,11 @@ BUILD_MACHINE = {
     "Swift": {
         "cmdline": "swift",
         "builder": Execute
+    },
+
+    "OCaml" : {
+        "cmdline" : "ocaml",
+        "builder": Execute,
     }
 
 }

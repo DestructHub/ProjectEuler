@@ -15,6 +15,7 @@ services:
                                            -s bash
                                            -s clojure
                                            -s c
+                                           -s ocaml
     environment:
       STATS_POOL_SIZE: #{STATS_POOL_SIZE}
     volumes:
@@ -34,10 +35,11 @@ services:
                                       -s bash
                                       -s clojure
                                       -s c
+                                      -s ocaml
     volumes:
       - .:/code
   diff-sync:
-    image: destructhub/project_euler
+    image: destructhub/project_euler:add-ocaml-support
     command: ./test
     volumes:
       - .:/code
