@@ -3,7 +3,7 @@ let check x =
     1
   else
     0
-in
+
 let rec solve current top count =
   if current = top then count
   else
@@ -16,3 +16,4 @@ let solution =
   solve 0 1000 0;;
 
 print_int (solution);;
+print_newline ()
