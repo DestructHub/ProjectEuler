@@ -39,7 +39,7 @@ services:
     volumes:
       - .:/code
   diff-sync:
-    image: destructhub/project_euler:add-ocaml-support
+    image: destructhub/project_euler
     command: ./test
     volumes:
       - .:/code
