@@ -6,7 +6,6 @@ let ff x = (x * (x + 1) * ((2 * x) + 1)) / 6
 
 let solve n = -(ff n) + (int_of_float (f n))
 
-let __kappa__ =
 let __kappa__ = solve 100;;
 
 print_int(__kappa__);;
