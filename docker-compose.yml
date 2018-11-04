@@ -20,6 +20,8 @@ services:
       STATS_POOL_SIZE: #{STATS_POOL_SIZE}
     volumes:
       - .:/code
+    security_opt:
+      - seccomp:unconfined
 
   sync:
     image: destructhub/project_euler
@@ -38,8 +40,12 @@ services:
                                       -s ocaml
     volumes:
       - .:/code
+    security_opt:
+      - seccomp:unconfined
   diff-sync:
     image: destructhub/project_euler
     command: ./test
     volumes:
       - .:/code
+    security_opt:
+      - seccomp:unconfined
