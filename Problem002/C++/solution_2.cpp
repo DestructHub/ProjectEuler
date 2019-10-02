@@ -1,9 +1,9 @@
 #include<bits/stdc++.h>
 using namespace std;
-bool odd (int i) {
+bool odd(int i){
    return i & 1;
 }
-int main () {
+int main(){
    vector<int> fib(30);
    fib[0] = 1;
    adjacent_difference (fib.begin(), fib.end()-1,fib.begin()+1,
