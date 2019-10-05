@@ -2,14 +2,14 @@
 using namespace std;
 
 const int much = 1000000;
-bool isPrime[much];
+bool is_prime[much];
 
 void sieve(){
-	memset (isPrime, true, sizeof(isPrime));
-	isPrime[0] = isPrime [1] = false;
-	for (int i = 2; i < much; ++i){
-		for (int j = (i << 1); j < much; j += i){
-			isPrime [j] = false;
+	memset (is_prime, true, sizeof(is_prime));
+	is_prime[0] = is_prime [1] = false;
+	for (int i = 2; i < much; ++i) {
+		for (int j = (i << 1); j < much; j += i) {
+			is_prime[j] = false;
 		}
 	}
 }
@@ -17,8 +17,8 @@ void sieve(){
 bool test(int t)
 {
 	int orig = t, cnt = 0, tmp10 = 1;
-	while (t > 0){
-		if (!isPrime [t]){
+	while (t > 0) {
+		if (!is_prime [t]) {
 			return false;
 		}
 		t /= 10;
@@ -27,7 +27,7 @@ bool test(int t)
 	}
 	while(orig > 0)
 	{
-		if (!isPrime[orig]){
+		if (!is_prime[orig]) {
 			return false;
 		}
 		orig = (orig % (tmp10 /= 10));
@@ -39,8 +39,8 @@ int main()
 {
 	long long sum = 0;
 	sieve ();
-	for (int i = 10; i < much; ++i){
-		if (test(i)){
+	for (int i = 10; i < much; ++i) {
+		if (test(i)) {
 			sum += i;
 		}
 	}
