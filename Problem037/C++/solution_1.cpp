@@ -25,8 +25,7 @@ bool test(int t)
 		++cnt;
 		tmp10 *= 10;
 	}
-	while(orig > 0)
-	{
+	while(orig > 0) {
 		if (!is_prime[orig]) {
 			return false;
 		}
