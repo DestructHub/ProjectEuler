@@ -6,7 +6,7 @@ bool is_prime[much];
 
 void sieve(){
 	memset (is_prime, true, sizeof(is_prime));
-	is_prime[0] = is_prime [1] = false;
+	is_prime[0] = is_prime[1] = false;
 	for (int i = 2; i < much; ++i) {
 		for (int j = (i << 1); j < much; j += i) {
 			is_prime[j] = false;
@@ -18,7 +18,7 @@ bool test(int t)
 {
 	int orig = t, cnt = 0, tmp10 = 1;
 	while (t > 0) {
-		if (!is_prime [t]) {
+		if (!is_prime[t]) {
 			return false;
 		}
 		t /= 10;
