@@ -1,4 +1,5 @@
 from collections import Counter
+from operator import itemgetter
 
 units = {
     'I': 1,
@@ -52,7 +53,9 @@ def parse_roman(string: str) -> int:
 
 
 def to_roman(integer: int) -> str:
-    characters_by_unit = list(units.items())[::-1]
+    characters_by_unit = sorted(units.items(),
+                                reverse=True,
+                                key=itemgetter(1))
     roman = ''
     for c, unit in characters_by_unit:
         while integer - unit >= 0:
