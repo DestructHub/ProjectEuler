@@ -17,4 +17,4 @@ def calculate_rank(hand):
 
 p1_wins = sum(calculate_rank(hand[:5]) > calculate_rank(hand[5:]) for hand in hands)
 
-print(f'P1 wins {p1_wins} times')
+print(f'{p1_wins}')
