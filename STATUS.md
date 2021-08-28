@@ -1,3 +1,5 @@
+- [X] [Problem020](https://projecteuler.net/problem=20)
+	- [X] python, @samilozkan
 - [X] [Problem041](https://projecteuler.net/problem=41)
 	- [X] Swift, @luizperes
 - [X] [Problem042](https://projecteuler.net/problem=42)
